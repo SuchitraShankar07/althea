@@ -12,8 +12,11 @@ retrieval:
 
 # ── Generation ───────────────────────────────────────────────
 generation:
-  model_name: "mistralai/Mistral-7B-Instruct-v0.2"   # swap as needed
-  # model_name: "meta-llama/Llama-2-7b-chat-hf"
+  # model_name: "mistralai/Mistral-7B-Instruct-v0.2"   # swap as needed
+  # # model_name: "meta-llama/Llama-2-7b-chat-hf"
+  model_name: "mistralai/Mistral-7B-Instruct-v0.2"
+  load_in_4bit: True
+  device_map: "auto"
   max_new_tokens: 512
   temperature: 0.1
   do_sample: false
@@ -23,7 +26,7 @@ generation:
 # ── Diagnosis ────────────────────────────────────────────────
 diagnosis:
   nli_model: "cross-encoder/nli-deberta-v3-base"
-  nli_batch_size: 16
+  nli_batch_size: 8  # Keep this moderate to save VRAM
   entailment_threshold: 0.7
   contradiction_threshold: 0.6
   claim_min_length: 6              # tokens — filters noise
@@ -42,9 +45,10 @@ training:
   method: "dpo"                    # options: "metric_loss" | "dpo" | "rejection"
   output_dir: "outputs/qlora"
   num_epochs: 3
-  per_device_train_batch_size: 2
-  gradient_accumulation_steps: 8
-  learning_rate: 2.0e-4
+  per_device_train_batch_size: 2  # You can handle 2 on an L4
+  gradient_accumulation_steps: 8  # Effective batch size of 16
+  learning_rate: 0.0002
+  fp16: True
   warmup_ratio: 0.05
   lora_r: 16
   lora_alpha: 32
