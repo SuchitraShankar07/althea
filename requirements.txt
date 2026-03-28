@@ -15,7 +15,7 @@ spacy>=3.7.0
 # python -m spacy download en_core_web_sm   (run separately)
 
 # ── Data ─────────────────────────────────────────────────────
-datasets>=2.18.0
+datasets>=2.18.0,<4
 numpy>=1.24.0
 pandas>=2.0.0
 

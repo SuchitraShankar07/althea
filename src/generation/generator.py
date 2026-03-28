@@ -1,7 +1,7 @@
 """
 generation/generator.py
 Wraps an instruction-tuned LLM (optionally with QLoRA adapters) for
-RAG-style generation.  Supports 4-bit quantisation via BitsAndBytes.
+RAG-style generation. Supports 4-bit quantisation via BitsAndBytes.
 """
 
 from __future__ import annotations
@@ -45,7 +45,22 @@ class RAGGenerator:
     """
     Loads an LLM with optional 4-bit quantisation and LoRA adapters,
     then generates answers from (query, retrieved-docs) pairs.
+
+    CPU guard: models with ≥7B parameters (mistral, llama, 7b, 8b, 13b, 70b)
+    raise RuntimeError immediately if CUDA is unavailable.  Use --mock-generate,
+    demo.py, TinyLlama, or a GPU machine to avoid this.
     """
+
+    # Keywords indicating a model too large for CPU inference
+    _LARGE_MODEL_KEYWORDS = [
+        "7b", "8b", "13b", "70b", "mistral", "llama-2", "llama-3",
+    ]
+
+    @classmethod
+    def _is_large_model(cls, model_name: str) -> bool:
+        """Return True if the model name suggests a ≥7B parameter model."""
+        name_lower = model_name.lower()
+        return any(kw in name_lower for kw in cls._LARGE_MODEL_KEYWORDS)
 
     def __init__(
         self,
@@ -62,9 +77,39 @@ class RAGGenerator:
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
         self.do_sample = do_sample
+        self.device_map = device_map
 
-        # ── Quantisation config ───────────────────────────────
+        has_cuda = torch.cuda.is_available()
+
+        # ── CPU guard (FIRST check — fail fast before any loading) ────────
+        if not has_cuda and self._is_large_model(model_name):
+            raise RuntimeError(
+                "\n"
+                "╔══════════════════════════════════════════════════════════════╗\n"
+                "║         CUDA GPU REQUIRED FOR THIS LARGE MODEL               ║\n"
+                "╠══════════════════════════════════════════════════════════════╣\n"
+                f"║  Model : {model_name:<54} ║\n"
+                "║  No CUDA GPU detected. This model cannot run on CPU.         ║\n"
+                "║                                                              ║\n"
+                "║  Options:                                                    ║\n"
+                "║  1. Run the zero-setup demo:  python scripts/demo.py         ║\n"
+                "║  2. Use the mock flag:                                       ║\n"
+                "║        run_inference.py --mock-generate --query '...'        ║\n"
+                "║  3. Switch to a CPU-friendly model (edit config.yaml):       ║\n"
+                "║        model_name: TinyLlama/TinyLlama-1.1B-Chat-v1.0       ║\n"
+                "║  4. Run on a machine with a CUDA GPU (≥16 GB VRAM)           ║\n"
+                "╚══════════════════════════════════════════════════════════════╝"
+            )
+
+        # ── Quantisation config ───────────────────────────────────────────
         bnb_cfg = None
+        if load_in_4bit and not has_cuda:
+            logger.warning(
+                "4-bit loading requested but CUDA is unavailable; "
+                "falling back to full-precision loading."
+            )
+            load_in_4bit = False
+            self.device_map = None
         if load_in_4bit:
             bnb_cfg = BitsAndBytesConfig(
                 load_in_4bit=True,
@@ -87,7 +132,7 @@ class RAGGenerator:
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             quantization_config=bnb_cfg,
-            device_map=device_map,
+            device_map=self.device_map,
             trust_remote_code=True,
             cache_dir=cache_dir,
         )

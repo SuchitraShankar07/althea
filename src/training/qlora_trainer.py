@@ -56,6 +56,10 @@ class DPOPair:
 
 # ── QLoRA setup helpers ───────────────────────────────────────────────────────
 def _load_base_model_for_training(model_name: str, cache_dir: Optional[str]):
+    if not torch.cuda.is_available():
+        raise RuntimeError(
+            "QLoRA training requires a CUDA GPU, but none was detected."
+        )
     bnb_cfg = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
