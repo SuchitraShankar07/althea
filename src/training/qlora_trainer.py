@@ -33,7 +33,7 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from trl import DPOTrainer, SFTTrainer
+from trl import DPOTrainer, SFTTrainer, SFTConfig
 
 
 # ── Training sample dataclasses ───────────────────────────────────────────────
@@ -165,6 +165,8 @@ class MetricGuidedQLoRATrainer:
 
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
 
+# In src/training/qlora_trainer.py
+
     def _get_training_args(self, run_name: str) -> TrainingArguments:
         return TrainingArguments(
             output_dir=os.path.join(self.output_dir, run_name),
@@ -176,11 +178,10 @@ class MetricGuidedQLoRATrainer:
             fp16=True,
             logging_steps=10,
             save_strategy="epoch",
-            evaluation_strategy="no",
+            eval_strategy="no", 
             report_to="none",
             remove_unused_columns=False,
         )
-
     # ── Strategy: DPO ─────────────────────────────────────────
     def train_dpo(self, samples: List[TrainingSample]) -> None:
         logger.info("=== DPO Training ===")
@@ -224,15 +225,41 @@ class MetricGuidedQLoRATrainer:
         )
         tokenizer.pad_token = tokenizer.eos_token
 
-        dataset = prepare_sft_dataset(samples, tokenizer, max_chs=0.3)
+        dataset = prepare_sft_dataset(samples, tokenizer, max_chs=0.7)
 
+# 1. Update the Trainer initialization
+        # trainer = SFTTrainer(
+        #     model=model,
+        #     args=self._get_training_args("rejection_sft"),
+        #     train_dataset=dataset,
+        #     processing_class=tokenizer,  # CHANGED from tokenizer
+        #     # dataset_text_field="text",  # REMOVED - not in the new __init__
+        #     max_seq_length=2048,
+        # )
+        # Create the SFT-specific configuration
+# Create the config without the problematic arguments
+        sft_config = SFTConfig(
+            output_dir=os.path.join(self.output_dir, "rejection_sft"),
+            dataset_text_field="text",
+            per_device_train_batch_size=self.batch_size,
+            gradient_accumulation_steps=self.grad_accum,
+            learning_rate=self.lr,
+            num_train_epochs=self.num_epochs,
+            fp16=True,
+            logging_steps=10,
+            save_strategy="epoch",
+            eval_strategy="no",
+            report_to="none",
+            # REMOVED max_seq_length from here
+        )
+
+        # Pass max_seq_length directly to the Trainer instead
         trainer = SFTTrainer(
             model=model,
-            args=self._get_training_args("rejection_sft"),
+            args=sft_config,
             train_dataset=dataset,
-            tokenizer=tokenizer,
-            dataset_text_field="text",
-            max_seq_length=2048,
+            processing_class=tokenizer,
+            max_seq_length=2048, # PASS IT HERE
         )
         trainer.train()
         trainer.save_model()
