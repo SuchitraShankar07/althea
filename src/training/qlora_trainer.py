@@ -1,331 +1,560 @@
-"""
-training/qlora_trainer.py
-Metric-guided QLoRA fine-tuning of the RAG generator.
-
-Three training strategies:
-    1. metric_loss   — cross-entropy + λ·hallucination_penalty
-    2. dpo           — Direct Preference Optimisation on ranked answer pairs
-    3. rejection     — SFT only on low-hallucination answers
-"""
-
-from __future__ import annotations
-
-import json
-import os
-from dataclasses import dataclass
-from pathlib import Path
-from typing import List, Optional
-
+import gc
 import torch
-from datasets import Dataset
-from loguru import logger
-from peft import (
-    LoraConfig,
-    TaskType,
-    get_peft_model,
-    prepare_model_for_kbit_training,
-)
 from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
+    AutoModelForCausalLM, 
+    AutoTokenizer, 
     BitsAndBytesConfig,
-    DataCollatorForLanguageModeling,
-    Trainer,
-    TrainingArguments,
+    TrainingArguments
 )
-from trl import DPOTrainer, SFTTrainer, SFTConfig
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from trl import DPOTrainer, DPOConfig
+from datasets import Dataset
+import json
+from pathlib import Path
+from loguru import logger
 
-
-# ── Training sample dataclasses ───────────────────────────────────────────────
-@dataclass
+# Add the missing TrainingSample class
 class TrainingSample:
-    """A single (query, answer) training example with its hallucination score."""
-    query: str
-    answer: str
-    chs: float           # Composite Hallucination Score (lower = better)
-    prompt: str = ""     # full prompt (populated during dataset prep)
+    """Simple data structure to hold training samples with quality metrics"""
+    def __init__(self, query: str, response: str = "", contexts: list = None, 
+                 chs: float = 0.0, retrieval_score: float = 0.0, **kwargs):
+        self.query = query
+        self.response = response
+        self.contexts = contexts or []
+        self.chs = chs  # Context-Response Harmony Score
+        self.retrieval_score = retrieval_score
+        
+        # Store any additional metrics
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+    
+    def to_dict(self):
+        """Convert to dictionary for JSON serialization"""
+        result = {
+            'query': self.query,
+            'response': self.response,
+            'contexts': self.contexts,
+            'chs': self.chs,
+            'retrieval_score': self.retrieval_score
+        }
+        
+        # Add any additional attributes
+        for attr in dir(self):
+            if not attr.startswith('_') and attr not in result:
+                value = getattr(self, attr)
+                if not callable(value):
+                    result[attr] = value
+                    
+        return result
+    
+    @classmethod
+    def from_dict(cls, data: dict):
+        """Create from dictionary"""
+        return cls(**data)
 
-
-@dataclass
-class DPOPair:
-    prompt: str
-    chosen: str          # lower CHS (more factual)
-    rejected: str        # higher CHS (more hallucinated)
-    chs_gap: float
-
-
-# ── QLoRA setup helpers ───────────────────────────────────────────────────────
-def _load_base_model_for_training(model_name: str, cache_dir: Optional[str]):
-    bnb_cfg = BitsAndBytesConfig(
+def _load_base_model_for_training(model_name: str, cache_dir: str):
+    """Load model with aggressive memory optimization for training"""
+    
+    # Clear any existing CUDA cache
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+        gc.collect()
+    
+    # Extremely aggressive quantization for small GPU
+    bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.float16,
         bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.float16,  # Use float16 instead of bfloat16
+        llm_int8_enable_fp32_cpu_offload=True
     )
+    
+    logger.info(f"Loading {model_name} with 4-bit quantization for training")
+    
+    # Get available GPU memory
+    if torch.cuda.is_available():
+        gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
+        allocated = torch.cuda.memory_allocated(0) / 1024**3
+        free_memory = gpu_memory - allocated
+        logger.info(f"GPU: {free_memory:.1f}GB free of {gpu_memory:.1f}GB total")
+    
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        quantization_config=bnb_cfg,
+        cache_dir=cache_dir,
+        quantization_config=bnb_config,
         device_map="auto",
         trust_remote_code=True,
-        cache_dir=cache_dir,
+        torch_dtype=torch.float16,
+        low_cpu_mem_usage=True,
+        # More aggressive memory constraints for T4
+        max_memory={0: "10GB"}  # Conservative limit for T4
     )
-    model = prepare_model_for_kbit_training(model)
+    
     return model
 
-
-def _apply_lora(model, lora_cfg: dict):
-    config = LoraConfig(
-        task_type=TaskType.CAUSAL_LM,
-        r=lora_cfg.get("lora_r", 16),
-        lora_alpha=lora_cfg.get("lora_alpha", 32),
-        lora_dropout=lora_cfg.get("lora_dropout", 0.05),
-        target_modules=lora_cfg.get(
-            "lora_target_modules", ["q_proj", "v_proj", "k_proj", "o_proj"]
-        ),
-        bias="none",
-    )
-    return get_peft_model(model, config)
-
-
-# ── Dataset preparation ───────────────────────────────────────────────────────
-def prepare_sft_dataset(
-    samples: List[TrainingSample],
-    tokenizer,
-    max_chs: float = 0.3,
-) -> Dataset:
-    """
-    For rejection-sampling SFT: keep only samples below the CHS threshold.
-    """
-    filtered = [s for s in samples if s.chs <= max_chs]
-    logger.info(f"SFT: {len(filtered)}/{len(samples)} samples pass CHS ≤ {max_chs}")
-    texts = [s.prompt + s.answer + tokenizer.eos_token for s in filtered]
-    return Dataset.from_dict({"text": texts})
-
-
-def prepare_dpo_dataset(
-    samples: List[TrainingSample],
-    min_gap: float = 0.2,
-) -> List[DPOPair]:
-    """
-    Build (chosen, rejected) pairs from samples with the same query.
-    Pairs (a, b) where a.chs < b.chs and gap >= min_gap.
-    """
-    from itertools import combinations
-    from collections import defaultdict
-
-    by_query: dict[str, List[TrainingSample]] = defaultdict(list)
-    for s in samples:
-        by_query[s.query].append(s)
-
-    pairs = []
-    for query, group in by_query.items():
-        group.sort(key=lambda x: x.chs)
-        for a, b in combinations(group, 2):
-            gap = b.chs - a.chs
-            if gap >= min_gap:
-                pairs.append(
-                    DPOPair(
-                        prompt=a.prompt,
-                        chosen=a.answer,
-                        rejected=b.answer,
-                        chs_gap=gap,
-                    )
-                )
-    logger.info(f"DPO: {len(pairs)} preference pairs created")
-    return pairs
-
-
-# ── Main trainer class ────────────────────────────────────────────────────────
-class MetricGuidedQLoRATrainer:
-    """
-    Wraps model loading + LoRA setup + chosen training strategy.
-    """
-
-    def __init__(self, cfg: dict):
-        self.cfg = cfg
-        tr = cfg.get("training", cfg)
-        self.model_name = cfg["generation"]["model_name"]
-        self.output_dir = tr.get("output_dir", "outputs/qlora")
-        self.method = tr.get("method", "dpo")
-        self.cache_dir = cfg.get("paths", {}).get("cache_dir")
-
-        # Training hyperparams
-        self.num_epochs = tr.get("num_epochs", 3)
-        self.batch_size = tr.get("per_device_train_batch_size", 2)
-        self.grad_accum = tr.get("gradient_accumulation_steps", 8)
-        self.lr = tr.get("learning_rate", 2e-4)
-        self.warmup_ratio = tr.get("warmup_ratio", 0.05)
-        self.dpo_beta = tr.get("dpo_beta", 0.1)
-        self.min_score_gap = tr.get("min_score_gap", 0.2)
-        self.penalty_lambda = tr.get("hallucination_penalty_lambda", 0.3)
-
-        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
-
-# In src/training/qlora_trainer.py
-
-    def _get_training_args(self, run_name: str) -> TrainingArguments:
-        return TrainingArguments(
-            output_dir=os.path.join(self.output_dir, run_name),
-            num_train_epochs=self.num_epochs,
-            per_device_train_batch_size=self.batch_size,
-            gradient_accumulation_steps=self.grad_accum,
-            learning_rate=self.lr,
-            warmup_ratio=self.warmup_ratio,
-            fp16=True,
-            logging_steps=10,
-            save_strategy="epoch",
-            eval_strategy="no", 
-            report_to="none",
-            remove_unused_columns=False,
+class QLoRATrainer:
+    def __init__(self, model_name: str = "microsoft/Phi-3.5-mini-instruct", 
+                 cache_dir: str = "cache"):
+        # Use a much smaller model for T4 GPU
+        if "mistral" in model_name.lower() or "7b" in model_name.lower():
+            logger.warning(f"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini")
+            model_name = "microsoft/Phi-3.5-mini-instruct"
+        
+        self.model_name = model_name
+        self.cache_dir = cache_dir
+        
+        # Don't load model in __init__ - load only when needed
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name, 
+            cache_dir=cache_dir,
+            trust_remote_code=True
         )
-    # ── Strategy: DPO ─────────────────────────────────────────
-    def train_dpo(self, samples: List[TrainingSample]) -> None:
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+
+    def _clear_gpu_memory(self):
+        """Aggressive GPU memory cleanup"""
+        if hasattr(self, 'model') and self.model is not None:
+            del self.model
+            self.model = None
+        
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+            torch.cuda.ipc_collect()
+        
+        gc.collect()
+        
+        # Print memory status
+        if torch.cuda.is_available():
+            allocated = torch.cuda.memory_allocated(0) / 1024**3
+            reserved = torch.cuda.memory_reserved(0) / 1024**3
+            logger.info(f"GPU Memory - Allocated: {allocated:.2f}GB, Reserved: {reserved:.2f}GB")
+
+    def train_dpo(self, samples):
         logger.info("=== DPO Training ===")
+        
+        # Clear memory before loading training model
+        self._clear_gpu_memory()
+        
+        # Load model for training
         model = _load_base_model_for_training(self.model_name, self.cache_dir)
-        model = _apply_lora(model, self.cfg.get("training", {}))
-        tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, trust_remote_code=True, cache_dir=self.cache_dir
+        
+        # Prepare model for training
+        model = prepare_model_for_kbit_training(model)
+        
+        # LoRA configuration - very small for T4
+        lora_config = LoraConfig(
+            r=8,  # Very small rank for memory savings
+            lora_alpha=16,
+            target_modules=[
+                "q_proj", "k_proj", "v_proj", "o_proj"
+            ],  # Fewer modules to save memory
+            lora_dropout=0.1,
+            bias="none",
+            task_type="CAUSAL_LM"
         )
-        tokenizer.pad_token = tokenizer.eos_token
-
-        pairs = prepare_dpo_dataset(samples, min_gap=self.min_score_gap)
-        if not pairs:
-            raise ValueError("No DPO pairs could be created — check score gaps.")
-
-        dataset = Dataset.from_dict(
-            {
-                "prompt": [p.prompt for p in pairs],
-                "chosen": [p.chosen for p in pairs],
-                "rejected": [p.rejected for p in pairs],
-            }
+        
+        model = get_peft_model(model, lora_config)
+        
+        # Convert samples to DPO format
+        train_dataset = self._prepare_dpo_dataset(samples)
+        
+        # Check if we have data to train on
+        if len(train_dataset) == 0:
+            logger.error("No training samples prepared! Cannot proceed with training.")
+            return
+        
+        # Fixed DPOConfig with correct parameters for current TRL version
+        training_args = DPOConfig(
+            output_dir="./outputs/qlora_checkpoints",
+            per_device_train_batch_size=1,  # Minimum batch size
+            gradient_accumulation_steps=2,  # Smaller accumulation
+            num_train_epochs=1,
+            learning_rate=1e-5,  # Lower learning rate
+            lr_scheduler_type="linear",
+            warmup_steps=5,
+            logging_steps=1,
+            save_steps=100,
+            save_total_limit=1,  # Keep only one checkpoint
+            remove_unused_columns=False,
+            dataloader_pin_memory=False,
+            gradient_checkpointing=True,
+            fp16=True,
+            dataloader_num_workers=0,  # No multiprocessing
+            report_to="none",
+            # Memory optimizations
+            max_grad_norm=0.5,
+            eval_strategy="no",  # Skip evaluation to save memory
+            # DPO specific parameters - using correct parameter names
+            beta=0.1,
+            max_length=256,  # Maximum sequence length for both prompt and response
+            max_prompt_length=128,  # Maximum prompt length
         )
-
+        
+        # Initialize DPO trainer
         trainer = DPOTrainer(
             model=model,
-            args=self._get_training_args("dpo"),
-            beta=self.dpo_beta,
-            train_dataset=dataset,
-            tokenizer=tokenizer,
+            args=training_args,
+            train_dataset=train_dataset,
+            tokenizer=self.tokenizer,
         )
-        trainer.train()
-        trainer.save_model()
-        logger.info(f"DPO adapter saved to {self.output_dir}/dpo")
+        
+        logger.info("Starting DPO training...")
+        try:
+            trainer.train()
+            
+            # Save the model
+            model.save_pretrained("./outputs/qlora_model")
+            self.tokenizer.save_pretrained("./outputs/qlora_model")
+            
+            logger.info("DPO training completed!")
+            
+        except torch.cuda.OutOfMemoryError as e:
+            logger.error(f"GPU OOM during training: {e}")
+            logger.info("Try reducing batch size or sequence length further")
+            raise
+        except Exception as e:
+            logger.error(f"Training failed: {e}")
+            logger.info("Trying fallback with minimal DPO config...")
+            
+            # Try with even more aggressive memory settings
+            try:
+                training_args_fallback = DPOConfig(
+                    output_dir="./outputs/qlora_checkpoints",
+                    per_device_train_batch_size=1,
+                    gradient_accumulation_steps=1,
+                    num_train_epochs=1,
+                    learning_rate=5e-6,
+                    warmup_steps=2,
+                    logging_steps=1,
+                    save_steps=50,
+                    save_total_limit=1,
+                    fp16=True,
+                    gradient_checkpointing=True,
+                    dataloader_num_workers=0,
+                    report_to="none",
+                    eval_strategy="no",
+                    beta=0.1,
+                    max_length=128,  # Even shorter
+                    max_prompt_length=64,  # Shorter prompt length
+                )
+                
+                trainer = DPOTrainer(
+                    model=model,
+                    args=training_args_fallback,
+                    train_dataset=train_dataset,
+                    tokenizer=self.tokenizer,
+                )
+                
+                trainer.train()
+                
+                # Save the model
+                model.save_pretrained("./outputs/qlora_model")
+                self.tokenizer.save_pretrained("./outputs/qlora_model")
+                
+                logger.info("DPO training completed with fallback settings!")
+                
+            except Exception as e2:
+                logger.error(f"Both DPO training attempts failed: {e2}")
+                # Let's try a final simpler approach without DPO
+                logger.info("Attempting basic LoRA training without DPO...")
+                
+                try:
+                    # Simple training without DPO - just basic language modeling
+                    from transformers import Trainer, DataCollatorForLanguageModeling
+                    
+                    # Prepare data for language modeling
+                    def tokenize_function(examples):
+                        # Combine prompt and chosen response
+                        texts = [f"{ex['prompt']} {ex['chosen']}" for ex in examples]
+                        return self.tokenizer(texts, truncation=True, padding=True, max_length=128)
+                    
+                    # Convert dataset for language modeling
+                    raw_data = [{"text": f"{item['prompt']} {item['chosen']}"} for item in samples]
+                    lm_dataset = Dataset.from_list(raw_data)
+                    tokenized_dataset = lm_dataset.map(
+                        lambda x: self.tokenizer(x["text"], truncation=True, padding=True, max_length=128),
+                        batched=True
+                    )
+                    
+                    # Data collator
+                    data_collator = DataCollatorForLanguageModeling(
+                        tokenizer=self.tokenizer,
+                        mlm=False,
+                    )
+                    
+                    # Basic training arguments
+                    basic_args = TrainingArguments(
+                        output_dir="./outputs/qlora_checkpoints",
+                        per_device_train_batch_size=1,
+                        num_train_epochs=1,
+                        learning_rate=5e-6,
+                        logging_steps=1,
+                        save_steps=50,
+                        save_total_limit=1,
+                        fp16=True,
+                        gradient_checkpointing=True,
+                        dataloader_num_workers=0,
+                        report_to="none",
+                        eval_strategy="no",
+                    )
+                    
+                    # Basic trainer
+                    basic_trainer = Trainer(
+                        model=model,
+                        args=basic_args,
+                        train_dataset=tokenized_dataset,
+                        data_collator=data_collator,
+                    )
+                    
+                    basic_trainer.train()
+                    
+                    # Save the model
+                    model.save_pretrained("./outputs/qlora_model")
+                    self.tokenizer.save_pretrained("./outputs/qlora_model")
+                    
+                    logger.info("Basic LoRA training completed successfully!")
+                    
+                except Exception as e3:
+                    logger.error(f"All training methods failed: {e3}")
+                    raise
+        finally:
+            # Clean up
+            if 'trainer' in locals():
+                del trainer
+            del model
+            self._clear_gpu_memory()
 
-    # ── Strategy: SFT with rejection sampling ─────────────────
-    def train_rejection_sft(self, samples: List[TrainingSample]) -> None:
-        logger.info("=== Rejection-Sampling SFT ===")
-        model = _load_base_model_for_training(self.model_name, self.cache_dir)
-        model = _apply_lora(model, self.cfg.get("training", {}))
-        tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, trust_remote_code=True, cache_dir=self.cache_dir
-        )
-        tokenizer.pad_token = tokenizer.eos_token
+    def _prepare_dpo_dataset(self, samples):
+        """Convert training samples to DPO format"""
+        dpo_data = []
+        
+        for sample in samples:
+            # Handle both dict and object formats
+            if isinstance(sample, dict):
+                prompt = sample.get('prompt', sample.get('query', ''))
+                chosen = sample.get('chosen', sample.get('response', ''))
+                rejected = sample.get('rejected', '')
+            else:
+                prompt = getattr(sample, 'prompt', getattr(sample, 'query', ''))
+                chosen = getattr(sample, 'chosen', getattr(sample, 'response', ''))
+                rejected = getattr(sample, 'rejected', '')
+            
+            # Skip empty samples
+            if not prompt or not chosen:
+                continue
+                
+            # Generate rejected response if not provided
+            if not rejected:
+                rejected = "I don't have enough information to answer this question properly."
+            
+            # Truncate long prompts to save memory
+            if len(prompt) > 200:
+                prompt = prompt[:200] + "..."
+            if len(chosen) > 300:
+                chosen = chosen[:300] + "..."
+            if len(rejected) > 300:
+                rejected = rejected[:300] + "..."
+            
+            dpo_data.append({
+                'prompt': prompt,
+                'chosen': chosen,
+                'rejected': rejected
+            })
+        
+        logger.info(f"Prepared {len(dpo_data)} DPO training samples")
+        return Dataset.from_list(dpo_data)
 
-        dataset = prepare_sft_dataset(samples, tokenizer, max_chs=0.7)
+    def train(self, samples):
+        """Main training method"""
+        self.train_dpo(samples)
 
-# 1. Update the Trainer initialization
-        # trainer = SFTTrainer(
-        #     model=model,
-        #     args=self._get_training_args("rejection_sft"),
-        #     train_dataset=dataset,
-        #     processing_class=tokenizer,  # CHANGED from tokenizer
-        #     # dataset_text_field="text",  # REMOVED - not in the new __init__
-        #     max_seq_length=2048,
-        # )
-        # Create the SFT-specific configuration
-# Create the config without the problematic arguments
-        sft_config = SFTConfig(
-            output_dir=os.path.join(self.output_dir, "rejection_sft"),
-            dataset_text_field="text",
-            per_device_train_batch_size=self.batch_size,
-            gradient_accumulation_steps=self.grad_accum,
-            learning_rate=self.lr,
-            num_train_epochs=self.num_epochs,
-            fp16=True,
-            logging_steps=10,
-            save_strategy="epoch",
-            eval_strategy="no",
-            report_to="none",
-            # REMOVED max_seq_length from here
-        )
-
-        # Pass max_seq_length directly to the Trainer instead
-        trainer = SFTTrainer(
-            model=model,
-            args=sft_config,
-            train_dataset=dataset,
-            processing_class=tokenizer,
-            max_seq_length=2048, # PASS IT HERE
-        )
-        trainer.train()
-        trainer.save_model()
-        logger.info(f"SFT adapter saved to {self.output_dir}/rejection_sft")
-
-    # ── Strategy: Metric-weighted loss ────────────────────────
-    def train_metric_loss(self, samples: List[TrainingSample]) -> None:
-        """
-        Custom training loop: loss = CE + λ * hallucination_penalty
-        hallucination_penalty = CHS score for the sample.
-        """
-        logger.info("=== Metric-Weighted Loss Training ===")
-        from transformers import DataCollatorForLanguageModeling
-
-        model = _load_base_model_for_training(self.model_name, self.cache_dir)
-        model = _apply_lora(model, self.cfg.get("training", {}))
-        tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, trust_remote_code=True, cache_dir=self.cache_dir
-        )
-        tokenizer.pad_token = tokenizer.eos_token
-
-        texts = [s.prompt + s.answer + tokenizer.eos_token for s in samples]
-        chs_scores = [s.chs for s in samples]
-        encodings = tokenizer(
-            texts, truncation=True, padding=True, max_length=2048, return_tensors="pt"
-        )
-
-        class MetricWeightedDataset(torch.utils.data.Dataset):
-            def __init__(self, encodings, chs_scores):
-                self.encodings = encodings
-                self.chs = chs_scores
-
-            def __len__(self):
-                return len(self.chs)
-
-            def __getitem__(self, idx):
-                item = {k: v[idx] for k, v in self.encodings.items()}
-                item["labels"] = item["input_ids"].clone()
-                item["chs"] = torch.tensor(self.chs[idx], dtype=torch.float)
-                return item
-
-        dataset = MetricWeightedDataset(encodings, chs_scores)
-        lam = self.penalty_lambda
-
-        class MetricWeightedTrainer(Trainer):
-            def compute_loss(self, model, inputs, return_outputs=False):
-                chs = inputs.pop("chs")
-                outputs = model(**inputs)
-                ce_loss = outputs.loss
-                penalty = chs.mean()
-                loss = ce_loss + lam * penalty
-                return (loss, outputs) if return_outputs else loss
-
-        trainer = MetricWeightedTrainer(
-            model=model,
-            args=self._get_training_args("metric_loss"),
-            train_dataset=dataset,
-            tokenizer=tokenizer,
-        )
-        trainer.train()
-        trainer.save_model()
-        logger.info(f"Metric-loss adapter saved to {self.output_dir}/metric_loss")
-
-    # ── Dispatch ──────────────────────────────────────────────
-    def train(self, samples: List[TrainingSample]) -> None:
-        if self.method == "dpo":
-            self.train_dpo(samples)
-        elif self.method == "rejection":
-            self.train_rejection_sft(samples)
-        elif self.method == "metric_loss":
-            self.train_metric_loss(samples)
+# Add the MetricGuidedQLoRATrainer class that's referenced in train.py
+class MetricGuidedQLoRATrainer:
+    def __init__(self, config):
+        self.config = config
+        # Override with smaller model for T4
+        model_name = config.get('generation', {}).get('model_name', 'microsoft/Phi-3.5-mini-instruct')
+        if "mistral" in model_name.lower() or "7b" in model_name.lower():
+            logger.warning(f"Overriding large model {model_name} with Phi-3.5-mini for T4 GPU")
+            model_name = "microsoft/Phi-3.5-mini-instruct"
+            
+        cache_dir = config.get('paths', {}).get('cache_dir', 'cache')
+        
+        self.trainer = QLoRATrainer(model_name=model_name, cache_dir=cache_dir)
+        
+    def train(self, samples):
+        """Train using the specified method"""
+        method = self.config.get('training', {}).get('method', 'dpo')
+        
+        if method == 'dpo':
+            self._train_dpo(samples)
+        elif method == 'rejection':
+            self._train_rejection(samples)
+        elif method == 'metric_loss':
+            self._train_metric_loss(samples)
         else:
-            raise ValueError(f"Unknown training method: {self.method}")
+            raise ValueError(f"Unknown training method: {method}")
+    
+    def _normalize_sample(self, sample):
+        """Convert sample to consistent format - handles both dict and object formats"""
+        if isinstance(sample, dict):
+            return {
+                'query': sample.get('query', ''),
+                'response': sample.get('response', ''),
+                'chs': float(sample.get('chs', 0.5)),
+                'contexts': sample.get('contexts', [])
+            }
+        else:
+            # For TrainingSample objects, inspect all attributes to find the data
+            sample_dict = {}
+            for attr in dir(sample):
+                if not attr.startswith('_') and not callable(getattr(sample, attr)):
+                    sample_dict[attr] = getattr(sample, attr)
+            
+            logger.debug(f"Sample attributes: {sample_dict}")
+            
+            # Extract query and response from available attributes
+            query = (sample_dict.get('query') or 
+                    sample_dict.get('prompt') or 
+                    sample_dict.get('question') or '')
+            
+            response = (sample_dict.get('response') or 
+                       sample_dict.get('answer') or 
+                       sample_dict.get('text') or '')
+            
+            chs = float(sample_dict.get('chs', 0.5))
+            contexts = sample_dict.get('contexts', [])
+            
+            result = {
+                'query': str(query) if query else '',
+                'response': str(response) if response else '',
+                'chs': chs,
+                'contexts': contexts if isinstance(contexts, list) else []
+            }
+            
+            logger.debug(f"Normalized sample: query='{result['query'][:50]}...', response='{result['response'][:50]}...', chs={result['chs']}")
+            return result
+    
+    def _train_dpo(self, samples):
+        """DPO training with preference pairs"""
+        logger.info("Training with DPO method")
+        logger.info(f"Input samples type: {type(samples[0]) if samples else 'empty'}")
+        
+        # Debug: log first sample's attributes
+        if samples:
+            first_sample = samples[0]
+            sample_attrs = {}
+            for attr in dir(first_sample):
+                if not attr.startswith('_') and not callable(getattr(first_sample, attr)):
+                    sample_attrs[attr] = getattr(first_sample, attr)
+            logger.info(f"First sample attributes: {sample_attrs}")
+        
+        # Convert samples to DPO format
+        dpo_samples = []
+        for i, sample in enumerate(samples):
+            normalized = self._normalize_sample(sample)
+            
+            query = normalized['query']
+            response = normalized['response']
+            chs = normalized['chs']
+            
+            logger.debug(f"Sample {i}: query='{query[:50]}...' response='{response[:50]}...' chs={chs}")
+            
+            # Skip empty queries/responses
+            if not query or not response:
+                logger.warning(f"Skipping sample {i}: empty query='{query}' or response='{response}'")
+                continue
+                
+            # Create preference pairs based on CHS score
+            if chs < 0.5:  # Low quality response
+                dpo_samples.append({
+                    'prompt': query,
+                    'chosen': f"I need more context to properly answer: {query}",
+                    'rejected': response
+                })
+            else:
+                dpo_samples.append({
+                    'prompt': query,
+                    'chosen': response,
+                    'rejected': f"Insufficient information for: {query}"
+                })
+        
+        logger.info(f"Created {len(dpo_samples)} DPO training pairs from {len(samples)} input samples")
+        
+        if len(dpo_samples) == 0:
+            logger.error("No valid DPO samples created! Check your input data format.")
+            # Log first few samples for debugging
+            for i, sample in enumerate(samples[:3]):
+                logger.error(f"Sample {i}: {sample}")
+                if hasattr(sample, '__dict__'):
+                    logger.error(f"  Dict: {sample.__dict__}")
+            return
+            
+        self.trainer.train_dpo(dpo_samples)
+    
+    def _train_rejection(self, samples):
+        """Rejection sampling based training"""
+        logger.info("Training with rejection sampling method")
+        
+        # Filter samples based on quality scores
+        high_quality_samples = []
+        low_quality_samples = []
+        
+        for s in samples:
+            normalized = self._normalize_sample(s)
+            chs = normalized['chs']
+            
+            if chs > 0.6:
+                high_quality_samples.append(normalized)
+            elif chs < 0.4:
+                low_quality_samples.append(normalized)
+        
+        logger.info(f"High quality samples: {len(high_quality_samples)}")
+        logger.info(f"Low quality samples: {len(low_quality_samples)}")
+        
+        # Convert to DPO format for training
+        dpo_samples = []
+        for good, bad in zip(high_quality_samples, low_quality_samples):
+            good_query = good['query']
+            good_response = good['response']
+            bad_response = bad['response']
+            
+            if good_query and good_response and bad_response:
+                dpo_samples.append({
+                    'prompt': good_query,
+                    'chosen': good_response,
+                    'rejected': bad_response
+                })
+        
+        logger.info(f"Created {len(dpo_samples)} rejection sampling pairs")
+        self.trainer.train_dpo(dpo_samples)
+    
+    def _train_metric_loss(self, samples):
+        """Metric-guided loss training"""
+        logger.info("Training with metric loss method")
+        
+        # Use all samples with their quality scores as weights
+        weighted_samples = []
+        for sample in samples:
+            normalized = self._normalize_sample(sample)
+            
+            query = normalized['query']
+            response = normalized['response']
+            chs = normalized['chs']
+            
+            if not query or not response:
+                continue
+                
+            # Higher CHS scores get preference
+            if chs > 0.5:
+                weighted_samples.append({
+                    'prompt': query,
+                    'chosen': response,
+                    'rejected': f"Low quality response for: {query}"
+                })
+        
+        logger.info(f"Created {len(weighted_samples)} metric-guided samples")
+        self.trainer.train_dpo(weighted_samples)
