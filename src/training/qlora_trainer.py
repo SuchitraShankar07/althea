@@ -95,8 +95,13 @@ def _load_base_model_for_training(model_name: str, cache_dir: str):
     return model
 
 class QLoRATrainer:
-    def __init__(self, model_name: str = "microsoft/Phi-3.5-mini-instruct", 
-                 cache_dir: str = "cache"):
+    def __init__(
+        self,
+        model_name: str = "microsoft/Phi-3.5-mini-instruct",
+        cache_dir: str = "cache",
+        output_dir: str = "./outputs/qlora_model",
+        checkpoint_dir: str = "./outputs/qlora_checkpoints",
+    ):
         # Use a much smaller model for T4 GPU
         if "mistral" in model_name.lower() or "7b" in model_name.lower():
             logger.warning(f"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini")
@@ -104,6 +109,8 @@ class QLoRATrainer:
         
         self.model_name = model_name
         self.cache_dir = cache_dir
+        self.output_dir = output_dir
+        self.checkpoint_dir = checkpoint_dir
         
         # Don't load model in __init__ - load only when needed
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -188,7 +195,7 @@ class QLoRATrainer:
             return {k: v for k, v in kwargs.items() if k in allowed}
 
         dpo_kwargs = {
-            "output_dir": "./outputs/qlora_checkpoints",
+            "output_dir": self.checkpoint_dir,
             "per_device_train_batch_size": 1,  # Minimum batch size
             "gradient_accumulation_steps": 2,  # Smaller accumulation
             "num_train_epochs": 1,
@@ -230,8 +237,9 @@ class QLoRATrainer:
             trainer.train()
             
             # Save the model
-            model.save_pretrained("./outputs/qlora_model")
-            self.tokenizer.save_pretrained("./outputs/qlora_model")
+            Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+            model.save_pretrained(self.output_dir)
+            self.tokenizer.save_pretrained(self.output_dir)
             
             logger.info("DPO training completed!")
             
@@ -246,7 +254,7 @@ class QLoRATrainer:
             # Try with even more aggressive memory settings
             try:
                 fallback_kwargs = {
-                    "output_dir": "./outputs/qlora_checkpoints",
+                    "output_dir": self.checkpoint_dir,
                     "per_device_train_batch_size": 1,
                     "gradient_accumulation_steps": 1,
                     "num_train_epochs": 1,
@@ -279,8 +287,9 @@ class QLoRATrainer:
                 trainer.train()
                 
                 # Save the model
-                model.save_pretrained("./outputs/qlora_model")
-                self.tokenizer.save_pretrained("./outputs/qlora_model")
+                Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+                model.save_pretrained(self.output_dir)
+                self.tokenizer.save_pretrained(self.output_dir)
                 
                 logger.info("DPO training completed with fallback settings!")
                 
@@ -315,7 +324,7 @@ class QLoRATrainer:
                     
                     # Basic training arguments
                     basic_args = TrainingArguments(
-                        output_dir="./outputs/qlora_checkpoints",
+                        output_dir=self.checkpoint_dir,
                         per_device_train_batch_size=1,
                         num_train_epochs=1,
                         learning_rate=5e-6,
@@ -341,8 +350,9 @@ class QLoRATrainer:
                     basic_trainer.train()
                     
                     # Save the model
-                    model.save_pretrained("./outputs/qlora_model")
-                    self.tokenizer.save_pretrained("./outputs/qlora_model")
+                    Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+                    model.save_pretrained(self.output_dir)
+                    self.tokenizer.save_pretrained(self.output_dir)
                     
                     logger.info("Basic LoRA training completed successfully!")
                     
@@ -411,8 +421,16 @@ class MetricGuidedQLoRATrainer:
             model_name = "microsoft/Phi-3.5-mini-instruct"
             
         cache_dir = config.get('paths', {}).get('cache_dir', 'cache')
+        training_cfg = config.get('training', {})
+        output_dir = training_cfg.get('output_dir', './outputs/qlora_model')
+        checkpoint_dir = config.get('paths', {}).get('checkpoint_dir', './outputs/qlora_checkpoints')
         
-        self.trainer = QLoRATrainer(model_name=model_name, cache_dir=cache_dir)
+        self.trainer = QLoRATrainer(
+            model_name=model_name,
+            cache_dir=cache_dir,
+            output_dir=output_dir,
+            checkpoint_dir=checkpoint_dir,
+        )
         
     def train(self, samples):
         """Train using the specified method"""
