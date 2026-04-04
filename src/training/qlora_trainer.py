@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import inspect
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
@@ -29,11 +30,15 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     BitsAndBytesConfig,
-    DataCollatorForLanguageModeling,
     Trainer,
     TrainingArguments,
 )
-from trl import DPOTrainer, SFTTrainer, SFTConfig
+from trl import DPOTrainer, SFTTrainer
+
+try:
+    from trl import SFTConfig
+except Exception:  # pragma: no cover
+    SFTConfig = None
 
 
 # ── Training sample dataclasses ───────────────────────────────────────────────
@@ -89,6 +94,19 @@ def _apply_lora(model, lora_cfg: dict):
         bias="none",
     )
     return get_peft_model(model, config)
+
+
+def _accepts_kwarg(callable_obj, kwarg_name: str) -> bool:
+    """Return True if callable_obj accepts kwarg_name or **kwargs."""
+    try:
+        sig = inspect.signature(callable_obj)
+    except (TypeError, ValueError):
+        return True
+
+    params = list(sig.parameters.values())
+    if any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params):
+        return True
+    return kwarg_name in sig.parameters
 
 
 # ── Dataset preparation ───────────────────────────────────────────────────────
@@ -165,8 +183,6 @@ class MetricGuidedQLoRATrainer:
 
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
 
-# In src/training/qlora_trainer.py
-
     def _get_training_args(self, run_name: str) -> TrainingArguments:
         return TrainingArguments(
             output_dir=os.path.join(self.output_dir, run_name),
@@ -182,6 +198,55 @@ class MetricGuidedQLoRATrainer:
             report_to="none",
             remove_unused_columns=False,
         )
+
+    def _make_dpo_trainer(self, model, dataset, tokenizer):
+        kwargs = {
+            "model": model,
+            "args": self._get_training_args("dpo"),
+            "beta": self.dpo_beta,
+            "train_dataset": dataset,
+        }
+        if _accepts_kwarg(DPOTrainer, "processing_class"):
+            kwargs["processing_class"] = tokenizer
+        elif _accepts_kwarg(DPOTrainer, "tokenizer"):
+            kwargs["tokenizer"] = tokenizer
+        return DPOTrainer(**kwargs)
+
+    def _make_sft_trainer(self, model, dataset, tokenizer):
+        if SFTConfig is not None:
+            args = SFTConfig(
+                output_dir=os.path.join(self.output_dir, "rejection_sft"),
+                dataset_text_field="text",
+                per_device_train_batch_size=self.batch_size,
+                gradient_accumulation_steps=self.grad_accum,
+                learning_rate=self.lr,
+                num_train_epochs=self.num_epochs,
+                fp16=True,
+                logging_steps=10,
+                save_strategy="epoch",
+                eval_strategy="no",
+                report_to="none",
+            )
+        else:
+            args = self._get_training_args("rejection_sft")
+
+        kwargs = {
+            "model": model,
+            "args": args,
+            "train_dataset": dataset,
+        }
+        if _accepts_kwarg(SFTTrainer, "processing_class"):
+            kwargs["processing_class"] = tokenizer
+        elif _accepts_kwarg(SFTTrainer, "tokenizer"):
+            kwargs["tokenizer"] = tokenizer
+
+        if _accepts_kwarg(SFTTrainer, "dataset_text_field"):
+            kwargs["dataset_text_field"] = "text"
+        if _accepts_kwarg(SFTTrainer, "max_seq_length"):
+            kwargs["max_seq_length"] = 2048
+
+        return SFTTrainer(**kwargs)
+
     # ── Strategy: DPO ─────────────────────────────────────────
     def train_dpo(self, samples: List[TrainingSample]) -> None:
         logger.info("=== DPO Training ===")
@@ -204,13 +269,7 @@ class MetricGuidedQLoRATrainer:
             }
         )
 
-        trainer = DPOTrainer(
-            model=model,
-            args=self._get_training_args("dpo"),
-            beta=self.dpo_beta,
-            train_dataset=dataset,
-            tokenizer=tokenizer,
-        )
+        trainer = self._make_dpo_trainer(model=model, dataset=dataset, tokenizer=tokenizer)
         trainer.train()
         trainer.save_model()
         logger.info(f"DPO adapter saved to {self.output_dir}/dpo")
@@ -226,41 +285,7 @@ class MetricGuidedQLoRATrainer:
         tokenizer.pad_token = tokenizer.eos_token
 
         dataset = prepare_sft_dataset(samples, tokenizer, max_chs=0.7)
-
-# 1. Update the Trainer initialization
-        # trainer = SFTTrainer(
-        #     model=model,
-        #     args=self._get_training_args("rejection_sft"),
-        #     train_dataset=dataset,
-        #     processing_class=tokenizer,  # CHANGED from tokenizer
-        #     # dataset_text_field="text",  # REMOVED - not in the new __init__
-        #     max_seq_length=2048,
-        # )
-        # Create the SFT-specific configuration
-# Create the config without the problematic arguments
-        sft_config = SFTConfig(
-            output_dir=os.path.join(self.output_dir, "rejection_sft"),
-            dataset_text_field="text",
-            per_device_train_batch_size=self.batch_size,
-            gradient_accumulation_steps=self.grad_accum,
-            learning_rate=self.lr,
-            num_train_epochs=self.num_epochs,
-            fp16=True,
-            logging_steps=10,
-            save_strategy="epoch",
-            eval_strategy="no",
-            report_to="none",
-            # REMOVED max_seq_length from here
-        )
-
-        # Pass max_seq_length directly to the Trainer instead
-        trainer = SFTTrainer(
-            model=model,
-            args=sft_config,
-            train_dataset=dataset,
-            processing_class=tokenizer,
-            max_seq_length=2048, # PASS IT HERE
-        )
+        trainer = self._make_sft_trainer(model=model, dataset=dataset, tokenizer=tokenizer)
         trainer.train()
         trainer.save_model()
         logger.info(f"SFT adapter saved to {self.output_dir}/rejection_sft")
@@ -305,7 +330,13 @@ class MetricGuidedQLoRATrainer:
         lam = self.penalty_lambda
 
         class MetricWeightedTrainer(Trainer):
-            def compute_loss(self, model, inputs, return_outputs=False):
+            def compute_loss(
+                self,
+                model,
+                inputs,
+                return_outputs=False,
+                num_items_in_batch=None,
+            ):
                 chs = inputs.pop("chs")
                 outputs = model(**inputs)
                 ce_loss = outputs.loss
@@ -313,12 +344,17 @@ class MetricGuidedQLoRATrainer:
                 loss = ce_loss + lam * penalty
                 return (loss, outputs) if return_outputs else loss
 
-        trainer = MetricWeightedTrainer(
-            model=model,
-            args=self._get_training_args("metric_loss"),
-            train_dataset=dataset,
-            tokenizer=tokenizer,
-        )
+        trainer_kwargs = {
+            "model": model,
+            "args": self._get_training_args("metric_loss"),
+            "train_dataset": dataset,
+        }
+        if _accepts_kwarg(MetricWeightedTrainer, "processing_class"):
+            trainer_kwargs["processing_class"] = tokenizer
+        elif _accepts_kwarg(MetricWeightedTrainer, "tokenizer"):
+            trainer_kwargs["tokenizer"] = tokenizer
+
+        trainer = MetricWeightedTrainer(**trainer_kwargs)
         trainer.train()
         trainer.save_model()
         logger.info(f"Metric-loss adapter saved to {self.output_dir}/metric_loss")
