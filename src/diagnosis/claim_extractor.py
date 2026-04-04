@@ -27,10 +27,10 @@ class SpacyClaimExtractor:
         try:
             import spacy
             self.nlp = spacy.load(model)
-        except OSError:
+        except Exception as exc:
             logger.warning(
-                f"spaCy model '{model}' not found. "
-                "Run: python -m spacy download en_core_web_sm"
+                f"spaCy unavailable ({exc}). "
+                "Using regex fallback claim extraction."
             )
             self.nlp = None
         self.min_length = min_length

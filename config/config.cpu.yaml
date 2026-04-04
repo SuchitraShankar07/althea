@@ -1,0 +1,55 @@
+retrieval:
+  encoder_model: "sentence-transformers/all-MiniLM-L6-v2"
+  top_k: 5
+  index_path: "data/faiss.index"
+  corpus_path: "data/corpus.jsonl"
+  embedding_dim: 384
+
+generation:
+  model_name: "sshleifer/tiny-gpt2"
+  max_new_tokens: 128
+  temperature: 0.1
+  do_sample: false
+  load_in_4bit: false
+  adapter_path: null
+
+diagnosis:
+  nli_model: "cross-encoder/nli-deberta-v3-base"
+  nli_batch_size: 16
+  entailment_threshold: 0.7
+  contradiction_threshold: 0.6
+  claim_min_length: 6
+  claim_max_per_answer: 20
+
+metrics:
+  hallucination_lambda: 0.5
+  scr_weight: 1.0
+  conflict_weight: 1.0
+  tve_weight: 0.8
+  cdee_weight: 0.8
+
+training:
+  method: "dpo"
+  output_dir: "outputs/qlora"
+  num_epochs: 1
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
+  warmup_ratio: 0.05
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  lora_target_modules:
+    - "c_attn"
+    - "c_proj"
+  hallucination_penalty_lambda: 0.3
+  dpo_beta: 0.1
+  min_score_gap: 0.2
+
+evaluation:
+  results_dir: "outputs/eval"
+
+paths:
+  log_dir: "outputs/logs"
+  checkpoint_dir: "outputs/checkpoints"
+  cache_dir: ".cache"

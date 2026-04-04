@@ -32,18 +32,15 @@ def download_wikipedia_sample(output_path: str, n_docs: int = 50_000) -> None:
     try:
         from datasets import load_dataset
 
-        logger.info(f"Downloading Wikipedia sample ({n_docs:,} docs)...")
-        
-        # Try the more reliable approach with explicit configuration
-        ds = load_dataset(
-            "wikipedia", 
-            "20220301.en", 
-            split="train", 
-            streaming=True,
-            trust_remote_code=True
-        )
-        
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    logger.info(f"Downloading Wikipedia sample ({n_docs:,} docs)...")
+    ds = load_dataset(
+        "wikipedia",
+        "20220301.en",
+        split="train",
+        streaming=True,
+        trust_remote_code=True,
+    )
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
         with open(output_path, "w") as f:
             for i, row in enumerate(ds):
