@@ -13,6 +13,7 @@ Pipeline:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import re
 from typing import List, Optional
 
 from loguru import logger
@@ -20,6 +21,19 @@ from loguru import logger
 from .claim_extractor import SpacyClaimExtractor, get_claim_extractor
 from .metric_engine import HallucinationMetrics, MetricEngine
 from .verification_engine import ClaimVerificationResult, NLIVerificationEngine
+
+
+REFUSAL_PATTERNS = re.compile(
+    r"(cannot\s+provide|i\s+cannot|can't\s+answer|cannot\s+answer|"
+    r"context\s+does\s+not|not\s+mentioned|no\s+mention\s+of|"
+    r"unable\s+to\s+determine|insufficient\s+information|"
+    r"not\s+enough\s+information)",
+    re.IGNORECASE,
+)
+
+
+def _is_context_refusal(answer: str) -> bool:
+    return bool(answer and REFUSAL_PATTERNS.search(answer))
 
 
 @dataclass
@@ -64,6 +78,26 @@ class HallucinationDiagnoser:
         original_docs: documents used during generation (if available,
                        they are appended to evidence for each claim).
         """
+        # 0. Reward valid abstention/refusal instead of penalizing as hallucination
+        if _is_context_refusal(answer):
+            refusal_metrics = HallucinationMetrics(
+                scr=1.0,
+                cr=0.0,
+                tve=0.0,
+                cdee=0.0,
+                chs=0.0,
+                total_claims=1,
+                supported_claims=1,
+            )
+            logger.debug("Detected context refusal/abstention; assigning zero hallucination penalty")
+            return DiagnosisOutput(
+                answer=answer,
+                claims=[],
+                verification_results=[],
+                metrics=refusal_metrics,
+                per_claim_evidence=[],
+            )
+
         # 1. Extract claims
         claims = self.claim_extractor.extract(answer, max_claims=self.max_claims)
         logger.debug(f"Extracted {len(claims)} claims")

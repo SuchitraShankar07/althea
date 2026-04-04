@@ -6,7 +6,7 @@ retrieval:
   embedding_dim: 384
 
 generation:
-  model_name: "sshleifer/tiny-gpt2"
+  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
   max_new_tokens: 128
   temperature: 0.1
   do_sample: false
