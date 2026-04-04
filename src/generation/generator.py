@@ -160,6 +160,7 @@ class RAGGenerator:
                 max_new_tokens=self.max_new_tokens,
                 temperature=self.temperature if self.do_sample else None,
                 do_sample=self.do_sample,
+                use_cache=False,
                 pad_token_id=self.tokenizer.eos_token_id,
             )
         # Decode only newly generated tokens

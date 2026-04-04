@@ -6,11 +6,11 @@ retrieval:
   embedding_dim: 384
 
 generation:
-  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  model_name: "microsoft/Phi-3.5-mini-instruct"
   max_new_tokens: 128
   temperature: 0.1
   do_sample: false
-  load_in_4bit: false
+  load_in_4bit: true
   adapter_path: null
 
 diagnosis:
@@ -30,7 +30,7 @@ metrics:
 
 training:
   method: "dpo"
-  output_dir: "outputs/qlora"
+  output_dir: "outputs/phi35_qlora"
   num_epochs: 1
   per_device_train_batch_size: 1
   gradient_accumulation_steps: 4

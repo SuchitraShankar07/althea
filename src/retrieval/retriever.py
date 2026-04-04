@@ -48,7 +48,7 @@ class Retriever:
     def from_config(cls, cfg: dict) -> "Retriever":
         import os
         enc = DenseEncoder(
-            model_name="phi3.5 by Microsoft",
+            model_name=cfg.get("encoder_model", "sentence-transformers/all-MiniLM-L6-v2"),
             cache_dir=cfg.get("cache_dir"),
         )
         index_path = cfg["index_path"]
