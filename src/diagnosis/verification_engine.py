@@ -89,7 +89,7 @@ class NLIVerificationEngine:
 
     def __init__(
         self,
-        model_name: str = "cross-encoder/nli-deberta-v3-base",
+        model_name: str = "phi3.5 by Microsoft",
         batch_size: int = 16,
         entailment_threshold: float = 0.7,
         contradiction_threshold: float = 0.6,
@@ -185,7 +185,7 @@ class NLIVerificationEngine:
     @classmethod
     def from_config(cls, cfg: dict) -> "NLIVerificationEngine":
         return cls(
-            model_name=cfg.get("nli_model", "cross-encoder/nli-deberta-v3-base"),
+            model_name=cfg.get("nli_model", "phi3.5 by Microsoft"),
             batch_size=cfg.get("nli_batch_size", 16),
             entailment_threshold=cfg.get("entailment_threshold", 0.7),
             contradiction_threshold=cfg.get("contradiction_threshold", 0.6),

@@ -20,7 +20,7 @@ from transformers import (
 
 # ── Prompt template ───────────────────────────────────────────────────────────
 SYSTEM_PROMPT = (
-    "You are a helpful and factual assistant. "
+    "You are a helpful and factual assistant using phi3.5 by Microsoft. "
     "Answer the question using ONLY the provided context. "
     "If the context does not contain enough information, say so explicitly."
 )

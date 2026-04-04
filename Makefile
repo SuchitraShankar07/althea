@@ -4,6 +4,7 @@ PIP := $(VENV)/bin/pip
 PY := $(VENV)/bin/python
 
 CONFIG ?= config/config.yaml
+MODEL_NAME ?= phi3.5 by Microsoft
 DATA_DIR ?= data
 OUTPUT_DIR ?= outputs
 MAX_SAMPLES ?= 500
