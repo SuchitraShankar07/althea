@@ -1,68 +1,54 @@
-# ============================================================
-# Failure-Aware RAG — Master Configuration
-# ============================================================
-
-# ── Retrieval ────────────────────────────────────────────────
 retrieval:
   encoder_model: "sentence-transformers/all-MiniLM-L6-v2"
-  top_k: 5                        # documents returned per query
+  device: "cuda"
+  top_k: 5
   index_path: "data/faiss.index"
   corpus_path: "data/corpus.jsonl"
   embedding_dim: 384
 
-# ── Generation ───────────────────────────────────────────────
 generation:
-  # model_name: "mistralai/Mistral-7B-Instruct-v0.2"   # swap as needed
-  # # model_name: "meta-llama/Llama-2-7b-chat-hf"
-  model_name: "mistralai/Mistral-7B-Instruct-v0.2"
-  load_in_4bit: True
-  device_map: "auto"
-  max_new_tokens: 512
+  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  device_map: "cuda:0"
+  max_new_tokens: 128
   temperature: 0.1
   do_sample: false
-  load_in_4bit: true               # QLoRA quantisation
-  adapter_path: null               # set after fine-tuning
+  load_in_4bit: false
+  adapter_path: outputs/qlora_model
 
-# ── Diagnosis ────────────────────────────────────────────────
 diagnosis:
   nli_model: "cross-encoder/nli-deberta-v3-base"
-  nli_batch_size: 8  # Keep this moderate to save VRAM
+  nli_device: 0
+  nli_batch_size: 16
   entailment_threshold: 0.7
   contradiction_threshold: 0.6
-  claim_min_length: 6              # tokens — filters noise
+  claim_min_length: 6
   claim_max_per_answer: 20
 
-# ── Metrics ──────────────────────────────────────────────────
 metrics:
-  hallucination_lambda: 0.5        # weight in composite score
+  hallucination_lambda: 0.5
   scr_weight: 1.0
   conflict_weight: 1.0
   tve_weight: 0.8
   cdee_weight: 0.8
 
-# ── Training ─────────────────────────────────────────────────
 training:
-  method: "dpo"                    # options: "metric_loss" | "dpo" | "rejection"
+  method: "dpo"
   output_dir: "outputs/qlora"
-  num_epochs: 3
-  per_device_train_batch_size: 2  # You can handle 2 on an L4
-  gradient_accumulation_steps: 8  # Effective batch size of 16
-  learning_rate: 0.0002
-  fp16: True
+  num_epochs: 1
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
   warmup_ratio: 0.05
-  lora_r: 16
-  lora_alpha: 32
+  lora_r: 8
+  lora_alpha: 16
   lora_dropout: 0.05
   lora_target_modules:
-    - "q_proj"
-    - "v_proj"
-    - "k_proj"
-    - "o_proj"
-  hallucination_penalty_lambda: 0.3   # λ in metric-weighted loss
+    - "c_attn"
+    - "c_proj"
+  hallucination_penalty_lambda: 0.3
   dpo_beta: 0.1
-  min_score_gap: 0.2               # min Δ hallucination score for DPO pairs
+  min_score_gap: 0.2
 
-# ── Evaluation ───────────────────────────────────────────────
 evaluation:
   datasets:
     - name: "hotpotqa"
@@ -74,7 +60,6 @@ evaluation:
   results_dir: "outputs/eval"
   compare_baseline: true
 
-# ── Paths ────────────────────────────────────────────────────
 paths:
   log_dir: "outputs/logs"
   checkpoint_dir: "outputs/checkpoints"

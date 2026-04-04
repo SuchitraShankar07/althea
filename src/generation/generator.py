@@ -182,5 +182,6 @@ class RAGGenerator:
             max_new_tokens=cfg.get("max_new_tokens", 512),
             temperature=cfg.get("temperature", 0.1),
             do_sample=cfg.get("do_sample", False),
+            device_map=cfg.get("device_map", "auto"),
             cache_dir=cfg.get("cache_dir"),
         )

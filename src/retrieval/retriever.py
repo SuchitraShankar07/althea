@@ -49,6 +49,7 @@ class Retriever:
         import os
         enc = DenseEncoder(
             model_name=cfg["encoder_model"],
+            device=cfg.get("device", "cpu"),
             cache_dir=cfg.get("cache_dir"),
         )
         index_path = cfg["index_path"]

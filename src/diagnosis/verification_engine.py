@@ -189,4 +189,5 @@ class NLIVerificationEngine:
             batch_size=cfg.get("nli_batch_size", 16),
             entailment_threshold=cfg.get("entailment_threshold", 0.7),
             contradiction_threshold=cfg.get("contradiction_threshold", 0.6),
+            device=cfg.get("nli_device"),
         )

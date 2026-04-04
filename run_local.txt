@@ -1,0 +1,7 @@
+make clean-all
+make install
+/home/tejasr/Tejas_WORK/althea/.venv/bin/python scripts/prepare_data.py --datasets hotpotqa nq popqa --max-samples 500 --output-dir data --merge-train
+/home/tejasr/Tejas_WORK/althea/.venv/bin/python scripts/build_index.py --config config/config.yaml --n_docs 10000
+LD_LIBRARY_PATH="/home/tejasr/Tejas_WORK/althea/.venv/lib/python3.12/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH" /home/tejasr/Tejas_WORK/althea/.venv/bin/python scripts/train.py --config config/config.yaml --queries data/train_queries.jsonl --method dpo
+LD_LIBRARY_PATH="/home/tejasr/Tejas_WORK/althea/.venv/lib/python3.12/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH" /home/tejasr/Tejas_WORK/althea/.venv/bin/python scripts/run_inference.py --config config/config.yaml --query "Explain the difference between a bull and a bear market."
+LD_LIBRARY_PATH="/home/tejasr/Tejas_WORK/althea/.venv/lib/python3.12/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH" /home/tejasr/Tejas_WORK/althea/.venv/bin/python scripts/evaluate.py --config config/config.yaml --dataset hotpotqa --adapter outputs/qlora_model --max-samples 50 --output-dir outputs/eval

@@ -32,16 +32,26 @@ def download_wikipedia_sample(output_path: str, n_docs: int = 50_000) -> None:
     try:
         from datasets import load_dataset
 
-    logger.info(f"Downloading Wikipedia sample ({n_docs:,} docs)...")
-    ds = load_dataset(
-        "wikipedia",
-        "20220301.en",
-        split="train",
-        streaming=True,
-        trust_remote_code=True,
-    )
-    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Downloading Wikipedia sample ({n_docs:,} docs)...")
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
+        # Prefer classic wikipedia dataset; fallback to wikimedia/wikipedia if needed.
+        try:
+            ds = load_dataset(
+                "wikipedia",
+                "20220301.en",
+                split="train",
+                streaming=True,
+            )
+        except Exception:
+            ds = load_dataset(
+                "wikimedia/wikipedia",
+                "20231101.en",
+                split="train",
+                streaming=True,
+            )
+
+        written = 0
         with open(output_path, "w") as f:
             for i, row in enumerate(ds):
                 if i >= n_docs:
@@ -58,11 +68,12 @@ def download_wikipedia_sample(output_path: str, n_docs: int = 50_000) -> None:
                     "text": text
                 }
                 f.write(json.dumps(doc) + "\n")
+                written += 1
                 
                 if i % 1000 == 0:
                     logger.info(f"Downloaded {i:,} documents...")
                     
-        logger.info(f"Saved {n_docs:,} docs to {output_path}")
+        logger.info(f"Saved {written:,} docs to {output_path}")
         
     except Exception as e:
         logger.warning(f"Failed to download Wikipedia: {e}")

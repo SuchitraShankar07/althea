@@ -1,5 +1,6 @@
 retrieval:
   encoder_model: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cuda"
   top_k: 5
   index_path: "data/faiss.index"
   corpus_path: "data/corpus.jsonl"
@@ -7,14 +8,16 @@ retrieval:
 
 generation:
   model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  device_map: "cuda:0"
   max_new_tokens: 128
   temperature: 0.1
   do_sample: false
   load_in_4bit: false
-  adapter_path: null
+  adapter_path: outputs/qlora_model
 
 diagnosis:
   nli_model: "cross-encoder/nli-deberta-v3-base"
+  nli_device: 0
   nli_batch_size: 16
   entailment_threshold: 0.7
   contradiction_threshold: 0.6
