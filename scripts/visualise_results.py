@@ -57,9 +57,9 @@ def _setup() -> None:
 
 
 def plot_radar(baseline_agg: dict, tuned_agg: Optional[dict] = None) -> Path:
-    labels = ["SCR ↑", "F1 ↑", "EM ↑", "1−CR ↑", "1−TVE ↑", "1−CDEE ↑"]
-    keys_raw = ["avg_scr", "avg_f1", "avg_em", "avg_cr", "avg_tve", "avg_cdee"]
-    invert = [False, False, False, True, True, True]
+    labels = ["SCR ↑", "F1 ↑", "1−CR ↑", "1−TVE ↑", "1−CDEE ↑"]
+    keys_raw = ["avg_scr", "avg_f1", "avg_cr", "avg_tve", "avg_cdee"]
+    invert = [False, False, True, True, True]
 
     def extract(agg):
         vals = []
@@ -182,7 +182,6 @@ def plot_chs_vs_f1(sample_records: List[dict], model_tag: str) -> Path:
 def plot_metric_comparison(baseline: dict, tuned: dict) -> Path:
     metrics = {
         "F1 ↑": ("avg_f1", False),
-        "EM ↑": ("avg_em", False),
         "SCR ↑": ("avg_scr", False),
         "CR ↓": ("avg_cr", True),
         "TVE ↓": ("avg_tve", True),
