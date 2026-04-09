@@ -1,4 +1,5 @@
 import gc
+import inspect
 import torch
 from transformers import (
     AutoModelForCausalLM, 
@@ -144,19 +145,34 @@ class QLoRATrainer:
         # Prepare model for training
         model = prepare_model_for_kbit_training(model)
         
-        # LoRA configuration - very small for T4
-        lora_config = LoraConfig(
-            r=8,  # Very small rank for memory savings
-            lora_alpha=16,
-            target_modules=[
-                "q_proj", "k_proj", "v_proj", "o_proj"
-            ],  # Fewer modules to save memory
-            lora_dropout=0.1,
-            bias="none",
-            task_type="CAUSAL_LM"
-        )
-        
-        model = get_peft_model(model, lora_config)
+        # LoRA configuration - select targets by model architecture
+        base_model = model
+        default_targets = ["q_proj", "k_proj", "v_proj", "o_proj"]
+        gpt2_targets = ["c_attn", "c_proj"]
+
+        try_targets = [default_targets, gpt2_targets]
+        model = None
+        last_error = None
+
+        for targets in try_targets:
+            try:
+                lora_config = LoraConfig(
+                    r=8,  # Very small rank for memory savings
+                    lora_alpha=16,
+                    target_modules=targets,
+                    lora_dropout=0.1,
+                    bias="none",
+                    task_type="CAUSAL_LM"
+                )
+                model = get_peft_model(base_model, lora_config)
+                logger.info(f"Using LoRA target modules: {targets}")
+                break
+            except ValueError as e:
+                last_error = e
+                logger.warning(f"LoRA targets {targets} failed: {e}")
+
+        if model is None:
+            raise ValueError(f"Unable to apply LoRA adapters for model {self.model_name}: {last_error}")
         
         # Convert samples to DPO format
         train_dataset = self._prepare_dpo_dataset(samples)
@@ -166,40 +182,48 @@ class QLoRATrainer:
             logger.error("No training samples prepared! Cannot proceed with training.")
             return
         
-        # Fixed DPOConfig with correct parameters for current TRL version
-        training_args = DPOConfig(
-            output_dir="./outputs/qlora_checkpoints",
-            per_device_train_batch_size=1,  # Minimum batch size
-            gradient_accumulation_steps=2,  # Smaller accumulation
-            num_train_epochs=1,
-            learning_rate=1e-5,  # Lower learning rate
-            lr_scheduler_type="linear",
-            warmup_steps=5,
-            logging_steps=1,
-            save_steps=100,
-            save_total_limit=1,  # Keep only one checkpoint
-            remove_unused_columns=False,
-            dataloader_pin_memory=False,
-            gradient_checkpointing=True,
-            fp16=True,
-            dataloader_num_workers=0,  # No multiprocessing
-            report_to="none",
+        def _filter_kwargs(callable_obj, kwargs):
+            sig = inspect.signature(callable_obj)
+            allowed = set(sig.parameters.keys())
+            return {k: v for k, v in kwargs.items() if k in allowed}
+
+        dpo_kwargs = {
+            "output_dir": "./outputs/qlora_checkpoints",
+            "per_device_train_batch_size": 1,  # Minimum batch size
+            "gradient_accumulation_steps": 2,  # Smaller accumulation
+            "num_train_epochs": 1,
+            "learning_rate": 1e-5,  # Lower learning rate
+            "lr_scheduler_type": "linear",
+            "warmup_steps": 5,
+            "logging_steps": 1,
+            "save_steps": 100,
+            "save_total_limit": 1,  # Keep only one checkpoint
+            "remove_unused_columns": False,
+            "dataloader_pin_memory": False,
+            "gradient_checkpointing": True,
+            "fp16": False,
+            "bf16": False,
+            "dataloader_num_workers": 0,  # No multiprocessing
+            "report_to": "none",
             # Memory optimizations
-            max_grad_norm=0.5,
-            eval_strategy="no",  # Skip evaluation to save memory
-            # DPO specific parameters - using correct parameter names
-            beta=0.1,
-            max_length=256,  # Maximum sequence length for both prompt and response
-            max_prompt_length=128,  # Maximum prompt length
-        )
+            "max_grad_norm": 0.5,
+            "eval_strategy": "no",  # Skip evaluation to save memory
+            # DPO specific parameters
+            "beta": 0.1,
+            "max_length": 256,
+            "max_prompt_length": 128,
+        }
+        training_args = DPOConfig(**_filter_kwargs(DPOConfig.__init__, dpo_kwargs))
         
         # Initialize DPO trainer
-        trainer = DPOTrainer(
-            model=model,
-            args=training_args,
-            train_dataset=train_dataset,
-            tokenizer=self.tokenizer,
-        )
+        trainer_kwargs = {
+            "model": model,
+            "args": training_args,
+            "train_dataset": train_dataset,
+            "tokenizer": self.tokenizer,
+            "processing_class": self.tokenizer,
+        }
+        trainer = DPOTrainer(**_filter_kwargs(DPOTrainer.__init__, trainer_kwargs))
         
         logger.info("Starting DPO training...")
         try:
@@ -221,32 +245,36 @@ class QLoRATrainer:
             
             # Try with even more aggressive memory settings
             try:
-                training_args_fallback = DPOConfig(
-                    output_dir="./outputs/qlora_checkpoints",
-                    per_device_train_batch_size=1,
-                    gradient_accumulation_steps=1,
-                    num_train_epochs=1,
-                    learning_rate=5e-6,
-                    warmup_steps=2,
-                    logging_steps=1,
-                    save_steps=50,
-                    save_total_limit=1,
-                    fp16=True,
-                    gradient_checkpointing=True,
-                    dataloader_num_workers=0,
-                    report_to="none",
-                    eval_strategy="no",
-                    beta=0.1,
-                    max_length=128,  # Even shorter
-                    max_prompt_length=64,  # Shorter prompt length
-                )
+                fallback_kwargs = {
+                    "output_dir": "./outputs/qlora_checkpoints",
+                    "per_device_train_batch_size": 1,
+                    "gradient_accumulation_steps": 1,
+                    "num_train_epochs": 1,
+                    "learning_rate": 5e-6,
+                    "warmup_steps": 2,
+                    "logging_steps": 1,
+                    "save_steps": 50,
+                    "save_total_limit": 1,
+                    "fp16": False,
+                    "bf16": False,
+                    "gradient_checkpointing": True,
+                    "dataloader_num_workers": 0,
+                    "report_to": "none",
+                    "eval_strategy": "no",
+                    "beta": 0.1,
+                    "max_length": 128,  # Even shorter
+                    "max_prompt_length": 64,  # Shorter prompt length
+                }
+                training_args_fallback = DPOConfig(**_filter_kwargs(DPOConfig.__init__, fallback_kwargs))
                 
-                trainer = DPOTrainer(
-                    model=model,
-                    args=training_args_fallback,
-                    train_dataset=train_dataset,
-                    tokenizer=self.tokenizer,
-                )
+                fallback_trainer_kwargs = {
+                    "model": model,
+                    "args": training_args_fallback,
+                    "train_dataset": train_dataset,
+                    "tokenizer": self.tokenizer,
+                    "processing_class": self.tokenizer,
+                }
+                trainer = DPOTrainer(**_filter_kwargs(DPOTrainer.__init__, fallback_trainer_kwargs))
                 
                 trainer.train()
                 
@@ -294,7 +322,8 @@ class QLoRATrainer:
                         logging_steps=1,
                         save_steps=50,
                         save_total_limit=1,
-                        fp16=True,
+                        fp16=False,
+                        bf16=False,
                         gradient_checkpointing=True,
                         dataloader_num_workers=0,
                         report_to="none",

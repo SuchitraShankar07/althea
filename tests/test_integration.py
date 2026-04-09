@@ -111,6 +111,33 @@ class TestDiagnosisPipeline:
         outputs = diagnoser.diagnose_batch(answers)
         assert len(outputs) == 3
 
+    def test_refusal_answer_not_penalized(self):
+        extractor = SpacyClaimExtractor.__new__(SpacyClaimExtractor)
+        extractor.min_length = 4
+        extractor.nlp = None
+
+        verifier = MagicMock(spec=NLIVerificationEngine)
+
+        diagnoser = HallucinationDiagnoser(
+            retriever=make_mock_retriever(),
+            claim_extractor=extractor,
+            verifier=verifier,
+            metric_engine=MetricEngine(),
+        )
+
+        refusal_answer = (
+            "I cannot provide a factual answer because the context does not "
+            "contain enough information about this question."
+        )
+        output = diagnoser.diagnose(refusal_answer)
+
+        assert output.metrics.chs == 0.0
+        assert output.metrics.scr == 1.0
+        assert output.metrics.cr == 0.0
+        assert output.metrics.cdee == 0.0
+        assert output.metrics.total_claims == 1
+        verifier.verify_claims.assert_not_called()
+
     def test_contradiction_diagnoser(self):
         """Verifier returns CONTRADICTION → CR=1.0"""
         extractor = SpacyClaimExtractor.__new__(SpacyClaimExtractor)
