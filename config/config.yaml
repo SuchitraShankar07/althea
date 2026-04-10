@@ -44,7 +44,7 @@ metrics:
   hallucination_lambda: 0.5         # λ weight in composite CHS
   scr_weight: 1.0
   conflict_weight: 1.0
-  tve_weight: 0.8
+  tve_weight: 1.0
   cdee_weight: 0.8
 
 # ── Training ─────────────────────────────────────────────────
@@ -68,6 +68,7 @@ training:
   hallucination_penalty_lambda: 0.3
   dpo_beta: 0.1
   min_score_gap: 0.2
+  max_chs_for_positive: 0.4         # only low-CHS responses can be preferred
   min_scr_for_positive: 0.75         # require strong grounding to keep a response as preferred
   max_tve_for_positive: 0.20         # reject temporally stale outputs in preference construction
   max_cr_for_positive: 0.20          # avoid contradiction-heavy outputs

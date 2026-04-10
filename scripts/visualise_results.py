@@ -223,7 +223,8 @@ def plot_training_chs_curve(chs_values: List[float]) -> Path:
     ax.axhline(y=0.3, color=PALETTE["good"], linestyle="--", alpha=0.7, label="Low CHS threshold (0.3)")
     ax.set_xlabel("Training Sample Index")
     ax.set_ylabel("CHS")
-    ax.set_ylim(0, 1.05)
+    y_max = max(chs_values + rolling + [0.3, 1.0])
+    ax.set_ylim(0, max(1.05, y_max * 1.05))
     ax.set_title("CHS Values Across Training Corpus")
     ax.legend()
 
@@ -295,8 +296,22 @@ def main() -> None:
     if (all_charts or "comparison" in charts) and baseline_agg and tuned_agg:
         plot_metric_comparison(baseline_agg, tuned_agg)
     if (all_charts or "training" in charts) and args.samples and Path(args.samples).exists():
+        samp_chs = []
         with open(args.samples) as f:
-            samp_chs = [json.loads(l)["chs"] for l in f if l.strip()]
+            content = f.read().strip()
+        if content:
+            try:
+                parsed = json.loads(content)
+                if isinstance(parsed, list):
+                    samp_chs = [float(r.get("chs", 0.0)) for r in parsed if isinstance(r, dict)]
+            except json.JSONDecodeError:
+                with open(args.samples) as f:
+                    for line in f:
+                        if not line.strip():
+                            continue
+                        row = json.loads(line)
+                        if isinstance(row, dict):
+                            samp_chs.append(float(row.get("chs", 0.0)))
         if samp_chs:
             plot_training_chs_curve(samp_chs)
 

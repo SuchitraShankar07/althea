@@ -1854,7 +1854,7 @@
         "kind": 6,
         "importPath": "src.training.qlora_trainer",
         "description": "src.training.qlora_trainer",
-        "peekOfCode": "class QLoRATrainer:\n    def __init__(self, model_name: str = \"microsoft/Phi-3.5-mini-instruct\", \n                 cache_dir: str = \"cache\"):\n        # Use a much smaller model for T4 GPU\n        if \"mistral\" in model_name.lower() or \"7b\" in model_name.lower():\n            logger.warning(f\"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini\")\n            model_name = \"microsoft/Phi-3.5-mini-instruct\"\n        self.model_name = model_name\n        self.cache_dir = cache_dir\n        # Don't load model in __init__ - load only when needed",
+        "peekOfCode": "class QLoRATrainer:\n    def __init__(self, model_name: str = \"microsoft/Phi-3.5-mini-instruct\", \n                 cache_dir: str = \"cache\",\n                 output_dir: str = \"./outputs/qlora_model\",\n                 checkpoint_dir: str = \"./outputs/qlora_checkpoints\",\n                 dpo_beta: float = 0.1):\n        # Use a much smaller model for T4 GPU\n        if \"mistral\" in model_name.lower() or \"7b\" in model_name.lower():\n            logger.warning(f\"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini\")\n            model_name = \"microsoft/Phi-3.5-mini-instruct\"",
         "detail": "src.training.qlora_trainer",
         "documentation": {}
     },
@@ -1863,7 +1863,7 @@
         "kind": 6,
         "importPath": "src.training.qlora_trainer",
         "description": "src.training.qlora_trainer",
-        "peekOfCode": "class MetricGuidedQLoRATrainer:\n    def __init__(self, config):\n        self.config = config\n        training_cfg = config.get('training', {})\n        self.min_scr = float(training_cfg.get('min_scr_for_positive', 0.75))\n        self.max_tve = float(training_cfg.get('max_tve_for_positive', 0.20))\n        self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))\n        # Override with smaller model for T4\n        model_name = config.get('generation', {}).get('model_name', 'microsoft/Phi-3.5-mini-instruct')\n        if \"mistral\" in model_name.lower() or \"7b\" in model_name.lower():",
+        "peekOfCode": "class MetricGuidedQLoRATrainer:\n    def __init__(self, config):\n        self.config = config\n        training_cfg = config.get('training', {})\n        self.min_scr = float(training_cfg.get('min_scr_for_positive', 0.75))\n        self.max_tve = float(training_cfg.get('max_tve_for_positive', 0.20))\n        self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))\n        self.max_chs = float(training_cfg.get('max_chs_for_positive', 0.40))\n        self.min_score_gap = float(training_cfg.get('min_score_gap', 0.20))\n        # Override with smaller model for T4",
         "detail": "src.training.qlora_trainer",
         "documentation": {}
     },

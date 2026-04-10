@@ -96,7 +96,10 @@ def _load_base_model_for_training(model_name: str, cache_dir: str):
 
 class QLoRATrainer:
     def __init__(self, model_name: str = "microsoft/Phi-3.5-mini-instruct", 
-                 cache_dir: str = "cache"):
+                 cache_dir: str = "cache",
+                 output_dir: str = "./outputs/qlora_model",
+                 checkpoint_dir: str = "./outputs/qlora_checkpoints",
+                 dpo_beta: float = 0.1):
         # Use a much smaller model for T4 GPU
         if "mistral" in model_name.lower() or "7b" in model_name.lower():
             logger.warning(f"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini")
@@ -104,6 +107,11 @@ class QLoRATrainer:
         
         self.model_name = model_name
         self.cache_dir = cache_dir
+        self.output_dir = output_dir
+        self.checkpoint_dir = checkpoint_dir
+        self.dpo_beta = float(dpo_beta)
+        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.checkpoint_dir).mkdir(parents=True, exist_ok=True)
         
         # Don't load model in __init__ - load only when needed
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -188,7 +196,7 @@ class QLoRATrainer:
             return {k: v for k, v in kwargs.items() if k in allowed}
 
         dpo_kwargs = {
-            "output_dir": "./outputs/qlora_checkpoints",
+            "output_dir": self.checkpoint_dir,
             "per_device_train_batch_size": 1,  # Minimum batch size
             "gradient_accumulation_steps": 2,  # Smaller accumulation
             "num_train_epochs": 1,
@@ -209,7 +217,7 @@ class QLoRATrainer:
             "max_grad_norm": 0.5,
             "eval_strategy": "no",  # Skip evaluation to save memory
             # DPO specific parameters
-            "beta": 0.1,
+            "beta": self.dpo_beta,
             "max_length": 256,
             "max_prompt_length": 128,
         }
@@ -230,8 +238,8 @@ class QLoRATrainer:
             trainer.train()
             
             # Save the model
-            model.save_pretrained("./outputs/qlora_model")
-            self.tokenizer.save_pretrained("./outputs/qlora_model")
+            model.save_pretrained(self.output_dir)
+            self.tokenizer.save_pretrained(self.output_dir)
             
             logger.info("DPO training completed!")
             
@@ -246,7 +254,7 @@ class QLoRATrainer:
             # Try with even more aggressive memory settings
             try:
                 fallback_kwargs = {
-                    "output_dir": "./outputs/qlora_checkpoints",
+                    "output_dir": self.checkpoint_dir,
                     "per_device_train_batch_size": 1,
                     "gradient_accumulation_steps": 1,
                     "num_train_epochs": 1,
@@ -261,7 +269,7 @@ class QLoRATrainer:
                     "dataloader_num_workers": 0,
                     "report_to": "none",
                     "eval_strategy": "no",
-                    "beta": 0.1,
+                    "beta": self.dpo_beta,
                     "max_length": 128,  # Even shorter
                     "max_prompt_length": 64,  # Shorter prompt length
                 }
@@ -279,8 +287,8 @@ class QLoRATrainer:
                 trainer.train()
                 
                 # Save the model
-                model.save_pretrained("./outputs/qlora_model")
-                self.tokenizer.save_pretrained("./outputs/qlora_model")
+                model.save_pretrained(self.output_dir)
+                self.tokenizer.save_pretrained(self.output_dir)
                 
                 logger.info("DPO training completed with fallback settings!")
                 
@@ -315,7 +323,7 @@ class QLoRATrainer:
                     
                     # Basic training arguments
                     basic_args = TrainingArguments(
-                        output_dir="./outputs/qlora_checkpoints",
+                        output_dir=self.checkpoint_dir,
                         per_device_train_batch_size=1,
                         num_train_epochs=1,
                         learning_rate=5e-6,
@@ -341,8 +349,8 @@ class QLoRATrainer:
                     basic_trainer.train()
                     
                     # Save the model
-                    model.save_pretrained("./outputs/qlora_model")
-                    self.tokenizer.save_pretrained("./outputs/qlora_model")
+                    model.save_pretrained(self.output_dir)
+                    self.tokenizer.save_pretrained(self.output_dir)
                     
                     logger.info("Basic LoRA training completed successfully!")
                     
@@ -408,6 +416,8 @@ class MetricGuidedQLoRATrainer:
         self.min_scr = float(training_cfg.get('min_scr_for_positive', 0.75))
         self.max_tve = float(training_cfg.get('max_tve_for_positive', 0.20))
         self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))
+        self.max_chs = float(training_cfg.get('max_chs_for_positive', 0.40))
+        self.min_score_gap = float(training_cfg.get('min_score_gap', 0.20))
         # Override with smaller model for T4
         model_name = config.get('generation', {}).get('model_name', 'microsoft/Phi-3.5-mini-instruct')
         if "mistral" in model_name.lower() or "7b" in model_name.lower():
@@ -415,8 +425,17 @@ class MetricGuidedQLoRATrainer:
             model_name = "microsoft/Phi-3.5-mini-instruct"
             
         cache_dir = config.get('paths', {}).get('cache_dir', 'cache')
+        output_dir = training_cfg.get('output_dir', './outputs/qlora_model')
+        checkpoint_dir = config.get('paths', {}).get('checkpoint_dir', './outputs/qlora_checkpoints')
+        dpo_beta = float(training_cfg.get('dpo_beta', 0.1))
         
-        self.trainer = QLoRATrainer(model_name=model_name, cache_dir=cache_dir)
+        self.trainer = QLoRATrainer(
+            model_name=model_name,
+            cache_dir=cache_dir,
+            output_dir=output_dir,
+            checkpoint_dir=checkpoint_dir,
+            dpo_beta=dpo_beta,
+        )
 
     @staticmethod
     def _abstention_response(query: str) -> str:
@@ -542,8 +561,12 @@ class MetricGuidedQLoRATrainer:
             is_grounded = scr >= self.min_scr
             is_temporally_safe = tve <= self.max_tve
             is_low_conflict = cr <= self.max_cr
+            is_low_chs = chs <= self.max_chs
 
-            if is_grounded and is_temporally_safe and is_low_conflict:
+            # Treat high-hallucination synthetic negatives as CHS≈1.0 and keep a score margin.
+            margin_ok = (1.0 - chs) >= self.min_score_gap
+
+            if is_grounded and is_temporally_safe and is_low_conflict and is_low_chs and margin_ok:
                 dpo_samples.append({
                     'prompt': query,
                     'chosen': response,
@@ -572,36 +595,38 @@ class MetricGuidedQLoRATrainer:
     def _train_rejection(self, samples):
         """Rejection sampling based training"""
         logger.info("Training with rejection sampling method")
-        
-        # Filter samples based on quality scores
-        high_quality_samples = []
-        low_quality_samples = []
-        
+
+        # Lower CHS is better. Build per-query pairs to avoid cross-query mismatches.
+        dpo_samples = []
+        preferred_count = 0
+        rejected_count = 0
+
         for s in samples:
             normalized = self._normalize_sample(s)
+            query = normalized['query']
+            response = normalized['response']
             chs = normalized['chs']
-            
-            if chs > 0.6:
-                high_quality_samples.append(normalized)
-            elif chs < 0.4:
-                low_quality_samples.append(normalized)
-        
-        logger.info(f"High quality samples: {len(high_quality_samples)}")
-        logger.info(f"Low quality samples: {len(low_quality_samples)}")
-        
-        # Convert to DPO format for training
-        dpo_samples = []
-        for good, bad in zip(high_quality_samples, low_quality_samples):
-            good_query = good['query']
-            good_response = good['response']
-            bad_response = bad['response']
-            
-            if good_query and good_response and bad_response:
+
+            if not query or not response:
+                continue
+
+            if chs <= self.max_chs:
+                preferred_count += 1
                 dpo_samples.append({
-                    'prompt': good_query,
-                    'chosen': good_response,
-                    'rejected': bad_response
+                    'prompt': query,
+                    'chosen': response,
+                    'rejected': self._unsupported_temporal_negative(query),
                 })
+            elif chs >= (self.max_chs + self.min_score_gap):
+                rejected_count += 1
+                dpo_samples.append({
+                    'prompt': query,
+                    'chosen': self._abstention_response(query),
+                    'rejected': response,
+                })
+
+        logger.info(f"Low-CHS preferred samples: {preferred_count}")
+        logger.info(f"High-CHS demoted samples: {rejected_count}")
         
         logger.info(f"Created {len(dpo_samples)} rejection sampling pairs")
         self.trainer.train_dpo(dpo_samples)
@@ -609,8 +634,8 @@ class MetricGuidedQLoRATrainer:
     def _train_metric_loss(self, samples):
         """Metric-guided loss training"""
         logger.info("Training with metric loss method")
-        
-        # Use all samples with their quality scores as weights
+
+        # Lower CHS is better. Approximate metric-weighted optimization via DPO pairs.
         weighted_samples = []
         for sample in samples:
             normalized = self._normalize_sample(sample)
@@ -621,13 +646,19 @@ class MetricGuidedQLoRATrainer:
             
             if not query or not response:
                 continue
-                
-            # Higher CHS scores get preference
-            if chs > 0.5:
+
+            # Promote low-CHS responses, demote high-CHS ones.
+            if chs <= self.max_chs:
                 weighted_samples.append({
                     'prompt': query,
                     'chosen': response,
-                    'rejected': f"Low quality response for: {query}"
+                    'rejected': self._unsupported_temporal_negative(query),
+                })
+            elif chs >= (self.max_chs + self.min_score_gap):
+                weighted_samples.append({
+                    'prompt': query,
+                    'chosen': self._abstention_response(query),
+                    'rejected': response,
                 })
         
         logger.info(f"Created {len(weighted_samples)} metric-guided samples")

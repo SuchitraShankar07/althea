@@ -25,7 +25,7 @@ metrics:
   hallucination_lambda: 0.5
   scr_weight: 1.0
   conflict_weight: 1.0
-  tve_weight: 0.8
+  tve_weight: 1.0
   cdee_weight: 0.8
 
 training:
@@ -45,6 +45,10 @@ training:
   hallucination_penalty_lambda: 0.3
   dpo_beta: 0.1
   min_score_gap: 0.2
+  max_chs_for_positive: 0.4
+  min_scr_for_positive: 0.75
+  max_tve_for_positive: 0.20
+  max_cr_for_positive: 0.20
 
 evaluation:
   results_dir: "outputs/eval"
