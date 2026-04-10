@@ -117,24 +117,47 @@ class FailureAwareRAGPipeline:
         self,
         queries: List[str],
         save_path: str = "outputs/training_samples.jsonl",
+        n_samples_per_query: int = 2,
+        temperatures: Optional[List[float]] = None,
     ) -> List:
         """
         Run inference + diagnosis on all queries, save training samples.
+
+        For DPO, generates multiple answers per query at different temperatures
+        so we get real preference pairs (both sides are actual model outputs).
         """
+        if temperatures is None:
+            train_cfg = self.cfg.get("training", {})
+            temperatures = train_cfg.get("collection_temperatures", [0.1, 0.7])
+            n_samples_per_query = train_cfg.get("n_samples_per_query", 2)
+
+        # Ensure enough temperatures
+        while len(temperatures) < n_samples_per_query:
+            temperatures.append(temperatures[-1] + 0.2)
+
         sig_gen = TrainingSignalGenerator(output_path=save_path)
-        docs_list, answers, diag_outputs = [], [], []
+        all_queries, docs_list, diag_outputs = [], [], []
 
         for i, query in enumerate(queries):
-            logger.info(f"Collecting [{i+1}/{len(queries)}]")
+            logger.info(f"Collecting [{i+1}/{len(queries)}] {query[:60]}")
             docs = self.retriever.retrieve(query)
-            answer = self.generator.generate(query, docs)
-            diag = self.diagnoser.diagnose(answer, original_docs=docs)
-            diag.answer = answer
-            docs_list.append(docs)
-            answers.append(answer)
-            diag_outputs.append(diag)
 
-        return sig_gen.generate_and_save(queries, docs_list, diag_outputs)
+            for t_idx in range(n_samples_per_query):
+                temp = temperatures[t_idx]
+                answer = self.generator.generate(query, docs, temperature=temp)
+                diag = self.diagnoser.diagnose(answer, original_docs=docs)
+                diag.answer = answer
+
+                all_queries.append(query)
+                docs_list.append(docs)
+                diag_outputs.append(diag)
+
+                logger.debug(
+                    f"  temp={temp:.1f} CHS={diag.metrics.chs:.3f} "
+                    f"answer={answer[:80]}"
+                )
+
+        return sig_gen.generate_and_save(all_queries, docs_list, diag_outputs)
 
     def run_training(
         self,

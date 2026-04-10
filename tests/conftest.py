@@ -91,6 +91,7 @@ def _install_stubs():
     if "trl" not in sys.modules:
         trl = types.ModuleType("trl")
         trl.DPOTrainer = MagicMock()
+        trl.DPOConfig = MagicMock()
         trl.SFTTrainer = MagicMock()
         sys.modules["trl"] = trl
 
@@ -125,6 +126,21 @@ def _install_stubs():
             def from_dict(cls, d):
                 obj = cls(d)
                 return obj
+
+            @classmethod
+            def from_list(cls, items):
+                """Stub for Dataset.from_list used in DPO training."""
+                obj = cls()
+                obj._items = items
+                return obj
+
+            def map(self, fn, **kwargs):
+                return self
+
+            def __len__(self):
+                if hasattr(self, '_items'):
+                    return len(self._items)
+                return 0
 
         ds.Dataset = _FakeDataset
         ds.load_dataset = MagicMock(return_value=iter([]))

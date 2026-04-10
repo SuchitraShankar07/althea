@@ -3,13 +3,14 @@
 scripts/train.py
 Two-phase training script:
     Phase 1 — collect training samples (inference + diagnosis)
+              Generates MULTIPLE answers per query for DPO pairing.
     Phase 2 — QLoRA fine-tuning (DPO / rejection / metric_loss)
 
 Usage:
-    # Full pipeline
+    # Full pipeline (collect data + train)
     python scripts/train.py --config config/config.yaml --queries data/train_queries.jsonl
 
-    # Skip collection, use existing samples
+    # Skip collection, use pre-collected samples
     python scripts/train.py --samples outputs/training_samples.jsonl
 
     # Choose training strategy
@@ -29,54 +30,35 @@ import yaml
 from loguru import logger
 from src.pipeline import FailureAwareRAGPipeline
 from src.training.qlora_trainer import MetricGuidedQLoRATrainer
+from src.training.signal_generator import TrainingSignalGenerator
 
-# Simple data structure for training samples
-class TrainingSignalGenerator:
-    @staticmethod
-    def load(path: str):
-        """Load training samples from JSON file"""
-        samples = []
-        try:
-            with open(path, 'r') as f:
-                data = json.load(f)
-                
-            # Convert dict samples to objects with attributes
-            for item in data:
-                sample = type('Sample', (), {})()
-                for key, value in item.items():
-                    setattr(sample, key, value)
-                samples.append(sample)
-                
-        except json.JSONDecodeError:
-            # Try JSONL format
-            with open(path, 'r') as f:
-                for line in f:
-                    if line.strip():
-                        item = json.loads(line.strip())
-                        sample = type('Sample', (), {})()
-                        for key, value in item.items():
-                            setattr(sample, key, value)
-                        samples.append(sample)
-        
-        return samples
 
 def load_queries(path: str):
+    """Load queries from JSONL file."""
     queries = []
     with open(path) as f:
         for line in f:
-            row = json.loads(line.strip())
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
             queries.append(row["query"])
     return queries
 
+
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Failure-Aware RAG training: collect data + QLoRA fine-tune"
+    )
     parser.add_argument("--config", default="config/config.yaml")
     parser.add_argument("--queries", default=None, help="JSONL of training queries")
-    parser.add_argument("--samples", default=None, help="Skip collection, use saved samples")
+    parser.add_argument(
+        "--samples", default=None, help="Skip collection, use saved samples"
+    )
     parser.add_argument(
         "--method",
         choices=["dpo", "rejection", "metric_loss"],
-        default="dpo",
+        default=None,
         help="Override training method from config",
     )
     parser.add_argument(
@@ -90,86 +72,80 @@ def main():
     with open(args.config) as f:
         cfg = yaml.safe_load(f)
 
-    # Override method if specified
+    # Override method if specified on CLI
     if args.method:
         cfg.setdefault("training", {})["method"] = args.method
-        logger.info(f"Training method set to: {args.method}")
+        logger.info(f"Training method: {args.method}")
 
     # Ensure output directory exists
     Path(args.samples_out).parent.mkdir(parents=True, exist_ok=True)
-    
+
     # ── Phase 1: Collect training data ───────────────────────
     if args.samples is None:
         if args.queries is None:
-            logger.error("Provide --queries or --samples")
+            logger.error("Provide --queries (JSONL file) or --samples (pre-collected)")
             sys.exit(1)
 
-        logger.info("=== Phase 1: Collecting Training Data ===")
-        
-        try:
-            pipeline = FailureAwareRAGPipeline.from_config(args.config)
-            queries = load_queries(args.queries)
-            logger.info(f"Loaded {len(queries)} training queries")
+        logger.info("=" * 60)
+        logger.info("Phase 1: Collecting Training Data")
+        logger.info("=" * 60)
 
-            samples = pipeline.collect_training_data(
-                queries=queries,
-                save_path=args.samples_out,
-            )
-            logger.info(f"Collected {len(samples)} training samples")
+        pipeline = FailureAwareRAGPipeline.from_config(args.config)
+        queries = load_queries(args.queries)
+        logger.info(f"Loaded {len(queries)} training queries")
 
-            # Log distribution
-            chs_values = [getattr(s, 'chs', 0.5) for s in samples]
-            low = sum(1 for c in chs_values if c <= 0.3)
-            mid = sum(1 for c in chs_values if 0.3 < c <= 0.6)
-            high = sum(1 for c in chs_values if c > 0.6)
-            logger.info(
-                f"CHS distribution: low(≤0.3)={low} | mid={mid} | high(>0.6)={high}"
-            )
-        except Exception as e:
-            logger.error(f"Failed to collect training data: {e}")
-            logger.info("Creating dummy samples for testing...")
-            
-            # Create dummy samples for testing
-            queries = load_queries(args.queries)
-            samples = []
-            for i, query in enumerate(queries[:10]):  # Limit for testing
-                sample = type('Sample', (), {})()
-                sample.query = query
-                sample.response = f"Sample response for: {query}"
-                sample.chs = 0.3 + (i % 3) * 0.2  # Vary quality scores
-                samples.append(sample)
-                
-            # Save dummy samples
-            sample_dicts = []
-            for sample in samples:
-                sample_dict = {}
-                for attr in dir(sample):
-                    if not attr.startswith('_'):
-                        sample_dict[attr] = getattr(sample, attr)
-                sample_dicts.append(sample_dict)
-                
-            with open(args.samples_out, 'w') as f:
-                json.dump(sample_dicts, f, indent=2)
-            
-            logger.info(f"Created {len(samples)} dummy samples for testing")
+        samples = pipeline.collect_training_data(
+            queries=queries,
+            save_path=args.samples_out,
+        )
+        logger.info(f"Collected {len(samples)} training samples")
+
+        # Log CHS distribution
+        chs_values = [s.chs for s in samples]
+        low = sum(1 for c in chs_values if c <= 0.3)
+        mid = sum(1 for c in chs_values if 0.3 < c <= 0.6)
+        high = sum(1 for c in chs_values if c > 0.6)
+        avg_chs = sum(chs_values) / max(len(chs_values), 1)
+        logger.info(
+            f"CHS distribution: "
+            f"good(≤0.3)={low} | moderate(0.3-0.6)={mid} | bad(>0.6)={high} | "
+            f"avg={avg_chs:.3f}"
+        )
     else:
-        logger.info(f"=== Loading saved samples from {args.samples} ===")
+        logger.info(f"Loading saved samples from {args.samples}")
         samples = TrainingSignalGenerator.load(args.samples)
         logger.info(f"Loaded {len(samples)} samples")
 
+    # Validate samples before training
+    valid = [s for s in samples if s.answer and s.answer.strip()]
+    if len(valid) < len(samples):
+        logger.warning(
+            f"Filtered {len(samples) - len(valid)} samples with empty answers"
+        )
+        samples = valid
+
+    if len(samples) == 0:
+        logger.error("No valid training samples! Cannot proceed.")
+        sys.exit(1)
+
     # ── Phase 2: Fine-tune ────────────────────────────────────
-    logger.info("=== Phase 2: QLoRA Fine-Tuning ===")
-    
-    # Ensure training config exists
-    cfg.setdefault("training", {})
-    cfg["training"].setdefault("output_dir", "./outputs/qlora_model")
-    
+    logger.info("=" * 60)
+    logger.info("Phase 2: QLoRA Fine-Tuning")
+    logger.info("=" * 60)
+
     trainer = MetricGuidedQLoRATrainer(cfg)
     trainer.train(samples)
 
+    output_dir = cfg.get("training", {}).get("output_dir", "outputs/qlora_model")
     logger.info("✓ Training complete")
-    logger.info(f"  Adapter saved to: {cfg['training']['output_dir']}")
-    logger.info("  Update config.yaml generation.adapter_path to use the new adapter")
+    logger.info(f"  Adapter saved to: {output_dir}")
+    logger.info("  Next steps:")
+    logger.info(
+        f"    1. Set adapter_path: \"{output_dir}\" in config.yaml"
+    )
+    logger.info("    2. Run: python scripts/run_inference.py --query 'test query'")
+    logger.info("    3. Run: python scripts/evaluate.py --adapter " + output_dir)
+
 
 if __name__ == "__main__":
     main()

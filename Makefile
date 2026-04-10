@@ -12,7 +12,7 @@ TRAIN_METHOD ?= dpo
 
 QUERY ?= What caused the 2008 financial crisis?
 DATASET ?= hotpotqa
-ADAPTER ?= $(OUTPUT_DIR)/qlora/$(TRAIN_METHOD)
+ADAPTER ?= $(OUTPUT_DIR)/qlora_model
 QUERIES ?= $(DATA_DIR)/train_queries.jsonl
 MAX_EVAL_SAMPLES ?= 100
 

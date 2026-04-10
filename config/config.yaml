@@ -1,6 +1,7 @@
 # ============================================================
 # Failure-Aware RAG — Master Configuration
 # ============================================================
+# RTX 6000 Pro (40 GB VRAM) — Mistral-7B (4-bit) recommended
 
 # ── Retrieval ────────────────────────────────────────────────
 retrieval:
@@ -14,26 +15,24 @@ retrieval:
 #
 #   Model options by GPU VRAM:
 #   ┌─────────────────────────────────────────────┬──────────┐
-#   │ microsoft/Phi-3.5-mini-instruct             │  ~9 GB   │ ← L4 GPU
-#   │ mistralai/Mistral-7B-Instruct-v0.2          │ ~16 GB   │
-#   │ meta-llama/Llama-2-7b-chat-hf               │ ~16 GB   │
+#   │ mistralai/Mistral-7B-Instruct-v0.2          │ ~16 GB   │ ← RTX 6000 Pro
+#   │ microsoft/Phi-3.5-mini-instruct             │  ~9 GB   │
 #   │ TinyLlama/TinyLlama-1.1B-Chat-v1.0          │  ~3 GB   │ CPU-safe
 #   └─────────────────────────────────────────────┴──────────┘
 #
 generation:
-  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
-  load_in_4bit: false        # QLoRA 4-bit NF4 — requires CUDA
+  model_name: "mistralai/Mistral-7B-Instruct-v0.2"
+  load_in_4bit: true                # QLoRA 4-bit NF4 — requires CUDA
   device_map: "auto"
-  max_new_tokens: 128
+  max_new_tokens: 256
   temperature: 0.1
   do_sample: false
-  # adapter_path: "outputs/qlora_model"                # set to outputs/qlora/dpo after training
-  adapter_path: null
+  adapter_path: null                # set to outputs/qlora_model after training
 
 # ── Diagnosis ────────────────────────────────────────────────
 diagnosis:
   nli_model: "cross-encoder/nli-deberta-v3-base"
-  nli_batch_size: 8                 # moderate — saves VRAM on L4
+  nli_batch_size: 8
   entailment_threshold: 0.7
   contradiction_threshold: 0.6
   claim_min_length: 6               # min word count per claim
@@ -49,11 +48,11 @@ metrics:
 
 # ── Training ─────────────────────────────────────────────────
 training:
-  method: "dpo"                     # dpo | metric_loss | rejection
-  output_dir: "outputs/qlora"
+  method: "dpo"                     # dpo | rejection | metric_loss
+  output_dir: "outputs/qlora_model"
   num_epochs: 3
-  per_device_train_batch_size: 2    # safe for L4 24GB
-  gradient_accumulation_steps: 8   # effective batch = 16
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 8    # effective batch = 16
   learning_rate: 2.0e-4
   fp16: true
   warmup_ratio: 0.05
@@ -67,7 +66,12 @@ training:
     - "o_proj"
   hallucination_penalty_lambda: 0.3
   dpo_beta: 0.1
-  min_score_gap: 0.2
+  min_score_gap: 0.2               # min CHS gap for DPO pairs
+  # Multi-sample data collection (for DPO)
+  n_samples_per_query: 2
+  collection_temperatures:
+    - 0.1
+    - 0.7
 
 # ── Evaluation ───────────────────────────────────────────────
 evaluation:
@@ -75,9 +79,6 @@ evaluation:
     - name: "hotpotqa"
       split: "validation"
       max_samples: 500
-    - name: "ragtruth"
-      split: "test"
-      max_samples: 300
   results_dir: "outputs/eval"
   compare_baseline: true
 

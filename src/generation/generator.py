@@ -149,17 +149,35 @@ class RAGGenerator:
         self.model.eval()
 
     # ── Inference ─────────────────────────────────────────────
-    def generate(self, query: str, documents: List[dict]) -> str:
+    def generate(
+        self,
+        query: str,
+        documents: List[dict],
+        temperature: Optional[float] = None,
+    ) -> str:
+        """
+        Generate an answer from query + retrieved documents.
+
+        Args:
+            temperature: override the default temperature. When provided
+                         and > 0, sampling is enabled automatically.
+                         Used during training data collection to generate
+                         diverse answers per query for DPO pairing.
+        """
         prompt = build_prompt(query, documents)
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
         input_len = inputs["input_ids"].shape[1]
+
+        # Allow temperature override for diverse generation
+        temp = temperature if temperature is not None else self.temperature
+        use_sampling = (temperature is not None and temp > 0) or self.do_sample
 
         with torch.no_grad():
             output_ids = self.model.generate(
                 **inputs,
                 max_new_tokens=self.max_new_tokens,
-                temperature=self.temperature if self.do_sample else None,
-                do_sample=self.do_sample,
+                temperature=temp if use_sampling else None,
+                do_sample=use_sampling,
                 pad_token_id=self.tokenizer.eos_token_id,
             )
         # Decode only newly generated tokens
