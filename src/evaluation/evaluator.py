@@ -1,0 +1,170 @@
+"""
+evaluation/evaluator.py
+Computes both hallucination metrics and standard QA metrics (F1, EM).
+Supports baseline vs fine-tuned comparison.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import string
+from collections import Counter
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import List, Optional
+
+import numpy as np
+from loguru import logger
+
+from ..diagnosis.metric_engine import HallucinationMetrics
+
+
+# ── QA metric helpers (HotpotQA / NQ style) ──────────────────────────────────
+def _normalize_answer(s: str) -> str:
+    s = s.lower()
+    s = re.sub(r"\b(a|an|the)\b", " ", s)
+    s = "".join(ch for ch in s if ch not in string.punctuation)
+    return " ".join(s.split())
+
+
+def exact_match(prediction: str, ground_truth: str) -> float:
+    return float(_normalize_answer(prediction) == _normalize_answer(ground_truth))
+
+
+def f1_score(prediction: str, ground_truth: str) -> float:
+    pred_tokens = _normalize_answer(prediction).split()
+    gt_tokens = _normalize_answer(ground_truth).split()
+    if not pred_tokens and not gt_tokens:
+        return 1.0
+    if not pred_tokens or not gt_tokens:
+        return 0.0
+    common = Counter(pred_tokens) & Counter(gt_tokens)
+    num_same = sum(common.values())
+    if num_same == 0:
+        return 0.0
+    precision = num_same / len(pred_tokens)
+    recall = num_same / len(gt_tokens)
+    return 2 * precision * recall / (precision + recall)
+
+
+# ── Result containers ─────────────────────────────────────────────────────────
+@dataclass
+class SampleResult:
+    query: str
+    prediction: str
+    ground_truth: str
+    f1: float
+    em: float
+    metrics: HallucinationMetrics
+
+
+@dataclass
+class AggregateResult:
+    avg_f1: float
+    avg_em: float
+    avg_scr: float
+    avg_cr: float
+    avg_tve: float
+    avg_cdee: float
+    avg_chs: float
+    n_samples: int
+    model_tag: str = "baseline"
+
+    def summary(self) -> str:
+        return (
+            f"[{self.model_tag}] N={self.n_samples} | "
+            f"F1={self.avg_f1:.3f} | EM={self.avg_em:.3f} | "
+            f"SCR={self.avg_scr:.3f} | CR={self.avg_cr:.3f} | "
+            f"TVE={self.avg_tve:.3f} | CDEE={self.avg_cdee:.3f} | "
+            f"CHS={self.avg_chs:.3f}"
+        )
+
+
+# ── Evaluator ─────────────────────────────────────────────────────────────────
+class RAGEvaluator:
+    """
+    Evaluates a list of (query, prediction, ground_truth, hallucination_metrics)
+    and aggregates into AggregateResult.
+    """
+
+    def __init__(self, results_dir: str = "outputs/eval"):
+        self.results_dir = results_dir
+        Path(results_dir).mkdir(parents=True, exist_ok=True)
+
+    def evaluate(
+        self,
+        queries: List[str],
+        predictions: List[str],
+        ground_truths: List[str],
+        hallucination_metrics: List[HallucinationMetrics],
+        model_tag: str = "model",
+    ) -> AggregateResult:
+        assert len(queries) == len(predictions) == len(ground_truths) == len(hallucination_metrics)
+
+        sample_results = []
+        for q, pred, gt, hm in zip(queries, predictions, ground_truths, hallucination_metrics):
+            sr = SampleResult(
+                query=q,
+                prediction=pred,
+                ground_truth=gt,
+                f1=f1_score(pred, gt),
+                em=exact_match(pred, gt),
+                metrics=hm,
+            )
+            sample_results.append(sr)
+
+        n = len(sample_results)
+        agg = AggregateResult(
+            avg_f1=np.mean([r.f1 for r in sample_results]),
+            avg_em=np.mean([r.em for r in sample_results]),
+            avg_scr=np.mean([r.metrics.scr for r in sample_results]),
+            avg_cr=np.mean([r.metrics.cr for r in sample_results]),
+            avg_tve=np.mean([r.metrics.tve for r in sample_results]),
+            avg_cdee=np.mean([r.metrics.cdee for r in sample_results]),
+            avg_chs=np.mean([r.metrics.chs for r in sample_results]),
+            n_samples=n,
+            model_tag=model_tag,
+        )
+        logger.info(agg.summary())
+        self._save(sample_results, agg, model_tag)
+        return agg
+
+    def compare(self, baseline: AggregateResult, tuned: AggregateResult) -> dict:
+        """Print Δ metrics between baseline and fine-tuned model."""
+        delta = {
+            "Δ F1":   round(tuned.avg_f1 - baseline.avg_f1, 4),
+            "Δ EM":   round(tuned.avg_em - baseline.avg_em, 4),
+            "Δ SCR":  round(tuned.avg_scr - baseline.avg_scr, 4),
+            "Δ CR":   round(tuned.avg_cr - baseline.avg_cr, 4),
+            "Δ TVE":  round(tuned.avg_tve - baseline.avg_tve, 4),
+            "Δ CDEE": round(tuned.avg_cdee - baseline.avg_cdee, 4),
+            "Δ CHS":  round(tuned.avg_chs - baseline.avg_chs, 4),
+        }
+        logger.info("=== Comparison ===")
+        for k, v in delta.items():
+            sign = "▲" if v > 0 else ("▼" if v < 0 else "—")
+            logger.info(f"  {k}: {sign} {abs(v):.4f}")
+        return delta
+
+    def _save(self, sample_results: List[SampleResult], agg: AggregateResult, tag: str) -> None:
+        # Per-sample results
+        sample_path = Path(self.results_dir) / f"{tag}_samples.jsonl"
+        with open(sample_path, "w") as f:
+            for r in sample_results:
+                row = {
+                    "query": r.query,
+                    "prediction": r.prediction,
+                    "ground_truth": r.ground_truth,
+                    "f1": r.f1,
+                    "em": r.em,
+                    **asdict(r.metrics),
+                }
+                f.write(json.dumps(row) + "\n")
+
+        # Aggregate
+        agg_path = Path(self.results_dir) / f"{tag}_aggregate.json"
+        with open(agg_path, "w") as f:
+            json.dump(asdict(agg), f, indent=2)
+
+        logger.info(f"Results saved to {self.results_dir}")

@@ -1,0 +1,91 @@
+# ============================================================
+# Failure-Aware RAG — Master Configuration
+# ============================================================
+
+# ── Retrieval ────────────────────────────────────────────────
+retrieval:
+  encoder_model: "sentence-transformers/all-MiniLM-L6-v2"
+  top_k: 5                          # documents returned per query
+  index_path: "data/faiss.index"
+  corpus_path: "data/corpus.jsonl"
+  embedding_dim: 384
+
+# ── Generation ───────────────────────────────────────────────
+#
+#   Model options by GPU VRAM:
+#   ┌─────────────────────────────────────────────┬──────────┐
+#   │ microsoft/Phi-3.5-mini-instruct             │  ~9 GB   │ ← L4 GPU
+#   │ mistralai/Mistral-7B-Instruct-v0.2          │ ~16 GB   │
+#   │ meta-llama/Llama-2-7b-chat-hf               │ ~16 GB   │
+#   │ TinyLlama/TinyLlama-1.1B-Chat-v1.0          │  ~3 GB   │ CPU-safe
+#   └─────────────────────────────────────────────┴──────────┘
+#
+generation:
+  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  load_in_4bit: false        # QLoRA 4-bit NF4 — requires CUDA
+  device_map: "auto"
+  max_new_tokens: 128
+  temperature: 0.1
+  do_sample: false
+  adapter_path: "outputs/qlora_model"                # set to outputs/qlora/dpo after training
+  # adapter_path: null
+
+# ── Diagnosis ────────────────────────────────────────────────
+diagnosis:
+  nli_model: "cross-encoder/nli-deberta-v3-base"
+  nli_batch_size: 8                 # moderate — saves VRAM on L4
+  entailment_threshold: 0.7
+  contradiction_threshold: 0.6
+  claim_min_length: 6               # min word count per claim
+  claim_max_per_answer: 20
+
+# ── Metrics ──────────────────────────────────────────────────
+metrics:
+  hallucination_lambda: 0.5         # λ weight in composite CHS
+  scr_weight: 1.0
+  conflict_weight: 1.0
+  tve_weight: 0.8
+  cdee_weight: 0.8
+
+# ── Training ─────────────────────────────────────────────────
+training:
+  method: "dpo"                     # dpo | metric_loss | rejection
+  output_dir: "outputs/qlora"
+  num_epochs: 3
+  per_device_train_batch_size: 2    # safe for L4 24GB
+  gradient_accumulation_steps: 8   # effective batch = 16
+  learning_rate: 2.0e-4
+  fp16: true
+  warmup_ratio: 0.05
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  lora_target_modules:
+    - "q_proj"
+    - "v_proj"
+    - "k_proj"
+    - "o_proj"
+  hallucination_penalty_lambda: 0.3
+  dpo_beta: 0.1
+  min_score_gap: 0.2
+  min_scr_for_positive: 0.75         # require strong grounding to keep a response as preferred
+  max_tve_for_positive: 0.20         # reject temporally stale outputs in preference construction
+  max_cr_for_positive: 0.20          # avoid contradiction-heavy outputs
+
+# ── Evaluation ───────────────────────────────────────────────
+evaluation:
+  datasets:
+    - name: "hotpotqa"
+      split: "validation"
+      max_samples: 500
+    - name: "ragtruth"
+      split: "test"
+      max_samples: 300
+  results_dir: "outputs/eval"
+  compare_baseline: true
+
+# ── Paths ────────────────────────────────────────────────────
+paths:
+  log_dir: "outputs/logs"
+  checkpoint_dir: "outputs/checkpoints"
+  cache_dir: ".cache"

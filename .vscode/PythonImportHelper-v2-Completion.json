@@ -1,0 +1,2095 @@
+[
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "argparse",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "argparse",
+        "description": "argparse",
+        "detail": "argparse",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "torch",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "torch",
+        "description": "torch",
+        "detail": "torch",
+        "documentation": {}
+    },
+    {
+        "label": "yaml",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "yaml",
+        "description": "yaml",
+        "detail": "yaml",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "importPath": "loguru",
+        "description": "loguru",
+        "isExtraImport": true,
+        "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "DenseEncoder",
+        "importPath": "src.retrieval.encoder",
+        "description": "src.retrieval.encoder",
+        "isExtraImport": true,
+        "detail": "src.retrieval.encoder",
+        "documentation": {}
+    },
+    {
+        "label": "build_index_from_corpus",
+        "importPath": "src.retrieval.encoder",
+        "description": "src.retrieval.encoder",
+        "isExtraImport": true,
+        "detail": "src.retrieval.encoder",
+        "documentation": {}
+    },
+    {
+        "label": "textwrap",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "textwrap",
+        "description": "textwrap",
+        "detail": "textwrap",
+        "documentation": {}
+    },
+    {
+        "label": "types",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "types",
+        "description": "types",
+        "detail": "types",
+        "documentation": {}
+    },
+    {
+        "label": "copy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "copy",
+        "description": "copy",
+        "detail": "copy",
+        "documentation": {}
+    },
+    {
+        "label": "tempfile",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tempfile",
+        "description": "tempfile",
+        "detail": "tempfile",
+        "documentation": {}
+    },
+    {
+        "label": "HallucinationMetrics",
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "MetricEngine",
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "HallucinationMetrics",
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "MetricEngine",
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "RAGEvaluator",
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "isExtraImport": true,
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "RAGEvaluator",
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "isExtraImport": true,
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "exact_match",
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "isExtraImport": true,
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "f1_score",
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "isExtraImport": true,
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "FailureAwareRAGPipeline",
+        "importPath": "src.pipeline",
+        "description": "src.pipeline",
+        "isExtraImport": true,
+        "detail": "src.pipeline",
+        "documentation": {}
+    },
+    {
+        "label": "FailureAwareRAGPipeline",
+        "importPath": "src.pipeline",
+        "description": "src.pipeline",
+        "isExtraImport": true,
+        "detail": "src.pipeline",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
+        "label": "psutil",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "psutil",
+        "description": "psutil",
+        "detail": "psutil",
+        "documentation": {}
+    },
+    {
+        "label": "Iterator",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "MetricGuidedQLoRATrainer",
+        "importPath": "src.training.qlora_trainer",
+        "description": "src.training.qlora_trainer",
+        "isExtraImport": true,
+        "detail": "src.training.qlora_trainer",
+        "documentation": {}
+    },
+    {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "field",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "asdict",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "field",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "asdict",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "asdict",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "SentenceTransformer",
+        "importPath": "sentence_transformers",
+        "description": "sentence_transformers",
+        "isExtraImport": true,
+        "detail": "sentence_transformers",
+        "documentation": {}
+    },
+    {
+        "label": "SentenceTransformer",
+        "importPath": "sentence_transformers",
+        "description": "sentence_transformers",
+        "isExtraImport": true,
+        "detail": "sentence_transformers",
+        "documentation": {}
+    },
+    {
+        "label": "faiss",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "faiss",
+        "description": "faiss",
+        "detail": "faiss",
+        "documentation": {}
+    },
+    {
+        "label": "VectorStore",
+        "importPath": "src.retrieval.vector_store",
+        "description": "src.retrieval.vector_store",
+        "isExtraImport": true,
+        "detail": "src.retrieval.vector_store",
+        "documentation": {}
+    },
+    {
+        "label": "Enum",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
+        "label": "pipeline",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "AutoModelForCausalLM",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "AutoTokenizer",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "BitsAndBytesConfig",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "GenerationConfig",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "AutoModelForCausalLM",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "AutoTokenizer",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "BitsAndBytesConfig",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingArguments",
+        "importPath": "transformers",
+        "description": "transformers",
+        "isExtraImport": true,
+        "detail": "transformers",
+        "documentation": {}
+    },
+    {
+        "label": "string",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "string",
+        "description": "string",
+        "detail": "string",
+        "documentation": {}
+    },
+    {
+        "label": "Counter",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "pickle",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pickle",
+        "description": "pickle",
+        "detail": "pickle",
+        "documentation": {}
+    },
+    {
+        "label": "tqdm",
+        "importPath": "tqdm",
+        "description": "tqdm",
+        "isExtraImport": true,
+        "detail": "tqdm",
+        "documentation": {}
+    },
+    {
+        "label": "gc",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "gc",
+        "description": "gc",
+        "detail": "gc",
+        "documentation": {}
+    },
+    {
+        "label": "inspect",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "inspect",
+        "description": "inspect",
+        "detail": "inspect",
+        "documentation": {}
+    },
+    {
+        "label": "LoraConfig",
+        "importPath": "peft",
+        "description": "peft",
+        "isExtraImport": true,
+        "detail": "peft",
+        "documentation": {}
+    },
+    {
+        "label": "get_peft_model",
+        "importPath": "peft",
+        "description": "peft",
+        "isExtraImport": true,
+        "detail": "peft",
+        "documentation": {}
+    },
+    {
+        "label": "prepare_model_for_kbit_training",
+        "importPath": "peft",
+        "description": "peft",
+        "isExtraImport": true,
+        "detail": "peft",
+        "documentation": {}
+    },
+    {
+        "label": "DPOTrainer",
+        "importPath": "trl",
+        "description": "trl",
+        "isExtraImport": true,
+        "detail": "trl",
+        "documentation": {}
+    },
+    {
+        "label": "DPOConfig",
+        "importPath": "trl",
+        "description": "trl",
+        "isExtraImport": true,
+        "detail": "trl",
+        "documentation": {}
+    },
+    {
+        "label": "Dataset",
+        "importPath": "datasets",
+        "description": "datasets",
+        "isExtraImport": true,
+        "detail": "datasets",
+        "documentation": {}
+    },
+    {
+        "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "MagicMock",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "patch",
+        "importPath": "unittest.mock",
+        "description": "unittest.mock",
+        "isExtraImport": true,
+        "detail": "unittest.mock",
+        "documentation": {}
+    },
+    {
+        "label": "pytest",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pytest",
+        "description": "pytest",
+        "detail": "pytest",
+        "documentation": {}
+    },
+    {
+        "label": "SpacyClaimExtractor",
+        "importPath": "src.diagnosis.claim_extractor",
+        "description": "src.diagnosis.claim_extractor",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.claim_extractor",
+        "documentation": {}
+    },
+    {
+        "label": "SpacyClaimExtractor",
+        "importPath": "src.diagnosis.claim_extractor",
+        "description": "src.diagnosis.claim_extractor",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.claim_extractor",
+        "documentation": {}
+    },
+    {
+        "label": "HallucinationDiagnoser",
+        "importPath": "src.diagnosis.diagnose",
+        "description": "src.diagnosis.diagnose",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.diagnose",
+        "documentation": {}
+    },
+    {
+        "label": "ClaimVerificationResult",
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "NLILabel",
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "NLIVerificationEngine",
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "ClaimVerificationResult",
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "NLILabel",
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "_is_temporal_claim",
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "isExtraImport": true,
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingSignalGenerator",
+        "importPath": "src.training.signal_generator",
+        "description": "src.training.signal_generator",
+        "isExtraImport": true,
+        "detail": "src.training.signal_generator",
+        "documentation": {}
+    },
+    {
+        "label": "find_packages",
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "isExtraImport": true,
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "importPath": "setuptools",
+        "description": "setuptools",
+        "isExtraImport": true,
+        "detail": "setuptools",
+        "documentation": {}
+    },
+    {
+        "label": "download_wikipedia_sample",
+        "kind": 2,
+        "importPath": "scripts.build_index",
+        "description": "scripts.build_index",
+        "peekOfCode": "def download_wikipedia_sample(output_path: str, n_docs: int = 50_000) -> None:\n    \"\"\"\n    Download Wikipedia sample OR fallback to dummy corpus.\n    \"\"\"\n    try:\n        from datasets import load_dataset\n        logger.info(f\"Downloading Wikipedia sample ({n_docs:,} docs)...\")\n        ds = load_dataset(\n            \"wikimedia/wikipedia\",\n            \"20231101.en\",",
+        "detail": "scripts.build_index",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.build_index",
+        "description": "scripts.build_index",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--corpus\", default=None)\n    parser.add_argument(\"--n_docs\", type=int, default=10_000)\n    parser.add_argument(\"--device\", default=None)\n    args = parser.parse_args()\n    # Device handling\n    device = args.device or (\"cuda\" if torch.cuda.is_available() else \"cpu\")\n    logger.info(f\"Using device: {device}\")",
+        "detail": "scripts.build_index",
+        "documentation": {}
+    },
+    {
+        "label": "MockRetriever",
+        "kind": 6,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "class MockRetriever:\n    \"\"\"Keyword-overlap retriever over MOCK_CORPUS (no FAISS needed).\"\"\"\n    def retrieve(self, query: str, top_k: int = 3):\n        q = query.lower()\n        scored = []\n        for title, text in MOCK_CORPUS.items():\n            score = sum(1 for word in q.split() if word in text.lower())\n            scored.append(\n                {\n                    \"doc_id\": title.lower().replace(\" \", \"_\"),",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "MockGenerator",
+        "kind": 6,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "class MockGenerator:\n    \"\"\"Returns a canned answer keyed on the query (with one intentional hallucination).\"\"\"\n    def generate(self, query: str, documents):\n        q = query.lower().rstrip(\"?\").strip()\n        for key, ans in MOCK_ANSWERS.items():\n            if key in q:\n                return ans\n        return documents[0][\"text\"] if documents else \"No answer.\"\n# ── Runtime stubs (loguru + spacy) ───────────────────────────────────────────\ndef _install_runtime_stubs():",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "build_mock_pipeline",
+        "kind": 2,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "def build_mock_pipeline():\n    \"\"\"Wire real claim extraction + metric engine with mock retrieval/generation/NLI.\"\"\"\n    _install_runtime_stubs()\n    from src.diagnosis.claim_extractor import SpacyClaimExtractor\n    from src.diagnosis.diagnose import HallucinationDiagnoser\n    from src.diagnosis.metric_engine import MetricEngine\n    from src.diagnosis.verification_engine import (\n        ClaimVerificationResult,\n        NLILabel,\n        _is_temporal_claim,",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "print_result",
+        "kind": 2,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "def print_result(query: str, answer: str, diag, idx: int, verbose: bool = False):\n    print(\"\\n\" + \"=\" * 72)\n    print(f\"Q{idx}. {query}\")\n    print(\"-\" * 72)\n    print(textwrap.fill(answer, width=72))\n    print(\"-\" * 72)\n    print(f\"Claims extracted: {len(diag.claims)} | {diag.metrics.summary()}\")\n    if verbose:\n        # Per-claim label table\n        label_icons = {\"entailment\": \"\\u2713\", \"contradiction\": \"\\u2717\", \"neutral\": \"~\"}",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "print_training_signal_summary",
+        "kind": 2,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "def print_training_signal_summary(rows: list):\n    \"\"\"Print CHS distribution and available DPO pairs.\"\"\"\n    print(\"\\n\" + \"=\" * 72)\n    print(\"TRAINING SIGNAL SUMMARY\")\n    print(\"-\" * 72)\n    chs_values = [r[\"metrics\"][\"chs\"] for r in rows]\n    low = sum(1 for c in chs_values if c <= 0.3)\n    mid = sum(1 for c in chs_values if 0.3 < c <= 0.6)\n    high = sum(1 for c in chs_values if c > 0.6)\n    mean_chs = sum(chs_values) / max(len(chs_values), 1)",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "print_comparison_table",
+        "kind": 2,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "def print_comparison_table(rows: list):\n    \"\"\"Print a simulated baseline vs fine-tuned comparison.\"\"\"\n    chs_vals = [r[\"metrics\"][\"chs\"] for r in rows]\n    baseline_chs = sum(chs_vals) / max(len(chs_vals), 1)\n    tuned_chs = baseline_chs * 0.80   # simulate ~20% improvement\n    baseline_scr = sum(r[\"metrics\"][\"scr\"] for r in rows) / max(len(rows), 1)\n    tuned_scr = min(1.0, baseline_scr * 1.15)\n    print(\"=\" * 72)\n    print(\"SIMULATED BASELINE vs FINE-TUNED COMPARISON\")\n    print(f\"  {'Metric':<12} {'Baseline':>10} {'Fine-tuned':>12} {'Delta':>8}\")",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        description=\"Failure-Aware RAG end-to-end demo (no GPU, no downloads).\"\n    )\n    parser.add_argument(\"--queries\", nargs=\"*\", default=None, help=\"Custom query list\")\n    parser.add_argument(\n        \"--verbose\",\n        action=\"store_true\",\n        help=\"Show per-claim labels, ASCII metric bars, and comparison table\",\n    )",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "MOCK_CORPUS",
+        "kind": 5,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "MOCK_CORPUS = {\n    \"Alexander Graham Bell\": (\n        \"Alexander Graham Bell patented a practical telephone in 1876. \"\n        \"Bell conducted his first successful telephone call on March 10, 1876.\"\n    ),\n    \"DNA Structure\": (\n        \"The DNA double-helix structure was described by Watson and Crick in 1953. \"\n        \"DNA carries the genetic information of all known living organisms.\"\n    ),\n    \"2008 Financial Crisis\": (",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "MOCK_ANSWERS",
+        "kind": 5,
+        "importPath": "scripts.demo",
+        "description": "scripts.demo",
+        "peekOfCode": "MOCK_ANSWERS = {\n    \"who invented the telephone\": (\n        \"The telephone was invented by Alexander Graham Bell in 1876.\"\n    ),\n    \"what is dna\": (\n        \"DNA is a molecule carrying genetic information, and its double helix was \"\n        \"described by Watson and Crick in 1953.\"\n    ),\n    \"what caused the 2008 financial crisis\": (\n        \"The crisis was driven by subprime mortgages, securitization risk, \"",
+        "detail": "scripts.demo",
+        "documentation": {}
+    },
+    {
+        "label": "load_hotpotqa",
+        "kind": 2,
+        "importPath": "scripts.evaluate",
+        "description": "scripts.evaluate",
+        "peekOfCode": "def load_hotpotqa(split: str = \"validation\", max_samples: int = 200):\n    from datasets import load_dataset\n    ds = load_dataset(\"hotpot_qa\", \"distractor\", split=split, streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        queries.append(row[\"question\"])\n        answers.append(row[\"answer\"])\n        if len(queries) >= max_samples:\n            break\n    return queries, answers",
+        "detail": "scripts.evaluate",
+        "documentation": {}
+    },
+    {
+        "label": "load_natural_questions",
+        "kind": 2,
+        "importPath": "scripts.evaluate",
+        "description": "scripts.evaluate",
+        "peekOfCode": "def load_natural_questions(split: str = \"validation\", max_samples: int = 200):\n    from datasets import load_dataset\n    ds = load_dataset(\"natural_questions\", split=split, streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        short_answers = row[\"annotations\"][\"short_answers\"]\n        if not short_answers or not short_answers[0][\"text\"]:\n            continue\n        queries.append(row[\"question\"][\"text\"])\n        answers.append(short_answers[0][\"text\"][0])",
+        "detail": "scripts.evaluate",
+        "documentation": {}
+    },
+    {
+        "label": "load_popqa",
+        "kind": 2,
+        "importPath": "scripts.evaluate",
+        "description": "scripts.evaluate",
+        "peekOfCode": "def load_popqa(max_samples: int = 200):\n    from datasets import load_dataset\n    ds = load_dataset(\"akariasai/PopQA\", split=\"test\", streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        queries.append(row[\"question\"])\n        answers.append(row[\"possible_answers\"][0] if row[\"possible_answers\"] else \"\")\n        if len(queries) >= max_samples:\n            break\n    return queries, answers",
+        "detail": "scripts.evaluate",
+        "documentation": {}
+    },
+    {
+        "label": "evaluate_model",
+        "kind": 2,
+        "importPath": "scripts.evaluate",
+        "description": "scripts.evaluate",
+        "peekOfCode": "def evaluate_model(pipeline, queries, ground_truths, tag):\n    \"\"\"Run inference + diagnosis and return aggregate results.\"\"\"\n    predictions, hal_metrics = [], []\n    for i, (q, gt) in enumerate(zip(queries, ground_truths)):\n        logger.info(f\"[{i+1}/{len(queries)}] {q[:60]}\")\n        result = pipeline.run_inference(q, diagnose=True)\n        predictions.append(result[\"answer\"])\n        m = result[\"diagnosis\"][\"metrics\"]\n        hal_metrics.append(HallucinationMetrics(**m))\n    return pipeline.evaluator.evaluate(",
+        "detail": "scripts.evaluate",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.evaluate",
+        "description": "scripts.evaluate",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--dataset\", default=\"hotpotqa\", choices=list(DATASET_LOADERS))\n    parser.add_argument(\"--adapter\", default=None, help=\"Path to fine-tuned LoRA adapter\")\n    parser.add_argument(\"--max-samples\", type=int, default=100)\n    parser.add_argument(\"--output-dir\", default=\"outputs/eval\")\n    args = parser.parse_args()\n    with open(args.config) as f:\n        cfg = yaml.safe_load(f)",
+        "detail": "scripts.evaluate",
+        "documentation": {}
+    },
+    {
+        "label": "DATASET_LOADERS",
+        "kind": 5,
+        "importPath": "scripts.evaluate",
+        "description": "scripts.evaluate",
+        "peekOfCode": "DATASET_LOADERS = {\n    \"hotpotqa\": load_hotpotqa,\n    \"natural_questions\": load_natural_questions,\n    \"popqa\": load_popqa,\n}\n# ── Evaluation runner ─────────────────────────────────────────────────────────\ndef evaluate_model(pipeline, queries, ground_truths, tag):\n    \"\"\"Run inference + diagnosis and return aggregate results.\"\"\"\n    predictions, hal_metrics = [], []\n    for i, (q, gt) in enumerate(zip(queries, ground_truths)):",
+        "detail": "scripts.evaluate",
+        "documentation": {}
+    },
+    {
+        "label": "monitor_gpu_memory",
+        "kind": 2,
+        "importPath": "scripts.monitor_gpu",
+        "description": "scripts.monitor_gpu",
+        "peekOfCode": "def monitor_gpu_memory():\n    \"\"\"Monitor GPU memory usage\"\"\"\n    if not torch.cuda.is_available():\n        logger.warning(\"No GPU available\")\n        return\n    while True:\n        try:\n            allocated = torch.cuda.memory_allocated(0) / 1024**3\n            reserved = torch.cuda.memory_reserved(0) / 1024**3\n            total = torch.cuda.get_device_properties(0).total_memory / 1024**3",
+        "detail": "scripts.monitor_gpu",
+        "documentation": {}
+    },
+    {
+        "label": "load_hotpotqa",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def load_hotpotqa(split: str = \"validation\", max_samples: int = 1000) -> Iterator[dict]:\n    from datasets import load_dataset\n    logger.info(f\"Loading HotpotQA ({split}, max={max_samples})\")\n    ds = load_dataset(\"hotpot_qa\", \"distractor\", split=split, streaming=True, trust_remote_code=True)\n    for i, row in enumerate(ds):\n        if i >= max_samples:\n            break\n        yield {\n            \"id\": row[\"id\"],\n            \"query\": row[\"question\"],",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "load_natural_questions",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def load_natural_questions(split: str = \"validation\", max_samples: int = 1000) -> Iterator[dict]:\n    from datasets import load_dataset\n    logger.info(f\"Loading Natural Questions ({split}, max={max_samples})\")\n    ds = load_dataset(\"natural_questions\", split=split, streaming=True, trust_remote_code=True)\n    idx = 0\n    for row in ds:\n        if idx >= max_samples:\n            break\n        short = row[\"annotations\"][\"short_answers\"]\n        if not short or not short[0][\"text\"]:",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "load_popqa",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def load_popqa(split: str = \"test\", max_samples: int = 1000) -> Iterator[dict]:\n    from datasets import load_dataset\n    # PopQA is typically used with test split.\n    use_split = \"test\"\n    logger.info(f\"Loading PopQA ({use_split}, max={max_samples})\")\n    ds = load_dataset(\"akariasai/PopQA\", split=use_split, streaming=True, trust_remote_code=True)\n    for i, row in enumerate(ds):\n        if i >= max_samples:\n            break\n        answers = row.get(\"possible_answers\", [])",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "load_triviaqa",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def load_triviaqa(split: str = \"validation\", max_samples: int = 1000) -> Iterator[dict]:\n    from datasets import load_dataset\n    logger.info(f\"Loading TriviaQA ({split}, max={max_samples})\")\n    ds = load_dataset(\"trivia_qa\", \"rc\", split=split, streaming=True, trust_remote_code=True)\n    for i, row in enumerate(ds):\n        if i >= max_samples:\n            break\n        yield {\n            \"id\": row[\"question_id\"],\n            \"query\": row[\"question\"],",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "load_ragtruth",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def load_ragtruth(split: str = \"test\", max_samples: int = 500) -> Iterator[dict]:\n    from datasets import load_dataset\n    logger.info(f\"Loading RAGTruth ({split}, max={max_samples})\")\n    try:\n        ds = load_dataset(\"wandb/RAGTruth\", split=split, streaming=True, trust_remote_code=True)\n    except Exception:\n        ds = load_dataset(\"RAGTruth/RAGTruth\", split=split, streaming=True, trust_remote_code=True)\n    for i, row in enumerate(ds):\n        if i >= max_samples:\n            break",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "prepare_wikipedia_corpus",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def prepare_wikipedia_corpus(output_path: str, n_docs: int = 100_000) -> None:\n    from datasets import load_dataset\n    logger.info(f\"Downloading Wikipedia ({n_docs:,} docs)...\")\n    ds = load_dataset(\"wikipedia\", \"20220301.en\", split=\"train\", streaming=True, trust_remote_code=True)\n    Path(output_path).parent.mkdir(parents=True, exist_ok=True)\n    count = 0\n    with open(output_path, \"w\") as f:\n        for row in ds:\n            if count >= n_docs:\n                break",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "extract_training_queries",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def extract_training_queries(input_paths: list[str], output_path: str, max_total: int = 5000) -> None:\n    Path(output_path).parent.mkdir(parents=True, exist_ok=True)\n    written = 0\n    with open(output_path, \"w\") as out:\n        for path in input_paths:\n            with open(path) as f:\n                for line in f:\n                    if written >= max_total:\n                        break\n                    row = json.loads(line)",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "def main() -> None:\n    parser = argparse.ArgumentParser(description=\"Download and prepare datasets\")\n    parser.add_argument(\n        \"--datasets\",\n        nargs=\"+\",\n        choices=list(DATASET_LOADERS) + [\"all\", \"corpus\"],\n        default=[\"hotpotqa\"],\n        help=\"Which datasets to download\",\n    )\n    parser.add_argument(\"--split\", default=\"validation\", help=\"Dataset split\")",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "DATASET_LOADERS",
+        "kind": 5,
+        "importPath": "scripts.prepare_data",
+        "description": "scripts.prepare_data",
+        "peekOfCode": "DATASET_LOADERS = {\n    \"hotpotqa\": load_hotpotqa,\n    \"nq\": load_natural_questions,\n    \"popqa\": load_popqa,\n    \"triviaqa\": load_triviaqa,\n    \"ragtruth\": load_ragtruth,\n}\ndef prepare_wikipedia_corpus(output_path: str, n_docs: int = 100_000) -> None:\n    from datasets import load_dataset\n    logger.info(f\"Downloading Wikipedia ({n_docs:,} docs)...\")",
+        "detail": "scripts.prepare_data",
+        "documentation": {}
+    },
+    {
+        "label": "_MockGenerator",
+        "kind": 6,
+        "importPath": "scripts.run_inference",
+        "description": "scripts.run_inference",
+        "peekOfCode": "class _MockGenerator:\n    \"\"\"\n    Lightweight stand-in for RAGGenerator.\n    Splits the top retrieved document's text into sentences and returns\n    the first two as the 'answer'.  No model download required.\n    \"\"\"\n    def generate(self, query: str, documents: List[dict]) -> str:\n        if not documents:\n            return \"No documents retrieved.\"\n        import re",
+        "detail": "scripts.run_inference",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.run_inference",
+        "description": "scripts.run_inference",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        description=\"Run Failure-Aware RAG inference (single query or batch).\"\n    )\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--query\", default=None, help=\"Single query string\")\n    parser.add_argument(\"--input\", default=None, help=\"JSONL file with queries\")\n    parser.add_argument(\"--output\", default=\"outputs/predictions.jsonl\")\n    parser.add_argument(\n        \"--mock-generate\",",
+        "detail": "scripts.run_inference",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingSignalGenerator",
+        "kind": 6,
+        "importPath": "scripts.train",
+        "description": "scripts.train",
+        "peekOfCode": "class TrainingSignalGenerator:\n    @staticmethod\n    def load(path: str):\n        \"\"\"Load training samples from JSON file\"\"\"\n        samples = []\n        try:\n            with open(path, 'r') as f:\n                data = json.load(f)\n            # Convert dict samples to objects with attributes\n            for item in data:",
+        "detail": "scripts.train",
+        "documentation": {}
+    },
+    {
+        "label": "load_queries",
+        "kind": 2,
+        "importPath": "scripts.train",
+        "description": "scripts.train",
+        "peekOfCode": "def load_queries(path: str):\n    queries = []\n    with open(path) as f:\n        for line in f:\n            row = json.loads(line.strip())\n            queries.append(row[\"query\"])\n    return queries\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")",
+        "detail": "scripts.train",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.train",
+        "description": "scripts.train",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--queries\", default=None, help=\"JSONL of training queries\")\n    parser.add_argument(\"--samples\", default=None, help=\"Skip collection, use saved samples\")\n    parser.add_argument(\n        \"--method\",\n        choices=[\"dpo\", \"rejection\", \"metric_loss\"],\n        default=\"dpo\",\n        help=\"Override training method from config\",",
+        "detail": "scripts.train",
+        "documentation": {}
+    },
+    {
+        "label": "plot_radar",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def plot_radar(baseline_agg: dict, tuned_agg: Optional[dict] = None) -> Path:\n    labels = [\"SCR ↑\", \"F1 ↑\", \"1−CR ↑\", \"1−TVE ↑\", \"1−CDEE ↑\"]\n    keys_raw = [\"avg_scr\", \"avg_f1\", \"avg_cr\", \"avg_tve\", \"avg_cdee\"]\n    invert = [False, False, True, True, True]\n    def extract(agg):\n        vals = []\n        for k, inv in zip(keys_raw, invert):\n            v = agg.get(k, 0.0)\n            vals.append(1.0 - v if inv else v)\n        return vals",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "plot_chs_distribution",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def plot_chs_distribution(chs_values: List[float], model_tag: str) -> Path:\n    fig, ax = plt.subplots(figsize=(8, 4))\n    _, bins, patches = ax.hist(chs_values, bins=20, edgecolor=\"white\", alpha=0.8, density=False)\n    for patch, left in zip(patches, bins):\n        if left < 0.3:\n            patch.set_facecolor(PALETTE[\"good\"])\n        elif left < 0.6:\n            patch.set_facecolor(PALETTE[\"warn\"])\n        else:\n            patch.set_facecolor(\"#CC3333\")",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "plot_claim_breakdown",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def plot_claim_breakdown(sample_records: List[dict], max_queries: int = 20) -> Path:\n    records = sample_records[:max_queries]\n    queries_short = [f\"Q{i+1}\" for i in range(len(records))]\n    supported = [r[\"supported_claims\"] for r in records]\n    contradicted = [r[\"contradicted_claims\"] for r in records]\n    neutral = [\n        r.get(\"neutral_claims\", r[\"total_claims\"] - r[\"supported_claims\"] - r[\"contradicted_claims\"])\n        for r in records\n    ]\n    x = np.arange(len(queries_short))",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "plot_chs_vs_f1",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def plot_chs_vs_f1(sample_records: List[dict], model_tag: str) -> Path:\n    chs = [r.get(\"chs\", 0.0) for r in sample_records]\n    f1 = [r.get(\"f1\", 0.0) for r in sample_records]\n    fig, ax = plt.subplots(figsize=(7, 5))\n    scatter = ax.scatter(chs, f1, alpha=0.6, c=chs, cmap=\"RdYlGn_r\", s=50, edgecolors=\"white\")\n    plt.colorbar(scatter, ax=ax, label=\"CHS (lower=better)\")\n    if len(chs) > 2:\n        z = np.polyfit(chs, f1, 1)\n        p = np.poly1d(z)\n        xs = np.linspace(min(chs), max(chs), 100)",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "plot_metric_comparison",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def plot_metric_comparison(baseline: dict, tuned: dict) -> Path:\n    metrics = {\n        \"F1 ↑\": (\"avg_f1\", False),\n        \"SCR ↑\": (\"avg_scr\", False),\n        \"CR ↓\": (\"avg_cr\", True),\n        \"TVE ↓\": (\"avg_tve\", True),\n        \"CDEE ↓\": (\"avg_cdee\", True),\n        \"CHS ↓\": (\"avg_chs\", True),\n    }\n    labels = list(metrics.keys())",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "plot_training_chs_curve",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def plot_training_chs_curve(chs_values: List[float]) -> Path:\n    xs = list(range(1, len(chs_values) + 1))\n    window = max(3, len(chs_values) // 10)\n    rolling = [\n        sum(chs_values[max(0, i - window) : i + 1]) / len(chs_values[max(0, i - window) : i + 1])\n        for i in range(len(chs_values))\n    ]\n    fig, ax = plt.subplots(figsize=(10, 4))\n    ax.scatter(xs, chs_values, alpha=0.4, s=25, color=PALETTE[\"baseline\"], label=\"Per-sample CHS\")\n    ax.plot(xs, rolling, color=PALETTE[\"warn\"], linewidth=2.5, label=f\"Rolling mean (w={window})\")",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "def main() -> None:\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--results-dir\", default=\"outputs/eval\")\n    parser.add_argument(\"--samples\", default=None)\n    parser.add_argument(\"--figures-dir\", default=\"outputs/figures\")\n    parser.add_argument(\n        \"--charts\",\n        nargs=\"+\",\n        choices=[\"radar\", \"chs\", \"claims\", \"scatter\", \"comparison\", \"training\", \"all\"],\n        default=[\"all\"],",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "PALETTE",
+        "kind": 5,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "PALETTE = {\n    \"baseline\": \"#4C72B0\",\n    \"tuned\": \"#DD8452\",\n    \"good\": \"#55A868\",\n    \"warn\": \"#C44E52\",\n    \"neutral\": \"#8172B2\",\n    \"bg\": \"#F8F8F8\",\n    \"grid\": \"#E0E0E0\",\n}\nFIGURE_DIR = Path(\"outputs/figures\")",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "FIGURE_DIR",
+        "kind": 5,
+        "importPath": "scripts.visualise_results",
+        "description": "scripts.visualise_results",
+        "peekOfCode": "FIGURE_DIR = Path(\"outputs/figures\")\ndef _setup() -> None:\n    FIGURE_DIR.mkdir(parents=True, exist_ok=True)\n    plt.rcParams.update(\n        {\n            \"figure.facecolor\": \"white\",\n            \"axes.facecolor\": PALETTE[\"bg\"],\n            \"axes.grid\": True,\n            \"grid.color\": PALETTE[\"grid\"],\n            \"grid.linewidth\": 0.8,",
+        "detail": "scripts.visualise_results",
+        "documentation": {}
+    },
+    {
+        "label": "SpacyClaimExtractor",
+        "kind": 6,
+        "importPath": "src.diagnosis.claim_extractor",
+        "description": "src.diagnosis.claim_extractor",
+        "peekOfCode": "class SpacyClaimExtractor:\n    \"\"\"\n    Rule-based claim extractor using spaCy.\n    Extracts sentences that contain at least one named entity or\n    a subject-verb-object triple (simple heuristic).\n    \"\"\"\n    def __init__(self, model: str = \"en_core_web_sm\", min_length: int = 6):\n        try:\n            import spacy\n            self.nlp = spacy.load(model)",
+        "detail": "src.diagnosis.claim_extractor",
+        "documentation": {}
+    },
+    {
+        "label": "LLMClaimExtractor",
+        "kind": 6,
+        "importPath": "src.diagnosis.claim_extractor",
+        "description": "src.diagnosis.claim_extractor",
+        "peekOfCode": "class LLMClaimExtractor:\n    \"\"\"\n    Uses a small instruction-tuned LLM (via HuggingFace pipeline)\n    for higher-quality claim decomposition.\n    Falls back to SpacyClaimExtractor on failure.\n    \"\"\"\n    def __init__(\n        self,\n        model_name: str = \"google/flan-t5-base\",\n        max_new_tokens: int = 256,",
+        "detail": "src.diagnosis.claim_extractor",
+        "documentation": {}
+    },
+    {
+        "label": "get_claim_extractor",
+        "kind": 2,
+        "importPath": "src.diagnosis.claim_extractor",
+        "description": "src.diagnosis.claim_extractor",
+        "peekOfCode": "def get_claim_extractor(\n    use_llm: bool = False,\n    llm_model: str = \"google/flan-t5-base\",\n    min_length: int = 6,\n) -> SpacyClaimExtractor | LLMClaimExtractor:\n    if use_llm:\n        return LLMClaimExtractor(model_name=llm_model)\n    return SpacyClaimExtractor(min_length=min_length)",
+        "detail": "src.diagnosis.claim_extractor",
+        "documentation": {}
+    },
+    {
+        "label": "CLAIM_EXTRACTION_PROMPT",
+        "kind": 5,
+        "importPath": "src.diagnosis.claim_extractor",
+        "description": "src.diagnosis.claim_extractor",
+        "peekOfCode": "CLAIM_EXTRACTION_PROMPT = \"\"\"\\\nBreak the following answer into a list of short, atomic, self-contained factual claims.\nEach claim must be independently verifiable.\nReturn ONLY the claims, one per line, with no numbering or bullet points.\nAnswer:\n{answer}\nClaims:\"\"\"\nclass LLMClaimExtractor:\n    \"\"\"\n    Uses a small instruction-tuned LLM (via HuggingFace pipeline)",
+        "detail": "src.diagnosis.claim_extractor",
+        "documentation": {}
+    },
+    {
+        "label": "DiagnosisOutput",
+        "kind": 6,
+        "importPath": "src.diagnosis.diagnose",
+        "description": "src.diagnosis.diagnose",
+        "peekOfCode": "class DiagnosisOutput:\n    answer: str\n    claims: List[str]\n    verification_results: List[ClaimVerificationResult]\n    metrics: HallucinationMetrics\n    per_claim_evidence: List[List[str]] = field(default_factory=list)\nclass HallucinationDiagnoser:\n    \"\"\"\n    Ties together:\n        - claim extractor",
+        "detail": "src.diagnosis.diagnose",
+        "documentation": {}
+    },
+    {
+        "label": "HallucinationDiagnoser",
+        "kind": 6,
+        "importPath": "src.diagnosis.diagnose",
+        "description": "src.diagnosis.diagnose",
+        "peekOfCode": "class HallucinationDiagnoser:\n    \"\"\"\n    Ties together:\n        - claim extractor\n        - evidence retriever (re-uses the main retriever)\n        - NLI verification engine\n        - metric engine\n    \"\"\"\n    def __init__(\n        self,",
+        "detail": "src.diagnosis.diagnose",
+        "documentation": {}
+    },
+    {
+        "label": "REFUSAL_PATTERNS",
+        "kind": 5,
+        "importPath": "src.diagnosis.diagnose",
+        "description": "src.diagnosis.diagnose",
+        "peekOfCode": "REFUSAL_PATTERNS = re.compile(\n    r\"(cannot\\s+provide|i\\s+cannot|can't\\s+answer|cannot\\s+answer|\"\n    r\"context\\s+does\\s+not|not\\s+mentioned|no\\s+mention\\s+of|\"\n    r\"unable\\s+to\\s+determine|insufficient\\s+information|\"\n    r\"not\\s+enough\\s+information)\",\n    re.IGNORECASE,\n)\ndef _is_context_refusal(answer: str) -> bool:\n    return bool(answer and REFUSAL_PATTERNS.search(answer))\n@dataclass",
+        "detail": "src.diagnosis.diagnose",
+        "documentation": {}
+    },
+    {
+        "label": "EvidenceRetriever",
+        "kind": 6,
+        "importPath": "src.diagnosis.evidence_retriever",
+        "description": "src.diagnosis.evidence_retriever",
+        "peekOfCode": "class EvidenceRetriever:\n    \"\"\"Retrieves evidence for individual claims.\"\"\"\n    def __init__(self, vector_store: VectorStore, top_k: int = 5):\n        self.vector_store = vector_store\n        self.encoder = SentenceTransformer('all-MiniLM-L6-v2')\n        self.top_k = top_k\n    def retrieve_evidence_for_claims(self, claims: List[Dict[str, Any]]) -> List[Dict[str, Any]]:\n        \"\"\"Retrieve evidence for each claim.\"\"\"\n        enhanced_claims = []\n        for claim in claims:",
+        "detail": "src.diagnosis.evidence_retriever",
+        "documentation": {}
+    },
+    {
+        "label": "HallucinationMetrics",
+        "kind": 6,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "class HallucinationMetrics:\n    scr: float   = 0.0   # Support Coverage Ratio         ↑ better\n    cr: float    = 0.0   # Conflict Rate                  ↓ better\n    tve: float   = 0.0   # Temporal Validity Error        ↓ better\n    cdee: float  = 0.0   # Cross-Document Entailment Error ↓ better\n    chs: float   = 0.0   # Composite Hallucination Score  ↓ better\n    # Counts (for transparency)\n    total_claims: int       = 0\n    supported_claims: int   = 0\n    contradicted_claims: int = 0",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "MetricEngine",
+        "kind": 6,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "class MetricEngine:\n    \"\"\"\n    Aggregates ClaimVerificationResults into HallucinationMetrics.\n    Weights are configurable; defaults match the paper proposal.\n    \"\"\"\n    def __init__(\n        self,\n        scr_weight: float = 1.0,\n        cr_weight: float  = 1.0,\n        tve_weight: float = 0.8,",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "NLILabel",
+        "kind": 6,
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "peekOfCode": "class NLILabel(str, Enum):\n    ENTAILMENT = \"entailment\"\n    CONTRADICTION = \"contradiction\"\n    NEUTRAL = \"neutral\"\n@dataclass\nclass ClaimVerificationResult:\n    claim: str\n    label: NLILabel\n    entailment_score: float\n    contradiction_score: float",
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "ClaimVerificationResult",
+        "kind": 6,
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "peekOfCode": "class ClaimVerificationResult:\n    claim: str\n    label: NLILabel\n    entailment_score: float\n    contradiction_score: float\n    neutral_score: float\n    supporting_evidence: List[str] = field(default_factory=list)\n    is_temporal: bool = False\n    is_outdated: bool = False\n    @property",
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "NLIVerificationEngine",
+        "kind": 6,
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "peekOfCode": "class NLIVerificationEngine:\n    \"\"\"\n    Uses a cross-encoder NLI model to verify claims against evidence.\n    Model: cross-encoder/nli-deberta-v3-base  (recommended)\n    Accepts a list of evidence strings per claim and returns the\n    *strongest* support / contradiction signal across all evidence.\n    \"\"\"\n    LABEL_MAP = {\n        \"entailment\": NLILabel.ENTAILMENT,\n        \"contradiction\": NLILabel.CONTRADICTION,",
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "TEMPORAL_PATTERNS",
+        "kind": 5,
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "peekOfCode": "TEMPORAL_PATTERNS = re.compile(\n    r\"\\b(current(ly)?|now|today|recent(ly)?|latest|as of|this year|\"\n    r\"last year|present|modern|upcoming|still|no longer|formerly)\\b\",\n    re.IGNORECASE,\n)\n# Year references like \"in 2024\", \"since 2022\"\nYEAR_PATTERN = re.compile(r\"\\b(19|20)\\d{2}\\b\")\ndef _is_temporal_claim(claim: str) -> bool:\n    return bool(TEMPORAL_PATTERNS.search(claim) or YEAR_PATTERN.search(claim))\n# ── NLI Verification Engine ───────────────────────────────────────────────────",
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "YEAR_PATTERN",
+        "kind": 5,
+        "importPath": "src.diagnosis.verification_engine",
+        "description": "src.diagnosis.verification_engine",
+        "peekOfCode": "YEAR_PATTERN = re.compile(r\"\\b(19|20)\\d{2}\\b\")\ndef _is_temporal_claim(claim: str) -> bool:\n    return bool(TEMPORAL_PATTERNS.search(claim) or YEAR_PATTERN.search(claim))\n# ── NLI Verification Engine ───────────────────────────────────────────────────\nclass NLIVerificationEngine:\n    \"\"\"\n    Uses a cross-encoder NLI model to verify claims against evidence.\n    Model: cross-encoder/nli-deberta-v3-base  (recommended)\n    Accepts a list of evidence strings per claim and returns the\n    *strongest* support / contradiction signal across all evidence.",
+        "detail": "src.diagnosis.verification_engine",
+        "documentation": {}
+    },
+    {
+        "label": "SampleResult",
+        "kind": 6,
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "peekOfCode": "class SampleResult:\n    query: str\n    prediction: str\n    ground_truth: str\n    f1: float\n    em: float\n    metrics: HallucinationMetrics\n@dataclass\nclass AggregateResult:\n    avg_f1: float",
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "AggregateResult",
+        "kind": 6,
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "peekOfCode": "class AggregateResult:\n    avg_f1: float\n    avg_em: float\n    avg_scr: float\n    avg_cr: float\n    avg_tve: float\n    avg_cdee: float\n    avg_chs: float\n    n_samples: int\n    model_tag: str = \"baseline\"",
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "RAGEvaluator",
+        "kind": 6,
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "peekOfCode": "class RAGEvaluator:\n    \"\"\"\n    Evaluates a list of (query, prediction, ground_truth, hallucination_metrics)\n    and aggregates into AggregateResult.\n    \"\"\"\n    def __init__(self, results_dir: str = \"outputs/eval\"):\n        self.results_dir = results_dir\n        Path(results_dir).mkdir(parents=True, exist_ok=True)\n    def evaluate(\n        self,",
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "exact_match",
+        "kind": 2,
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "peekOfCode": "def exact_match(prediction: str, ground_truth: str) -> float:\n    return float(_normalize_answer(prediction) == _normalize_answer(ground_truth))\ndef f1_score(prediction: str, ground_truth: str) -> float:\n    pred_tokens = _normalize_answer(prediction).split()\n    gt_tokens = _normalize_answer(ground_truth).split()\n    if not pred_tokens and not gt_tokens:\n        return 1.0\n    if not pred_tokens or not gt_tokens:\n        return 0.0\n    common = Counter(pred_tokens) & Counter(gt_tokens)",
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "f1_score",
+        "kind": 2,
+        "importPath": "src.evaluation.evaluator",
+        "description": "src.evaluation.evaluator",
+        "peekOfCode": "def f1_score(prediction: str, ground_truth: str) -> float:\n    pred_tokens = _normalize_answer(prediction).split()\n    gt_tokens = _normalize_answer(ground_truth).split()\n    if not pred_tokens and not gt_tokens:\n        return 1.0\n    if not pred_tokens or not gt_tokens:\n        return 0.0\n    common = Counter(pred_tokens) & Counter(gt_tokens)\n    num_same = sum(common.values())\n    if num_same == 0:",
+        "detail": "src.evaluation.evaluator",
+        "documentation": {}
+    },
+    {
+        "label": "RAGGenerator",
+        "kind": 6,
+        "importPath": "src.generation.generator",
+        "description": "src.generation.generator",
+        "peekOfCode": "class RAGGenerator:\n    \"\"\"\n    Loads an LLM with optional 4-bit quantisation and LoRA adapters,\n    then generates answers from (query, retrieved-docs) pairs.\n    CPU guard: models with ≥7B parameters (mistral, llama, 7b, 8b, 13b, 70b)\n    raise RuntimeError immediately if CUDA is unavailable.  Use --mock-generate,\n    demo.py, TinyLlama, or a GPU machine to avoid this.\n    \"\"\"\n    # Keywords indicating a model too large for CPU inference\n    _LARGE_MODEL_KEYWORDS = [",
+        "detail": "src.generation.generator",
+        "documentation": {}
+    },
+    {
+        "label": "build_prompt",
+        "kind": 2,
+        "importPath": "src.generation.generator",
+        "description": "src.generation.generator",
+        "peekOfCode": "def build_prompt(query: str, documents: List[dict]) -> str:\n    \"\"\"Format retrieved docs + query into an instruction prompt.\"\"\"\n    context_blocks = []\n    for i, doc in enumerate(documents, 1):\n        title = doc.get(\"metadata\", {}).get(\"title\", f\"Document {i}\")\n        context_blocks.append(f\"[{i}] {title}\\n{doc['text']}\")\n    context = \"\\n\\n\".join(context_blocks)\n    return (\n        f\"{SYSTEM_PROMPT}\\n\\n\"\n        \"Output rules:\\n\"",
+        "detail": "src.generation.generator",
+        "documentation": {}
+    },
+    {
+        "label": "SYSTEM_PROMPT",
+        "kind": 5,
+        "importPath": "src.generation.generator",
+        "description": "src.generation.generator",
+        "peekOfCode": "SYSTEM_PROMPT = (\n    \"You are a helpful and factual assistant. \"\n    \"Answer using ONLY the provided context snippets. \"\n    \"Every factual sentence must include at least one citation like [1] or [2]. \"\n    \"Never introduce facts without a citation from the context. \"\n    \"For time-sensitive statements (current, latest, now, today, as of), use them only \"\n    \"if the context explicitly supports the timeframe; otherwise state that the context \"\n    \"does not provide a reliable current update. \"\n    \"If the context is insufficient, respond with a brief refusal that explains the gap.\"\n)",
+        "detail": "src.generation.generator",
+        "documentation": {}
+    },
+    {
+        "label": "DenseEncoder",
+        "kind": 6,
+        "importPath": "src.retrieval.encoder",
+        "description": "src.retrieval.encoder",
+        "peekOfCode": "class DenseEncoder:\n    \"\"\"Wraps a SentenceTransformer for query / document encoding.\"\"\"\n    def __init__(self, model_name: str, device: str = \"cpu\", cache_dir: Optional[str] = None):\n        logger.info(f\"Loading encoder: {model_name}\")\n        self.model = SentenceTransformer(model_name, device=device, cache_folder=cache_dir)\n        self.device = device\n    def encode(\n        self,\n        texts: List[str],\n        batch_size: int = 64,",
+        "detail": "src.retrieval.encoder",
+        "documentation": {}
+    },
+    {
+        "label": "FAISSIndex",
+        "kind": 6,
+        "importPath": "src.retrieval.encoder",
+        "description": "src.retrieval.encoder",
+        "peekOfCode": "class FAISSIndex:\n    \"\"\"\n    Flat inner-product FAISS index for approximate nearest-neighbour\n    retrieval over a document corpus.\n    \"\"\"\n    def __init__(self, embedding_dim: int):\n        self.dim = embedding_dim\n        self.index = faiss.IndexFlatIP(embedding_dim)   # cosine ~ IP on L2-norm vecs\n        self.doc_ids: List[str] = []\n        self.doc_texts: List[str] = []",
+        "detail": "src.retrieval.encoder",
+        "documentation": {}
+    },
+    {
+        "label": "build_index_from_corpus",
+        "kind": 2,
+        "importPath": "src.retrieval.encoder",
+        "description": "src.retrieval.encoder",
+        "peekOfCode": "def build_index_from_corpus(\n    corpus_path: str,\n    encoder: DenseEncoder,\n    index_path: str,\n    batch_size: int = 256,\n    text_field: str = \"text\",\n    id_field: str = \"id\",\n) -> FAISSIndex:\n    \"\"\"\n    Read a JSONL corpus, encode every document, build and save the FAISS index.",
+        "detail": "src.retrieval.encoder",
+        "documentation": {}
+    },
+    {
+        "label": "Retriever",
+        "kind": 6,
+        "importPath": "src.retrieval.retriever",
+        "description": "src.retrieval.retriever",
+        "peekOfCode": "class Retriever:\n    \"\"\"\n    End-to-end retriever:\n        query (str) → top-k document dicts\n    Each returned dict:\n        {doc_id, text, score, metadata}\n    \"\"\"\n    def __init__(\n        self,\n        encoder: DenseEncoder,",
+        "detail": "src.retrieval.retriever",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingSample",
+        "kind": 6,
+        "importPath": "src.training.qlora_trainer",
+        "description": "src.training.qlora_trainer",
+        "peekOfCode": "class TrainingSample:\n    \"\"\"Simple data structure to hold training samples with quality metrics\"\"\"\n    def __init__(self, query: str, response: str = \"\", contexts: list = None, \n                 chs: float = 0.0, retrieval_score: float = 0.0, **kwargs):\n        self.query = query\n        self.response = response\n        self.contexts = contexts or []\n        self.chs = chs  # Context-Response Harmony Score\n        self.retrieval_score = retrieval_score\n        # Store any additional metrics",
+        "detail": "src.training.qlora_trainer",
+        "documentation": {}
+    },
+    {
+        "label": "QLoRATrainer",
+        "kind": 6,
+        "importPath": "src.training.qlora_trainer",
+        "description": "src.training.qlora_trainer",
+        "peekOfCode": "class QLoRATrainer:\n    def __init__(self, model_name: str = \"microsoft/Phi-3.5-mini-instruct\", \n                 cache_dir: str = \"cache\"):\n        # Use a much smaller model for T4 GPU\n        if \"mistral\" in model_name.lower() or \"7b\" in model_name.lower():\n            logger.warning(f\"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini\")\n            model_name = \"microsoft/Phi-3.5-mini-instruct\"\n        self.model_name = model_name\n        self.cache_dir = cache_dir\n        # Don't load model in __init__ - load only when needed",
+        "detail": "src.training.qlora_trainer",
+        "documentation": {}
+    },
+    {
+        "label": "MetricGuidedQLoRATrainer",
+        "kind": 6,
+        "importPath": "src.training.qlora_trainer",
+        "description": "src.training.qlora_trainer",
+        "peekOfCode": "class MetricGuidedQLoRATrainer:\n    def __init__(self, config):\n        self.config = config\n        training_cfg = config.get('training', {})\n        self.min_scr = float(training_cfg.get('min_scr_for_positive', 0.75))\n        self.max_tve = float(training_cfg.get('max_tve_for_positive', 0.20))\n        self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))\n        # Override with smaller model for T4\n        model_name = config.get('generation', {}).get('model_name', 'microsoft/Phi-3.5-mini-instruct')\n        if \"mistral\" in model_name.lower() or \"7b\" in model_name.lower():",
+        "detail": "src.training.qlora_trainer",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingSignalGenerator",
+        "kind": 6,
+        "importPath": "src.training.signal_generator",
+        "description": "src.training.signal_generator",
+        "peekOfCode": "class TrainingSignalGenerator:\n    \"\"\"\n    Given a list of (query, retrieved_docs, DiagnosisOutput) triples,\n    produces TrainingSample objects and optionally persists them to disk.\n    \"\"\"\n    def __init__(self, output_path: str = \"outputs/training_samples.jsonl\"):\n        self.output_path = output_path\n    def convert(\n        self,\n        queries: List[str],",
+        "detail": "src.training.signal_generator",
+        "documentation": {}
+    },
+    {
+        "label": "FailureAwareRAGPipeline",
+        "kind": 6,
+        "importPath": "src.pipeline",
+        "description": "src.pipeline",
+        "peekOfCode": "class FailureAwareRAGPipeline:\n    \"\"\"\n    Full Failure-Aware RAG pipeline.\n    Usage:\n        pipeline = FailureAwareRAGPipeline.from_config(\"config/config.yaml\")\n        result = pipeline.run_inference(\"What is the capital of France?\")\n    \"\"\"\n    def __init__(\n        self,\n        retriever: Retriever,",
+        "detail": "src.pipeline",
+        "documentation": {}
+    },
+    {
+        "label": "load_config",
+        "kind": 2,
+        "importPath": "src.pipeline",
+        "description": "src.pipeline",
+        "peekOfCode": "def load_config(path: str = \"config/config.yaml\") -> dict:\n    with open(path) as f:\n        return yaml.safe_load(f)\n# ── Main pipeline class ───────────────────────────────────────────────────────\nclass FailureAwareRAGPipeline:\n    \"\"\"\n    Full Failure-Aware RAG pipeline.\n    Usage:\n        pipeline = FailureAwareRAGPipeline.from_config(\"config/config.yaml\")\n        result = pipeline.run_inference(\"What is the capital of France?\")",
+        "detail": "src.pipeline",
+        "documentation": {}
+    },
+    {
+        "label": "sample_documents",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def sample_documents():\n    \"\"\"Three realistic document dicts as returned by the retriever.\"\"\"\n    return [\n        {\n            \"doc_id\": \"d1\",\n            \"text\": (\n                \"The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars \"\n                \"in Paris, France. It was constructed from 1887 to 1889 as the centerpiece \"\n                \"of the 1889 World's Fair.\"\n            ),",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "sample_answer",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def sample_answer():\n    \"\"\"A factually correct answer about the Eiffel Tower.\"\"\"\n    return (\n        \"The Eiffel Tower is located in Paris, France. \"\n        \"It was built by Gustave Eiffel's company between 1887 and 1889. \"\n        \"The tower stands approximately 330 metres tall.\"\n    )\n@pytest.fixture\ndef hallucinated_answer():\n    \"\"\"An answer with a detectable hallucination (Napoleon claim).\"\"\"",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "hallucinated_answer",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def hallucinated_answer():\n    \"\"\"An answer with a detectable hallucination (Napoleon claim).\"\"\"\n    return (\n        \"The Eiffel Tower is located in Paris, France. \"\n        \"Napoleon Bonaparte commissioned the tower in 1800. \"\n        \"It was completed in 1889 by Gustave Eiffel.\"\n    )\n@pytest.fixture\ndef claim_extractor():\n    \"\"\"SpacyClaimExtractor configured with regex fallback (nlp=None).\"\"\"",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "claim_extractor",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def claim_extractor():\n    \"\"\"SpacyClaimExtractor configured with regex fallback (nlp=None).\"\"\"\n    from src.diagnosis.claim_extractor import SpacyClaimExtractor\n    extractor = SpacyClaimExtractor.__new__(SpacyClaimExtractor)\n    extractor.min_length = 5\n    extractor.nlp = None\n    return extractor\n@pytest.fixture\ndef metric_engine():\n    \"\"\"MetricEngine with default weights.\"\"\"",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "metric_engine",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def metric_engine():\n    \"\"\"MetricEngine with default weights.\"\"\"\n    from src.diagnosis.metric_engine import MetricEngine\n    return MetricEngine(\n        scr_weight=1.0,\n        cr_weight=1.0,\n        tve_weight=0.8,\n        cdee_weight=0.8,\n        lambda_=0.5,\n    )",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "mock_retriever",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def mock_retriever(sample_documents):\n    \"\"\"MagicMock retriever that always returns sample_documents.\"\"\"\n    retriever = MagicMock()\n    retriever.retrieve.return_value = sample_documents\n    return retriever\n@pytest.fixture\ndef entailment_verifier():\n    \"\"\"Mock NLI verifier that always returns ENTAILMENT (score 0.92).\"\"\"\n    from src.diagnosis.verification_engine import ClaimVerificationResult, NLILabel\n    verifier = MagicMock()",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "entailment_verifier",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def entailment_verifier():\n    \"\"\"Mock NLI verifier that always returns ENTAILMENT (score 0.92).\"\"\"\n    from src.diagnosis.verification_engine import ClaimVerificationResult, NLILabel\n    verifier = MagicMock()\n    def _always_entailment(claims, evidence_lists):\n        return [\n            ClaimVerificationResult(\n                claim=c,\n                label=NLILabel.ENTAILMENT,\n                entailment_score=0.92,",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "contradiction_verifier",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def contradiction_verifier():\n    \"\"\"Mock NLI verifier that always returns CONTRADICTION (score 0.91).\"\"\"\n    from src.diagnosis.verification_engine import ClaimVerificationResult, NLILabel\n    verifier = MagicMock()\n    def _always_contradiction(claims, evidence_lists):\n        return [\n            ClaimVerificationResult(\n                claim=c,\n                label=NLILabel.CONTRADICTION,\n                entailment_score=0.04,",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "diagnoser",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def diagnoser(mock_retriever, claim_extractor, entailment_verifier, metric_engine):\n    \"\"\"\n    Fully wired HallucinationDiagnoser using all mock components.\n    Verifier defaults to ENTAILMENT.\n    \"\"\"\n    from src.diagnosis.diagnose import HallucinationDiagnoser\n    return HallucinationDiagnoser(\n        retriever=mock_retriever,\n        claim_extractor=claim_extractor,\n        verifier=entailment_verifier,",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "training_samples",
+        "kind": 2,
+        "importPath": "tests.conftest",
+        "description": "tests.conftest",
+        "peekOfCode": "def training_samples():\n    \"\"\"Five TrainingSample objects with varied CHS scores.\"\"\"\n    from src.training.qlora_trainer import TrainingSample\n    return [\n        TrainingSample(\n            query=\"What is the Eiffel Tower?\",\n            answer=\"The Eiffel Tower is in Paris, built in 1889.\",\n            chs=0.05,\n            prompt=\"[P1]\",\n        ),",
+        "detail": "tests.conftest",
+        "documentation": {}
+    },
+    {
+        "label": "TestDiagnosisPipeline",
+        "kind": 6,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "class TestDiagnosisPipeline:\n    def _make_diagnoser(self):\n        extractor = SpacyClaimExtractor.__new__(SpacyClaimExtractor)\n        extractor.min_length = 4\n        extractor.nlp = None\n        verifier = make_mock_verifier()\n        metric_engine = MetricEngine()\n        retriever = make_mock_retriever()\n        return HallucinationDiagnoser(\n            retriever=retriever,",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "TestEvaluator",
+        "kind": 6,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "class TestEvaluator:\n    def _make_metrics(self, scr=0.9, cr=0.1):\n        from src.diagnosis.metric_engine import HallucinationMetrics\n        return HallucinationMetrics(\n            scr=scr, cr=cr, tve=0.0, cdee=0.0,\n            chs=(1 - scr + cr) * 0.5,\n            total_claims=10, supported_claims=int(scr * 10),\n        )\n    def test_evaluate_basic(self, tmp_path):\n        evaluator = RAGEvaluator(results_dir=str(tmp_path))",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "TestTrainingSignalGenerator",
+        "kind": 6,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "class TestTrainingSignalGenerator:\n    def test_convert_and_save(self, tmp_path):\n        from src.diagnosis.diagnose import DiagnosisOutput\n        from src.diagnosis.metric_engine import HallucinationMetrics\n        sig_gen = TrainingSignalGenerator(\n            output_path=str(tmp_path / \"samples.jsonl\")\n        )\n        queries = [\"What is the capital of France?\"]\n        docs_list = [DUMMY_DOCS]\n        metrics = HallucinationMetrics(scr=0.9, cr=0.1, chs=0.1)",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "make_mock_retriever",
+        "kind": 2,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "def make_mock_retriever(docs=DUMMY_DOCS):\n    retriever = MagicMock()\n    retriever.retrieve.return_value = docs\n    return retriever\ndef make_mock_verifier():\n    \"\"\"Returns a verifier that always says ENTAILMENT.\"\"\"\n    verifier = MagicMock(spec=NLIVerificationEngine)\n    def fake_verify(claims, evidence_lists):\n        return [\n            ClaimVerificationResult(",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "make_mock_verifier",
+        "kind": 2,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "def make_mock_verifier():\n    \"\"\"Returns a verifier that always says ENTAILMENT.\"\"\"\n    verifier = MagicMock(spec=NLIVerificationEngine)\n    def fake_verify(claims, evidence_lists):\n        return [\n            ClaimVerificationResult(\n                claim=c,\n                label=NLILabel.ENTAILMENT,\n                entailment_score=0.9,\n                contradiction_score=0.05,",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "DUMMY_DOCS",
+        "kind": 5,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "DUMMY_DOCS = [\n    {\"doc_id\": \"d1\", \"text\": \"The Eiffel Tower is located in Paris, France.\", \"score\": 0.9, \"metadata\": {}},\n    {\"doc_id\": \"d2\", \"text\": \"It was constructed between 1887 and 1889.\", \"score\": 0.85, \"metadata\": {}},\n]\nDUMMY_ANSWER = (\n    \"The Eiffel Tower is located in Paris, France. \"\n    \"It was built in 1889 by Gustave Eiffel. \"\n    \"Currently it is the tallest structure in France.\"\n)\ndef make_mock_retriever(docs=DUMMY_DOCS):",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "DUMMY_ANSWER",
+        "kind": 5,
+        "importPath": "tests.test_integration",
+        "description": "tests.test_integration",
+        "peekOfCode": "DUMMY_ANSWER = (\n    \"The Eiffel Tower is located in Paris, France. \"\n    \"It was built in 1889 by Gustave Eiffel. \"\n    \"Currently it is the tallest structure in France.\"\n)\ndef make_mock_retriever(docs=DUMMY_DOCS):\n    retriever = MagicMock()\n    retriever.retrieve.return_value = docs\n    return retriever\ndef make_mock_verifier():",
+        "detail": "tests.test_integration",
+        "documentation": {}
+    },
+    {
+        "label": "TestSpacyClaimExtractor",
+        "kind": 6,
+        "importPath": "tests.test_pipeline_units",
+        "description": "tests.test_pipeline_units",
+        "peekOfCode": "class TestSpacyClaimExtractor:\n    def test_fallback_split_basic(self):\n        extractor = SpacyClaimExtractor.__new__(SpacyClaimExtractor)\n        extractor.min_length = 4\n        extractor.nlp = None\n        text = \"The Eiffel Tower is in Paris. It was built in 1889. Napoleon did not build it.\"\n        claims = extractor.extract(text)\n        assert len(claims) >= 2\n    def test_empty_input(self):\n        extractor = SpacyClaimExtractor.__new__(SpacyClaimExtractor)",
+        "detail": "tests.test_pipeline_units",
+        "documentation": {}
+    },
+    {
+        "label": "TestTemporalDetection",
+        "kind": 6,
+        "importPath": "tests.test_pipeline_units",
+        "description": "tests.test_pipeline_units",
+        "peekOfCode": "class TestTemporalDetection:\n    def test_temporal_keywords(self):\n        assert _is_temporal_claim(\"The current president is X\")\n        assert _is_temporal_claim(\"As of 2023, the population is 8 billion\")\n        assert _is_temporal_claim(\"Recently, scientists discovered a new planet\")\n        assert _is_temporal_claim(\"The latest iPhone was released in 2024\")\n    def test_non_temporal(self):\n        assert not _is_temporal_claim(\"The Eiffel Tower is located in Paris\")\n        assert not _is_temporal_claim(\"Water boils at 100 degrees Celsius\")\n# ═══════════════════════════════════════════════════════",
+        "detail": "tests.test_pipeline_units",
+        "documentation": {}
+    },
+    {
+        "label": "TestMetricEngine",
+        "kind": 6,
+        "importPath": "tests.test_pipeline_units",
+        "description": "tests.test_pipeline_units",
+        "peekOfCode": "class TestMetricEngine:\n    def _make_result(self, label: NLILabel, is_temporal=False, is_outdated=False) -> ClaimVerificationResult:\n        return ClaimVerificationResult(\n            claim=\"test claim\",\n            label=label,\n            entailment_score=1.0 if label == NLILabel.ENTAILMENT else 0.0,\n            contradiction_score=1.0 if label == NLILabel.CONTRADICTION else 0.0,\n            neutral_score=1.0 if label == NLILabel.NEUTRAL else 0.0,\n            is_temporal=is_temporal,\n            is_outdated=is_outdated,",
+        "detail": "tests.test_pipeline_units",
+        "documentation": {}
+    },
+    {
+        "label": "TestQAMetrics",
+        "kind": 6,
+        "importPath": "tests.test_pipeline_units",
+        "description": "tests.test_pipeline_units",
+        "peekOfCode": "class TestQAMetrics:\n    def test_exact_match_identical(self):\n        assert exact_match(\"Paris\", \"Paris\") == 1.0\n    def test_exact_match_case_insensitive(self):\n        assert exact_match(\"paris\", \"Paris\") == 1.0\n    def test_exact_match_with_articles(self):\n        assert exact_match(\"the Eiffel Tower\", \"Eiffel Tower\") == 1.0\n    def test_exact_match_different(self):\n        assert exact_match(\"London\", \"Paris\") == 0.0\n    def test_f1_perfect(self):",
+        "detail": "tests.test_pipeline_units",
+        "documentation": {}
+    },
+    {
+        "label": "TestHallucinationMetrics",
+        "kind": 6,
+        "importPath": "tests.test_pipeline_units",
+        "description": "tests.test_pipeline_units",
+        "peekOfCode": "class TestHallucinationMetrics:\n    def test_to_dict_roundtrip(self):\n        m = HallucinationMetrics(scr=0.8, cr=0.1, tve=0.05, cdee=0.02, chs=0.12)\n        d = m.to_dict()\n        assert d[\"scr\"] == 0.8\n        assert d[\"cr\"] == 0.1\n        assert \"chs\" in d\n    def test_summary_string(self):\n        m = HallucinationMetrics(scr=0.9, cr=0.1, tve=0.0, cdee=0.0, chs=0.05,\n                                  total_claims=10, supported_claims=9)",
+        "detail": "tests.test_pipeline_units",
+        "documentation": {}
+    }
+]
