@@ -15,10 +15,11 @@ from pathlib import Path
 
 import torch
 from loguru import logger
-from src.configuration import load_config_file
 
 # Make sure src/ is importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from src.configuration import load_config_file
 
 from src.retrieval.encoder import DenseEncoder, build_index_from_corpus
 
