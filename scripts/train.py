@@ -45,6 +45,14 @@ def main():
     parser.add_argument("--queries", default=None, help="JSONL of training queries")
     parser.add_argument("--samples", default=None, help="Skip collection, use saved samples")
     parser.add_argument(
+        "--skip-collection",
+        action="store_true",
+        help=(
+            "Skip Phase 1 data collection and proceed directly to fine-tuning. "
+            "Uses --samples if provided, otherwise --samples-out."
+        ),
+    )
+    parser.add_argument(
         "--method",
         choices=["dpo", "rejection", "metric_loss"],
         default="dpo",
@@ -73,8 +81,22 @@ def main():
     # Ensure output directory exists
     Path(args.samples_out).parent.mkdir(parents=True, exist_ok=True)
     
+    sample_path = args.samples
+    if args.skip_collection:
+        sample_path = sample_path or args.samples_out
+        if not Path(sample_path).exists():
+            logger.error(
+                "--skip-collection was set but no samples file was found at: "
+                f"{sample_path}"
+            )
+            logger.error(
+                "Run once without --skip-collection to generate samples, "
+                "or pass --samples <path>."
+            )
+            sys.exit(1)
+
     # ── Phase 1: Collect training data ───────────────────────
-    if args.samples is None:
+    if sample_path is None:
         if args.queries is None:
             logger.error("Provide --queries or --samples")
             sys.exit(1)
@@ -106,8 +128,8 @@ def main():
             logger.error("Training data collection failed; refusing to create dummy samples.")
             sys.exit(1)
     else:
-        logger.info(f"=== Loading saved samples from {args.samples} ===")
-        samples = TrainingSignalGenerator.load(args.samples)
+        logger.info(f"=== Loading saved samples from {sample_path} ===")
+        samples = TrainingSignalGenerator.load(sample_path)
         logger.info(f"Loaded {len(samples)} samples")
 
     # ── Phase 2: Fine-tune ────────────────────────────────────

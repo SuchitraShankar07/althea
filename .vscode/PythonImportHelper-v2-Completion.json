@@ -1648,7 +1648,7 @@
         "kind": 2,
         "importPath": "scripts.train",
         "description": "scripts.train",
-        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--queries\", default=None, help=\"JSONL of training queries\")\n    parser.add_argument(\"--samples\", default=None, help=\"Skip collection, use saved samples\")\n    parser.add_argument(\n        \"--method\",\n        choices=[\"dpo\", \"rejection\", \"metric_loss\"],\n        default=\"dpo\",\n        help=\"Override training method from config\",",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--queries\", default=None, help=\"JSONL of training queries\")\n    parser.add_argument(\"--samples\", default=None, help=\"Skip collection, use saved samples\")\n    parser.add_argument(\n        \"--skip-collection\",\n        action=\"store_true\",\n        help=(\n            \"Skip Phase 1 data collection and proceed directly to fine-tuning. \"",
         "detail": "scripts.train",
         "documentation": {}
     },

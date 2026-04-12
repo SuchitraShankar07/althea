@@ -58,7 +58,8 @@ class TrainingSignalGenerator:
         diagnosis_outputs: List[DiagnosisOutput],
     ) -> List[TrainingSample]:
         samples = []
-        for query, docs, diag in zip(queries, docs_list, diagnosis_outputs):
+        skipped = 0
+        for idx, (query, docs, diag) in enumerate(zip(queries, docs_list, diagnosis_outputs), start=1):
             contexts = [d.get("text", "") for d in docs if d.get("text")]
             sample = TrainingSample(
                 query=query,
@@ -76,11 +77,23 @@ class TrainingSignalGenerator:
                 overall_hallucination_score=diag.metrics.overall_hallucination_score,
                 hallucination_confidence=diag.metrics.confidence,
             )
-            validate_training_sample(sample)
+            try:
+                validate_training_sample(sample, line_no=idx)
+            except ValueError as e:
+                skipped += 1
+                logger.warning(f"Skipping invalid training sample: {e}")
+                continue
             samples.append(sample)
 
+        if not samples:
+            raise ValueError(
+                "No valid training samples were generated. "
+                "Check model outputs and retrieval corpus quality."
+            )
+
         logger.info(
-            f"Generated {len(samples)} training samples | "
+            f"Generated {len(samples)} training samples"
+            f" (skipped {skipped}) | "
             f"avg CHS={sum(s.chs for s in samples)/max(len(samples),1):.3f}"
         )
         return samples
