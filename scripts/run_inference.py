@@ -64,13 +64,12 @@ def _build_pipeline(config_path: str, mock_generate: bool):
         return FailureAwareRAGPipeline.from_config(config_path)
 
     # Build pipeline normally then swap the generator
-    import yaml
+    from src.configuration import load_config_file
     from src.retrieval.retriever import Retriever
     from src.diagnosis.diagnose import HallucinationDiagnoser
     from src.evaluation.evaluator import RAGEvaluator
 
-    with open(config_path) as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_config_file(config_path)
 
     logger.info("Mock-generate mode: skipping LLM load")
     retriever = Retriever.from_config(cfg["retrieval"])
@@ -105,14 +104,24 @@ def main():
         ),
     )
     parser.add_argument("--no-diagnose", action="store_true")
+    parser.add_argument(
+        "--disable-hallucination-eval",
+        action="store_true",
+        help="Disable extended hallucination taxonomy evaluation while keeping legacy diagnosis metrics.",
+    )
     args = parser.parse_args()
 
     pipeline = _build_pipeline(args.config, mock_generate=args.mock_generate)
     diagnose = not args.no_diagnose
+    enable_hallucination_eval = not args.disable_hallucination_eval
 
     if args.query:
         # ── Single query ──────────────────────────────────────
-        result = pipeline.run_inference(args.query, diagnose=diagnose)
+        result = pipeline.run_inference(
+            args.query,
+            diagnose=diagnose,
+            enable_hallucination_eval=enable_hallucination_eval,
+        )
         print("\n" + "=" * 60)
         print(f"QUERY:  {result['query']}")
         print(f"ANSWER: {result['answer']}")
@@ -137,6 +146,7 @@ def main():
             queries,
             ground_truths=ground_truths if any(ground_truths) else None,
             diagnose=diagnose,
+            enable_hallucination_eval=enable_hallucination_eval,
         )
 
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)

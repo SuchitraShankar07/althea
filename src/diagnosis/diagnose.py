@@ -36,6 +36,12 @@ def _is_context_refusal(answer: str) -> bool:
     return bool(answer and REFUSAL_PATTERNS.search(answer))
 
 
+def _extract_contexts(docs: Optional[List[dict]]) -> List[str]:
+    if not docs:
+        return []
+    return [str(d.get("text", "")).strip() for d in docs if str(d.get("text", "")).strip()]
+
+
 @dataclass
 class DiagnosisOutput:
     answer: str
@@ -71,7 +77,13 @@ class HallucinationDiagnoser:
         self.max_claims = max_claims
 
     # ── Main entry point ──────────────────────────────────────
-    def diagnose(self, answer: str, original_docs: Optional[List[dict]] = None) -> DiagnosisOutput:
+    def diagnose(
+        self,
+        answer: str,
+        original_docs: Optional[List[dict]] = None,
+        query: str = "",
+        enable_hallucination_eval: bool = True,
+    ) -> DiagnosisOutput:
         """
         Diagnose hallucinations in `answer`.
 
@@ -98,12 +110,20 @@ class HallucinationDiagnoser:
                 per_claim_evidence=[],
             )
 
+        contexts = _extract_contexts(original_docs)
+
         # 1. Extract claims
         claims = self.claim_extractor.extract(answer, max_claims=self.max_claims)
         logger.debug(f"Extracted {len(claims)} claims")
 
         if not claims:
-            empty_m = HallucinationMetrics()
+            empty_m = self.metric_engine.compute(
+                [],
+                docs_per_claim=[],
+                response=answer,
+                contexts=contexts,
+                enable_hallucination_eval=enable_hallucination_eval,
+            )
             return DiagnosisOutput(answer=answer, claims=[], verification_results=[], metrics=empty_m)
 
         # 2. Per-claim evidence retrieval
@@ -122,7 +142,13 @@ class HallucinationDiagnoser:
         verification_results = self.verifier.verify_claims(claims, evidence_lists)
 
         # 4. Compute metrics
-        metrics = self.metric_engine.compute(verification_results, docs_per_claim)
+        metrics = self.metric_engine.compute(
+            verification_results,
+            docs_per_claim,
+            response=answer,
+            contexts=contexts,
+            enable_hallucination_eval=enable_hallucination_eval,
+        )
         logger.debug(f"Hallucination metrics: {metrics.summary()}")
 
         return DiagnosisOutput(
@@ -138,12 +164,21 @@ class HallucinationDiagnoser:
         self,
         answers: List[str],
         original_docs_list: Optional[List[List[dict]]] = None,
+        queries: Optional[List[str]] = None,
+        enable_hallucination_eval: bool = True,
     ) -> List[DiagnosisOutput]:
         if original_docs_list is None:
             original_docs_list = [None] * len(answers)
+        if queries is None:
+            queries = [""] * len(answers)
         return [
-            self.diagnose(ans, orig)
-            for ans, orig in zip(answers, original_docs_list)
+            self.diagnose(
+                ans,
+                orig,
+                query=q,
+                enable_hallucination_eval=enable_hallucination_eval,
+            )
+            for ans, orig, q in zip(answers, original_docs_list, queries)
         ]
 
     # ── Factory ───────────────────────────────────────────────

@@ -9,6 +9,8 @@ retrieval:
   index_path: "data/faiss.index"
   corpus_path: "data/corpus.jsonl"
   embedding_dim: 384
+  allow_rebuild_if_missing: true
+  allow_rebuild_if_stale: true
 
 # ── Generation ───────────────────────────────────────────────
 #
@@ -21,14 +23,13 @@ retrieval:
 #   └─────────────────────────────────────────────┴──────────┘
 #
 generation:
-  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
-  load_in_4bit: false        # QLoRA 4-bit NF4 — requires CUDA
+  model_name: "Qwen/Qwen2.5-1.5B-Instruct"
+  load_in_4bit: false        # full-precision base model + optional adapter
   device_map: "auto"
   max_new_tokens: 128
   temperature: 0.1
   do_sample: false
-  adapter_path: "outputs/qlora_model"                # set to outputs/qlora/dpo after training
-  # adapter_path: null
+  adapter_path: null                # set to a LoRA adapter trained on the same base model
 
 # ── Diagnosis ────────────────────────────────────────────────
 diagnosis:
@@ -68,6 +69,7 @@ training:
   hallucination_penalty_lambda: 0.3
   dpo_beta: 0.1
   min_score_gap: 0.2
+  dpo_candidates_per_query: 2
   max_chs_for_positive: 0.4         # only low-CHS responses can be preferred
   min_scr_for_positive: 0.75         # require strong grounding to keep a response as preferred
   max_tve_for_positive: 0.20         # reject temporally stale outputs in preference construction

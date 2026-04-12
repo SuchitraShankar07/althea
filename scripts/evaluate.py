@@ -28,13 +28,39 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import yaml
 from loguru import logger
 
+from src.configuration import load_config_file
 from src.diagnosis.metric_engine import HallucinationMetrics
 from src.evaluation.evaluator import RAGEvaluator
 from src.pipeline import FailureAwareRAGPipeline
 
 
 # ── Dataset loaders ───────────────────────────────────────────────────────────
+def _load_local_jsonl(path: str, query_key: str, answer_key: str, max_samples: int = 200):
+    p = Path(path)
+    if not p.exists():
+        return None
+    queries, answers = [], []
+    with open(p, "r") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            q = str(row.get(query_key, "")).strip()
+            a = str(row.get(answer_key, "")).strip()
+            if not q:
+                continue
+            queries.append(q)
+            answers.append(a)
+            if len(queries) >= max_samples:
+                break
+    return queries, answers
+
+
 def load_hotpotqa(split: str = "validation", max_samples: int = 200):
+    local = _load_local_jsonl("data/hotpotqa_validation.jsonl", "query", "answer", max_samples)
+    if local is not None:
+        return local
+
     from datasets import load_dataset
     ds = load_dataset("hotpot_qa", "distractor", split=split, streaming=True)
     queries, answers = [], []
@@ -47,6 +73,10 @@ def load_hotpotqa(split: str = "validation", max_samples: int = 200):
 
 
 def load_natural_questions(split: str = "validation", max_samples: int = 200):
+    local = _load_local_jsonl("data/nq_validation.jsonl", "query", "answer", max_samples)
+    if local is not None:
+        return local
+
     from datasets import load_dataset
     ds = load_dataset("natural_questions", split=split, streaming=True)
     queries, answers = [], []
@@ -62,6 +92,10 @@ def load_natural_questions(split: str = "validation", max_samples: int = 200):
 
 
 def load_popqa(max_samples: int = 200):
+    local = _load_local_jsonl("data/popqa_test.jsonl", "query", "answer", max_samples)
+    if local is not None:
+        return local
+
     from datasets import load_dataset
     ds = load_dataset("akariasai/PopQA", split="test", streaming=True)
     queries, answers = [], []
@@ -81,13 +115,17 @@ DATASET_LOADERS = {
 
 
 # ── Evaluation runner ─────────────────────────────────────────────────────────
-def evaluate_model(pipeline, queries, ground_truths, tag):
+def evaluate_model(pipeline, queries, ground_truths, tag, enable_hallucination_eval: bool = True):
     """Run inference + diagnosis and return aggregate results."""
     predictions, hal_metrics = [], []
 
     for i, (q, gt) in enumerate(zip(queries, ground_truths)):
         logger.info(f"[{i+1}/{len(queries)}] {q[:60]}")
-        result = pipeline.run_inference(q, diagnose=True)
+        result = pipeline.run_inference(
+            q,
+            diagnose=True,
+            enable_hallucination_eval=enable_hallucination_eval,
+        )
         predictions.append(result["answer"])
         m = result["diagnosis"]["metrics"]
         hal_metrics.append(HallucinationMetrics(**m))
@@ -104,10 +142,15 @@ def main():
     parser.add_argument("--adapter", default=None, help="Path to fine-tuned LoRA adapter")
     parser.add_argument("--max-samples", type=int, default=100)
     parser.add_argument("--output-dir", default="outputs/eval")
+    parser.add_argument(
+        "--disable-hallucination-eval",
+        action="store_true",
+        help="Disable extended hallucination taxonomy evaluation while keeping legacy diagnosis metrics.",
+    )
     args = parser.parse_args()
 
-    with open(args.config) as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_config_file(args.config)
+    enable_hallucination_eval = not args.disable_hallucination_eval
 
     # Load dataset
     loader = DATASET_LOADERS[args.dataset]
@@ -127,7 +170,13 @@ def main():
         baseline_config_path = tmp.name
     baseline_pipeline = FailureAwareRAGPipeline.from_config(baseline_config_path)
     baseline_pipeline.evaluator = evaluator
-    baseline_result = evaluate_model(baseline_pipeline, queries, ground_truths, tag="baseline")
+    baseline_result = evaluate_model(
+        baseline_pipeline,
+        queries,
+        ground_truths,
+        tag="baseline",
+        enable_hallucination_eval=enable_hallucination_eval,
+    )
     Path(baseline_config_path).unlink(missing_ok=True)
 
     # ── Fine-tuned evaluation ─────────────────────────────────
@@ -151,7 +200,13 @@ def main():
             evaluator=evaluator,
             cfg=cfg_tuned,
         )
-        tuned_result = evaluate_model(tuned_pipeline, queries, ground_truths, tag="tuned")
+        tuned_result = evaluate_model(
+            tuned_pipeline,
+            queries,
+            ground_truths,
+            tag="tuned",
+            enable_hallucination_eval=enable_hallucination_eval,
+        )
 
         # ── Comparison ────────────────────────────────────────
         logger.info("=== Baseline vs Fine-tuned Comparison ===")

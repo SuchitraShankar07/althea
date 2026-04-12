@@ -149,6 +149,23 @@ class TestMetricEngine:
         assert engine.scr_weight == 1.0
         assert engine.lambda_ == 0.5
 
+    def test_taxonomy_scores_in_range(self):
+        engine = MetricEngine()
+        contexts = [
+            "The Eiffel Tower was completed in 1889 in Paris.",
+            "The Eiffel Tower was completed in 1891 in Paris, France.",
+        ]
+        results = [
+            self._make_result(NLILabel.CONTRADICTION),
+            self._make_result(NLILabel.NEUTRAL, is_temporal=True, is_outdated=True),
+        ]
+        m = engine.compute(results, docs_per_claim=[2, 2], response="The tower is always the tallest and was completed in 1891.", contexts=contexts)
+        assert 0.0 <= m.retrieval_conflict <= 1.0
+        assert 0.0 <= m.overgeneralization <= 1.0
+        assert 0.0 <= m.outdated_information <= 1.0
+        assert 0.0 <= m.synthesis_error <= 1.0
+        assert 0.0 <= m.overall_hallucination_score <= 1.0
+
 
 # ═══════════════════════════════════════════════════════
 # QA Metrics
@@ -185,11 +202,24 @@ class TestQAMetrics:
 # ═══════════════════════════════════════════════════════
 class TestHallucinationMetrics:
     def test_to_dict_roundtrip(self):
-        m = HallucinationMetrics(scr=0.8, cr=0.1, tve=0.05, cdee=0.02, chs=0.12)
+        m = HallucinationMetrics(
+            scr=0.8,
+            cr=0.1,
+            tve=0.05,
+            cdee=0.02,
+            chs=0.12,
+            retrieval_conflict=0.2,
+            overgeneralization=0.1,
+            outdated_information=0.1,
+            synthesis_error=0.1,
+            overall_hallucination_score=0.14,
+            confidence=0.75,
+        )
         d = m.to_dict()
         assert d["scr"] == 0.8
         assert d["cr"] == 0.1
         assert "chs" in d
+        assert "overall_hallucination_score" in d
 
     def test_summary_string(self):
         m = HallucinationMetrics(scr=0.9, cr=0.1, tve=0.0, cdee=0.0, chs=0.05,
@@ -197,3 +227,27 @@ class TestHallucinationMetrics:
         s = m.summary()
         assert "SCR" in s
         assert "9/10" in s
+
+    def test_hallucination_record_schema(self):
+        m = HallucinationMetrics(
+            retrieval_conflict=0.3,
+            overgeneralization=0.2,
+            outdated_information=0.1,
+            synthesis_error=0.4,
+            confidence=0.8,
+            overall_hallucination_score=0.27,
+        )
+        record = m.to_hallucination_record(
+            query="What is the latest status?",
+            response="Status response",
+            contexts=["Context 1", "Context 2"],
+        )
+        assert set(record.keys()) == {
+            "query",
+            "response",
+            "contexts",
+            "hallucination_scores",
+            "hallucination_labels",
+            "confidence",
+            "overall_hallucination_score",
+        }

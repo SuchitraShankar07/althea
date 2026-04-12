@@ -128,6 +128,14 @@
         "documentation": {}
     },
     {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
         "label": "argparse",
         "kind": 6,
         "isExtraImport": true,
@@ -267,6 +275,14 @@
         "documentation": {}
     },
     {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
         "label": "torch",
         "kind": 6,
         "isExtraImport": true,
@@ -276,15 +292,6 @@
         "documentation": {}
     },
     {
-        "label": "yaml",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "yaml",
-        "description": "yaml",
-        "detail": "yaml",
-        "documentation": {}
-    },
-    {
         "label": "logger",
         "importPath": "loguru",
         "description": "loguru",
@@ -410,6 +417,30 @@
         "description": "loguru",
         "isExtraImport": true,
         "detail": "loguru",
+        "documentation": {}
+    },
+    {
+        "label": "load_config_file",
+        "importPath": "src.configuration",
+        "description": "src.configuration",
+        "isExtraImport": true,
+        "detail": "src.configuration",
+        "documentation": {}
+    },
+    {
+        "label": "load_config_file",
+        "importPath": "src.configuration",
+        "description": "src.configuration",
+        "isExtraImport": true,
+        "detail": "src.configuration",
+        "documentation": {}
+    },
+    {
+        "label": "load_config_file",
+        "importPath": "src.configuration",
+        "description": "src.configuration",
+        "isExtraImport": true,
+        "detail": "src.configuration",
         "documentation": {}
     },
     {
@@ -462,6 +493,15 @@
         "importPath": "tempfile",
         "description": "tempfile",
         "detail": "tempfile",
+        "documentation": {}
+    },
+    {
+        "label": "yaml",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "yaml",
+        "description": "yaml",
+        "detail": "yaml",
         "documentation": {}
     },
     {
@@ -659,7 +699,7 @@
         "documentation": {}
     },
     {
-        "label": "List",
+        "label": "Dict",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -675,23 +715,7 @@
         "documentation": {}
     },
     {
-        "label": "Optional",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "List",
-        "importPath": "typing",
-        "description": "typing",
-        "isExtraImport": true,
-        "detail": "typing",
-        "documentation": {}
-    },
-    {
-        "label": "Optional",
+        "label": "Tuple",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -748,6 +772,78 @@
     },
     {
         "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Optional",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
         "importPath": "typing",
         "description": "typing",
         "isExtraImport": true,
@@ -776,6 +872,22 @@
         "description": "src.training.qlora_trainer",
         "isExtraImport": true,
         "detail": "src.training.qlora_trainer",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingSignalGenerator",
+        "importPath": "src.training.signal_generator",
+        "description": "src.training.signal_generator",
+        "isExtraImport": true,
+        "detail": "src.training.signal_generator",
+        "documentation": {}
+    },
+    {
+        "label": "TrainingSignalGenerator",
+        "importPath": "src.training.signal_generator",
+        "description": "src.training.signal_generator",
+        "isExtraImport": true,
+        "detail": "src.training.signal_generator",
         "documentation": {}
     },
     {
@@ -854,6 +966,22 @@
     },
     {
         "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "field",
         "importPath": "dataclasses",
         "description": "dataclasses",
         "isExtraImport": true,
@@ -1000,11 +1128,36 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timezone",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "Counter",
         "importPath": "collections",
         "description": "collections",
         "isExtraImport": true,
         "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "csv",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "csv",
+        "description": "csv",
+        "detail": "csv",
         "documentation": {}
     },
     {
@@ -1205,14 +1358,6 @@
         "documentation": {}
     },
     {
-        "label": "TrainingSignalGenerator",
-        "importPath": "src.training.signal_generator",
-        "description": "src.training.signal_generator",
-        "isExtraImport": true,
-        "detail": "src.training.signal_generator",
-        "documentation": {}
-    },
-    {
         "label": "find_packages",
         "importPath": "setuptools",
         "description": "setuptools",
@@ -1332,7 +1477,7 @@
         "kind": 2,
         "importPath": "scripts.evaluate",
         "description": "scripts.evaluate",
-        "peekOfCode": "def load_hotpotqa(split: str = \"validation\", max_samples: int = 200):\n    from datasets import load_dataset\n    ds = load_dataset(\"hotpot_qa\", \"distractor\", split=split, streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        queries.append(row[\"question\"])\n        answers.append(row[\"answer\"])\n        if len(queries) >= max_samples:\n            break\n    return queries, answers",
+        "peekOfCode": "def load_hotpotqa(split: str = \"validation\", max_samples: int = 200):\n    local = _load_local_jsonl(\"data/hotpotqa_validation.jsonl\", \"query\", \"answer\", max_samples)\n    if local is not None:\n        return local\n    from datasets import load_dataset\n    ds = load_dataset(\"hotpot_qa\", \"distractor\", split=split, streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        queries.append(row[\"question\"])\n        answers.append(row[\"answer\"])",
         "detail": "scripts.evaluate",
         "documentation": {}
     },
@@ -1341,7 +1486,7 @@
         "kind": 2,
         "importPath": "scripts.evaluate",
         "description": "scripts.evaluate",
-        "peekOfCode": "def load_natural_questions(split: str = \"validation\", max_samples: int = 200):\n    from datasets import load_dataset\n    ds = load_dataset(\"natural_questions\", split=split, streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        short_answers = row[\"annotations\"][\"short_answers\"]\n        if not short_answers or not short_answers[0][\"text\"]:\n            continue\n        queries.append(row[\"question\"][\"text\"])\n        answers.append(short_answers[0][\"text\"][0])",
+        "peekOfCode": "def load_natural_questions(split: str = \"validation\", max_samples: int = 200):\n    local = _load_local_jsonl(\"data/nq_validation.jsonl\", \"query\", \"answer\", max_samples)\n    if local is not None:\n        return local\n    from datasets import load_dataset\n    ds = load_dataset(\"natural_questions\", split=split, streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        short_answers = row[\"annotations\"][\"short_answers\"]\n        if not short_answers or not short_answers[0][\"text\"]:",
         "detail": "scripts.evaluate",
         "documentation": {}
     },
@@ -1350,7 +1495,7 @@
         "kind": 2,
         "importPath": "scripts.evaluate",
         "description": "scripts.evaluate",
-        "peekOfCode": "def load_popqa(max_samples: int = 200):\n    from datasets import load_dataset\n    ds = load_dataset(\"akariasai/PopQA\", split=\"test\", streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        queries.append(row[\"question\"])\n        answers.append(row[\"possible_answers\"][0] if row[\"possible_answers\"] else \"\")\n        if len(queries) >= max_samples:\n            break\n    return queries, answers",
+        "peekOfCode": "def load_popqa(max_samples: int = 200):\n    local = _load_local_jsonl(\"data/popqa_test.jsonl\", \"query\", \"answer\", max_samples)\n    if local is not None:\n        return local\n    from datasets import load_dataset\n    ds = load_dataset(\"akariasai/PopQA\", split=\"test\", streaming=True)\n    queries, answers = [], []\n    for row in ds:\n        queries.append(row[\"question\"])\n        answers.append(row[\"possible_answers\"][0] if row[\"possible_answers\"] else \"\")",
         "detail": "scripts.evaluate",
         "documentation": {}
     },
@@ -1359,7 +1504,7 @@
         "kind": 2,
         "importPath": "scripts.evaluate",
         "description": "scripts.evaluate",
-        "peekOfCode": "def evaluate_model(pipeline, queries, ground_truths, tag):\n    \"\"\"Run inference + diagnosis and return aggregate results.\"\"\"\n    predictions, hal_metrics = [], []\n    for i, (q, gt) in enumerate(zip(queries, ground_truths)):\n        logger.info(f\"[{i+1}/{len(queries)}] {q[:60]}\")\n        result = pipeline.run_inference(q, diagnose=True)\n        predictions.append(result[\"answer\"])\n        m = result[\"diagnosis\"][\"metrics\"]\n        hal_metrics.append(HallucinationMetrics(**m))\n    return pipeline.evaluator.evaluate(",
+        "peekOfCode": "def evaluate_model(pipeline, queries, ground_truths, tag, enable_hallucination_eval: bool = True):\n    \"\"\"Run inference + diagnosis and return aggregate results.\"\"\"\n    predictions, hal_metrics = [], []\n    for i, (q, gt) in enumerate(zip(queries, ground_truths)):\n        logger.info(f\"[{i+1}/{len(queries)}] {q[:60]}\")\n        result = pipeline.run_inference(\n            q,\n            diagnose=True,\n            enable_hallucination_eval=enable_hallucination_eval,\n        )",
         "detail": "scripts.evaluate",
         "documentation": {}
     },
@@ -1368,7 +1513,7 @@
         "kind": 2,
         "importPath": "scripts.evaluate",
         "description": "scripts.evaluate",
-        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--dataset\", default=\"hotpotqa\", choices=list(DATASET_LOADERS))\n    parser.add_argument(\"--adapter\", default=None, help=\"Path to fine-tuned LoRA adapter\")\n    parser.add_argument(\"--max-samples\", type=int, default=100)\n    parser.add_argument(\"--output-dir\", default=\"outputs/eval\")\n    args = parser.parse_args()\n    with open(args.config) as f:\n        cfg = yaml.safe_load(f)",
+        "peekOfCode": "def main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--dataset\", default=\"hotpotqa\", choices=list(DATASET_LOADERS))\n    parser.add_argument(\"--adapter\", default=None, help=\"Path to fine-tuned LoRA adapter\")\n    parser.add_argument(\"--max-samples\", type=int, default=100)\n    parser.add_argument(\"--output-dir\", default=\"outputs/eval\")\n    parser.add_argument(\n        \"--disable-hallucination-eval\",\n        action=\"store_true\",",
         "detail": "scripts.evaluate",
         "documentation": {}
     },
@@ -1377,7 +1522,7 @@
         "kind": 5,
         "importPath": "scripts.evaluate",
         "description": "scripts.evaluate",
-        "peekOfCode": "DATASET_LOADERS = {\n    \"hotpotqa\": load_hotpotqa,\n    \"natural_questions\": load_natural_questions,\n    \"popqa\": load_popqa,\n}\n# ── Evaluation runner ─────────────────────────────────────────────────────────\ndef evaluate_model(pipeline, queries, ground_truths, tag):\n    \"\"\"Run inference + diagnosis and return aggregate results.\"\"\"\n    predictions, hal_metrics = [], []\n    for i, (q, gt) in enumerate(zip(queries, ground_truths)):",
+        "peekOfCode": "DATASET_LOADERS = {\n    \"hotpotqa\": load_hotpotqa,\n    \"natural_questions\": load_natural_questions,\n    \"popqa\": load_popqa,\n}\n# ── Evaluation runner ─────────────────────────────────────────────────────────\ndef evaluate_model(pipeline, queries, ground_truths, tag, enable_hallucination_eval: bool = True):\n    \"\"\"Run inference + diagnosis and return aggregate results.\"\"\"\n    predictions, hal_metrics = [], []\n    for i, (q, gt) in enumerate(zip(queries, ground_truths)):",
         "detail": "scripts.evaluate",
         "documentation": {}
     },
@@ -1487,15 +1632,6 @@
         "description": "scripts.run_inference",
         "peekOfCode": "def main():\n    parser = argparse.ArgumentParser(\n        description=\"Run Failure-Aware RAG inference (single query or batch).\"\n    )\n    parser.add_argument(\"--config\", default=\"config/config.yaml\")\n    parser.add_argument(\"--query\", default=None, help=\"Single query string\")\n    parser.add_argument(\"--input\", default=None, help=\"JSONL file with queries\")\n    parser.add_argument(\"--output\", default=\"outputs/predictions.jsonl\")\n    parser.add_argument(\n        \"--mock-generate\",",
         "detail": "scripts.run_inference",
-        "documentation": {}
-    },
-    {
-        "label": "TrainingSignalGenerator",
-        "kind": 6,
-        "importPath": "scripts.train",
-        "description": "scripts.train",
-        "peekOfCode": "class TrainingSignalGenerator:\n    @staticmethod\n    def load(path: str):\n        \"\"\"Load training samples from JSON file\"\"\"\n        samples = []\n        try:\n            with open(path, 'r') as f:\n                data = json.load(f)\n            # Convert dict samples to objects with attributes\n            for item in data:",
-        "detail": "scripts.train",
         "documentation": {}
     },
     {
@@ -1656,7 +1792,7 @@
         "kind": 5,
         "importPath": "src.diagnosis.diagnose",
         "description": "src.diagnosis.diagnose",
-        "peekOfCode": "REFUSAL_PATTERNS = re.compile(\n    r\"(cannot\\s+provide|i\\s+cannot|can't\\s+answer|cannot\\s+answer|\"\n    r\"context\\s+does\\s+not|not\\s+mentioned|no\\s+mention\\s+of|\"\n    r\"unable\\s+to\\s+determine|insufficient\\s+information|\"\n    r\"not\\s+enough\\s+information)\",\n    re.IGNORECASE,\n)\ndef _is_context_refusal(answer: str) -> bool:\n    return bool(answer and REFUSAL_PATTERNS.search(answer))\n@dataclass",
+        "peekOfCode": "REFUSAL_PATTERNS = re.compile(\n    r\"(cannot\\s+provide|i\\s+cannot|can't\\s+answer|cannot\\s+answer|\"\n    r\"context\\s+does\\s+not|not\\s+mentioned|no\\s+mention\\s+of|\"\n    r\"unable\\s+to\\s+determine|insufficient\\s+information|\"\n    r\"not\\s+enough\\s+information)\",\n    re.IGNORECASE,\n)\ndef _is_context_refusal(answer: str) -> bool:\n    return bool(answer and REFUSAL_PATTERNS.search(answer))\ndef _extract_contexts(docs: Optional[List[dict]]) -> List[str]:",
         "detail": "src.diagnosis.diagnose",
         "documentation": {}
     },
@@ -1684,6 +1820,96 @@
         "importPath": "src.diagnosis.metric_engine",
         "description": "src.diagnosis.metric_engine",
         "peekOfCode": "class MetricEngine:\n    \"\"\"\n    Aggregates ClaimVerificationResults into HallucinationMetrics.\n    Weights are configurable; defaults match the paper proposal.\n    \"\"\"\n    def __init__(\n        self,\n        scr_weight: float = 1.0,\n        cr_weight: float  = 1.0,\n        tve_weight: float = 0.8,",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "detect_retrieval_conflict",
+        "kind": 2,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "def detect_retrieval_conflict(\n    contexts: List[str],\n    verification_results: List[ClaimVerificationResult] | None = None,\n) -> float:\n    \"\"\"\n    Detect contradictions and low agreement across retrieved contexts.\n    Returns normalized risk score in [0, 1].\n    \"\"\"\n    valid_contexts = [c for c in contexts if c and c.strip()]\n    if len(valid_contexts) < 2:",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "detect_overgeneralization",
+        "kind": 2,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "def detect_overgeneralization(\n    response: str,\n    contexts: List[str],\n    verification_results: List[ClaimVerificationResult] | None = None,\n) -> float:\n    \"\"\"\n    Detect claims likely extending beyond available evidence.\n    Returns normalized risk score in [0, 1].\n    \"\"\"\n    if not (response or \"\").strip():",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "detect_outdated_information",
+        "kind": 2,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "def detect_outdated_information(\n    response: str,\n    contexts: List[str],\n    verification_results: List[ClaimVerificationResult] | None = None,\n) -> float:\n    \"\"\"\n    Detect temporally stale or inconsistent information.\n    Returns normalized risk score in [0, 1].\n    \"\"\"\n    if not (response or \"\").strip():",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "detect_synthesis_error",
+        "kind": 2,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "def detect_synthesis_error(\n    verification_results: List[ClaimVerificationResult],\n    docs_per_claim: List[int] | None = None,\n) -> float:\n    \"\"\"\n    Detect unsupported multi-document synthesis and fabricated relationships.\n    Returns normalized risk score in [0, 1].\n    \"\"\"\n    if not verification_results:\n        return 0.0",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "compute_overall_hallucination_score",
+        "kind": 2,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "def compute_overall_hallucination_score(scores: Dict[str, float]) -> float:\n    return _clip01(\n        0.3 * _clip01(scores.get(\"retrieval_conflict\", 0.0))\n        + 0.25 * _clip01(scores.get(\"synthesis_error\", 0.0))\n        + 0.25 * _clip01(scores.get(\"overgeneralization\", 0.0))\n        + 0.2 * _clip01(scores.get(\"outdated_information\", 0.0))\n    )\ndef _validate_hallucination_inputs(response: str, contexts: List[str]) -> Tuple[bool, str]:\n    if not isinstance(contexts, list) or not any((c or \"\").strip() for c in contexts):\n        return False, \"contexts-empty\"",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "_GENERALIZATION_PATTERN",
+        "kind": 5,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "_GENERALIZATION_PATTERN = re.compile(\n    r\"\\b(always|all|everyone|never|every|entirely|completely|none|must|definitely)\\b\",\n    re.IGNORECASE,\n)\n_YEAR_PATTERN = re.compile(r\"\\b(?:19|20)\\d{2}\\b\")\n_NUMBER_PATTERN = re.compile(r\"\\b\\d+(?:\\.\\d+)?\\b\")\n_ENTITY_PATTERN = re.compile(r\"\\b[A-Z][a-z]+(?:\\s+[A-Z][a-z]+){0,2}\\b\")\n_DUMMY_PATTERN = re.compile(r\"\\b(lorem ipsum|placeholder|sample response for:)\\b\", re.IGNORECASE)\ndef _clip01(value: float) -> float:\n    return max(0.0, min(1.0, float(value)))",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "_YEAR_PATTERN",
+        "kind": 5,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "_YEAR_PATTERN = re.compile(r\"\\b(?:19|20)\\d{2}\\b\")\n_NUMBER_PATTERN = re.compile(r\"\\b\\d+(?:\\.\\d+)?\\b\")\n_ENTITY_PATTERN = re.compile(r\"\\b[A-Z][a-z]+(?:\\s+[A-Z][a-z]+){0,2}\\b\")\n_DUMMY_PATTERN = re.compile(r\"\\b(lorem ipsum|placeholder|sample response for:)\\b\", re.IGNORECASE)\ndef _clip01(value: float) -> float:\n    return max(0.0, min(1.0, float(value)))\ndef _safe_ratio(num: float, den: float) -> float:\n    return float(num) / float(den) if den else 0.0\ndef _tokenize(text: str) -> List[str]:\n    return re.findall(r\"[a-z0-9]+\", (text or \"\").lower())",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "_NUMBER_PATTERN",
+        "kind": 5,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "_NUMBER_PATTERN = re.compile(r\"\\b\\d+(?:\\.\\d+)?\\b\")\n_ENTITY_PATTERN = re.compile(r\"\\b[A-Z][a-z]+(?:\\s+[A-Z][a-z]+){0,2}\\b\")\n_DUMMY_PATTERN = re.compile(r\"\\b(lorem ipsum|placeholder|sample response for:)\\b\", re.IGNORECASE)\ndef _clip01(value: float) -> float:\n    return max(0.0, min(1.0, float(value)))\ndef _safe_ratio(num: float, den: float) -> float:\n    return float(num) / float(den) if den else 0.0\ndef _tokenize(text: str) -> List[str]:\n    return re.findall(r\"[a-z0-9]+\", (text or \"\").lower())\ndef _extract_fact_signature(text: str) -> Dict[str, set]:",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "_ENTITY_PATTERN",
+        "kind": 5,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "_ENTITY_PATTERN = re.compile(r\"\\b[A-Z][a-z]+(?:\\s+[A-Z][a-z]+){0,2}\\b\")\n_DUMMY_PATTERN = re.compile(r\"\\b(lorem ipsum|placeholder|sample response for:)\\b\", re.IGNORECASE)\ndef _clip01(value: float) -> float:\n    return max(0.0, min(1.0, float(value)))\ndef _safe_ratio(num: float, den: float) -> float:\n    return float(num) / float(den) if den else 0.0\ndef _tokenize(text: str) -> List[str]:\n    return re.findall(r\"[a-z0-9]+\", (text or \"\").lower())\ndef _extract_fact_signature(text: str) -> Dict[str, set]:\n    years = set(_YEAR_PATTERN.findall(text or \"\"))",
+        "detail": "src.diagnosis.metric_engine",
+        "documentation": {}
+    },
+    {
+        "label": "_DUMMY_PATTERN",
+        "kind": 5,
+        "importPath": "src.diagnosis.metric_engine",
+        "description": "src.diagnosis.metric_engine",
+        "peekOfCode": "_DUMMY_PATTERN = re.compile(r\"\\b(lorem ipsum|placeholder|sample response for:)\\b\", re.IGNORECASE)\ndef _clip01(value: float) -> float:\n    return max(0.0, min(1.0, float(value)))\ndef _safe_ratio(num: float, den: float) -> float:\n    return float(num) / float(den) if den else 0.0\ndef _tokenize(text: str) -> List[str]:\n    return re.findall(r\"[a-z0-9]+\", (text or \"\").lower())\ndef _extract_fact_signature(text: str) -> Dict[str, set]:\n    years = set(_YEAR_PATTERN.findall(text or \"\"))\n    numbers = set(_NUMBER_PATTERN.findall(text or \"\"))",
         "detail": "src.diagnosis.metric_engine",
         "documentation": {}
     },
@@ -1845,7 +2071,7 @@
         "kind": 6,
         "importPath": "src.training.qlora_trainer",
         "description": "src.training.qlora_trainer",
-        "peekOfCode": "class TrainingSample:\n    \"\"\"Simple data structure to hold training samples with quality metrics\"\"\"\n    def __init__(self, query: str, response: str = \"\", contexts: list = None, \n                 chs: float = 0.0, retrieval_score: float = 0.0, **kwargs):\n        self.query = query\n        self.response = response\n        self.contexts = contexts or []\n        self.chs = chs  # Context-Response Harmony Score\n        self.retrieval_score = retrieval_score\n        # Store any additional metrics",
+        "peekOfCode": "class TrainingSample:\n    \"\"\"Strict training schema used across collection, loading, and fine-tuning.\"\"\"\n    query: str\n    response: str\n    contexts: List[str] = field(default_factory=list)\n    chs: float = 0.0\n    scr: float = 0.0\n    tve: float = 0.0\n    cr: float = 0.0\n    cdee: float = 0.0",
         "detail": "src.training.qlora_trainer",
         "documentation": {}
     },
@@ -1854,7 +2080,7 @@
         "kind": 6,
         "importPath": "src.training.qlora_trainer",
         "description": "src.training.qlora_trainer",
-        "peekOfCode": "class QLoRATrainer:\n    def __init__(self, model_name: str = \"microsoft/Phi-3.5-mini-instruct\", \n                 cache_dir: str = \"cache\",\n                 output_dir: str = \"./outputs/qlora_model\",\n                 checkpoint_dir: str = \"./outputs/qlora_checkpoints\",\n                 dpo_beta: float = 0.1):\n        # Use a much smaller model for T4 GPU\n        if \"mistral\" in model_name.lower() or \"7b\" in model_name.lower():\n            logger.warning(f\"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini\")\n            model_name = \"microsoft/Phi-3.5-mini-instruct\"",
+        "peekOfCode": "class QLoRATrainer:\n    def __init__(self, model_name: str = \"microsoft/Phi-3.5-mini-instruct\", \n                 cache_dir: str = \"cache\",\n                 output_dir: str = \"./outputs/qlora_model\",\n                 checkpoint_dir: str = \"./outputs/qlora_checkpoints\",\n                 dpo_beta: float = 0.1):\n        self.model_name = model_name\n        self.cache_dir = cache_dir\n        self.output_dir = output_dir\n        self.checkpoint_dir = checkpoint_dir",
         "detail": "src.training.qlora_trainer",
         "documentation": {}
     },
@@ -1863,7 +2089,7 @@
         "kind": 6,
         "importPath": "src.training.qlora_trainer",
         "description": "src.training.qlora_trainer",
-        "peekOfCode": "class MetricGuidedQLoRATrainer:\n    def __init__(self, config):\n        self.config = config\n        training_cfg = config.get('training', {})\n        self.min_scr = float(training_cfg.get('min_scr_for_positive', 0.75))\n        self.max_tve = float(training_cfg.get('max_tve_for_positive', 0.20))\n        self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))\n        self.max_chs = float(training_cfg.get('max_chs_for_positive', 0.40))\n        self.min_score_gap = float(training_cfg.get('min_score_gap', 0.20))\n        # Override with smaller model for T4",
+        "peekOfCode": "class MetricGuidedQLoRATrainer:\n    def __init__(self, config):\n        self.config = config\n        training_cfg = config.get('training', {})\n        self.min_scr = float(training_cfg.get('min_scr_for_positive', 0.75))\n        self.max_tve = float(training_cfg.get('max_tve_for_positive', 0.20))\n        self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))\n        self.max_chs = float(training_cfg.get('max_chs_for_positive', 0.40))\n        self.min_score_gap = float(training_cfg.get('min_score_gap', 0.20))\n        model_name = config.get('generation', {}).get('model_name', 'microsoft/Phi-3.5-mini-instruct')",
         "detail": "src.training.qlora_trainer",
         "documentation": {}
     },
@@ -1874,6 +2100,51 @@
         "description": "src.training.signal_generator",
         "peekOfCode": "class TrainingSignalGenerator:\n    \"\"\"\n    Given a list of (query, retrieved_docs, DiagnosisOutput) triples,\n    produces TrainingSample objects and optionally persists them to disk.\n    \"\"\"\n    def __init__(self, output_path: str = \"outputs/training_samples.jsonl\"):\n        self.output_path = output_path\n    def convert(\n        self,\n        queries: List[str],",
         "detail": "src.training.signal_generator",
+        "documentation": {}
+    },
+    {
+        "label": "validate_training_sample",
+        "kind": 2,
+        "importPath": "src.training.signal_generator",
+        "description": "src.training.signal_generator",
+        "peekOfCode": "def validate_training_sample(sample: TrainingSample, line_no: int | None = None) -> None:\n    where = f\" (line {line_no})\" if line_no is not None else \"\"\n    if not sample.query or len(sample.query) < 8:\n        raise ValueError(f\"Invalid query{where}: must be at least 8 characters\")\n    if not sample.response or len(sample.response) < 16:\n        raise ValueError(f\"Invalid response{where}: must be at least 16 characters\")\n    if not isinstance(sample.contexts, list) or not sample.contexts:\n        raise ValueError(f\"Invalid contexts{where}: must contain at least one context string\")\n    if _is_placeholder(sample.query) or _is_placeholder(sample.response):\n        raise ValueError(f\"Placeholder/dummy text detected{where}\")",
+        "detail": "src.training.signal_generator",
+        "documentation": {}
+    },
+    {
+        "label": "_DUMMY_PATTERNS",
+        "kind": 5,
+        "importPath": "src.training.signal_generator",
+        "description": "src.training.signal_generator",
+        "peekOfCode": "_DUMMY_PATTERNS = [\n    re.compile(r\"sample response for:\", re.IGNORECASE),\n    re.compile(r\"^placeholder\", re.IGNORECASE),\n    re.compile(r\"lorem ipsum\", re.IGNORECASE),\n    re.compile(r\"###\\s*question\", re.IGNORECASE),\n    re.compile(r\"###\\s*answer\", re.IGNORECASE),\n]\ndef _is_placeholder(text: str) -> bool:\n    return any(p.search(text or \"\") for p in _DUMMY_PATTERNS)\ndef validate_training_sample(sample: TrainingSample, line_no: int | None = None) -> None:",
+        "detail": "src.training.signal_generator",
+        "documentation": {}
+    },
+    {
+        "label": "DuplicateKeySafeLoader",
+        "kind": 6,
+        "importPath": "src.configuration",
+        "description": "src.configuration",
+        "peekOfCode": "class DuplicateKeySafeLoader(yaml.SafeLoader):\n    \"\"\"YAML loader that raises on duplicate keys instead of silently overriding.\"\"\"\ndef _construct_mapping(loader: DuplicateKeySafeLoader, node, deep: bool = False):\n    mapping = {}\n    for key_node, value_node in node.value:\n        key = loader.construct_object(key_node, deep=deep)\n        if key in mapping:\n            line = getattr(key_node.start_mark, \"line\", 0) + 1\n            raise ValueError(f\"Duplicate YAML key '{key}' at line {line}\")\n        mapping[key] = loader.construct_object(value_node, deep=deep)",
+        "detail": "src.configuration",
+        "documentation": {}
+    },
+    {
+        "label": "load_config_file",
+        "kind": 2,
+        "importPath": "src.configuration",
+        "description": "src.configuration",
+        "peekOfCode": "def load_config_file(path: str) -> Dict[str, Any]:\n    with open(path, \"r\") as f:\n        cfg = yaml.load(f, Loader=DuplicateKeySafeLoader)\n    if not isinstance(cfg, dict):\n        raise ValueError(f\"Config at {path} must be a YAML mapping at top level\")\n    validate_config(cfg, config_path=path)\n    return cfg\ndef validate_config(cfg: Dict[str, Any], config_path: str | None = None) -> None:\n    required_sections = [\"retrieval\", \"generation\", \"training\", \"paths\"]\n    missing = [section for section in required_sections if section not in cfg]",
+        "detail": "src.configuration",
+        "documentation": {}
+    },
+    {
+        "label": "validate_config",
+        "kind": 2,
+        "importPath": "src.configuration",
+        "description": "src.configuration",
+        "peekOfCode": "def validate_config(cfg: Dict[str, Any], config_path: str | None = None) -> None:\n    required_sections = [\"retrieval\", \"generation\", \"training\", \"paths\"]\n    missing = [section for section in required_sections if section not in cfg]\n    if missing:\n        raise ValueError(f\"Missing required config sections: {missing}\")\n    generation = cfg[\"generation\"]\n    model_name = generation.get(\"model_name\")\n    if not isinstance(model_name, str) or not model_name.strip():\n        raise ValueError(\"generation.model_name must be a non-empty string\")\n    adapter_path = generation.get(\"adapter_path\")",
+        "detail": "src.configuration",
         "documentation": {}
     },
     {
@@ -1890,7 +2161,7 @@
         "kind": 2,
         "importPath": "src.pipeline",
         "description": "src.pipeline",
-        "peekOfCode": "def load_config(path: str = \"config/config.yaml\") -> dict:\n    with open(path) as f:\n        return yaml.safe_load(f)\n# ── Main pipeline class ───────────────────────────────────────────────────────\nclass FailureAwareRAGPipeline:\n    \"\"\"\n    Full Failure-Aware RAG pipeline.\n    Usage:\n        pipeline = FailureAwareRAGPipeline.from_config(\"config/config.yaml\")\n        result = pipeline.run_inference(\"What is the capital of France?\")",
+        "peekOfCode": "def load_config(path: str = \"config/config.yaml\") -> dict:\n    return load_config_file(path)\n# ── Main pipeline class ───────────────────────────────────────────────────────\nclass FailureAwareRAGPipeline:\n    \"\"\"\n    Full Failure-Aware RAG pipeline.\n    Usage:\n        pipeline = FailureAwareRAGPipeline.from_config(\"config/config.yaml\")\n        result = pipeline.run_inference(\"What is the capital of France?\")\n    \"\"\"",
         "detail": "src.pipeline",
         "documentation": {}
     },
@@ -1998,7 +2269,7 @@
         "kind": 6,
         "importPath": "tests.test_integration",
         "description": "tests.test_integration",
-        "peekOfCode": "class TestEvaluator:\n    def _make_metrics(self, scr=0.9, cr=0.1):\n        from src.diagnosis.metric_engine import HallucinationMetrics\n        return HallucinationMetrics(\n            scr=scr, cr=cr, tve=0.0, cdee=0.0,\n            chs=(1 - scr + cr) * 0.5,\n            total_claims=10, supported_claims=int(scr * 10),\n        )\n    def test_evaluate_basic(self, tmp_path):\n        evaluator = RAGEvaluator(results_dir=str(tmp_path))",
+        "peekOfCode": "class TestEvaluator:\n    def _make_metrics(self, scr=0.9, cr=0.1):\n        from src.diagnosis.metric_engine import HallucinationMetrics\n        return HallucinationMetrics(\n            scr=scr, cr=cr, tve=0.0, cdee=0.0,\n            chs=(1 - scr + cr) * 0.5,\n            retrieval_conflict=0.2,\n            overgeneralization=0.1,\n            outdated_information=0.1,\n            synthesis_error=0.1,",
         "detail": "tests.test_integration",
         "documentation": {}
     },
@@ -2088,7 +2359,7 @@
         "kind": 6,
         "importPath": "tests.test_pipeline_units",
         "description": "tests.test_pipeline_units",
-        "peekOfCode": "class TestHallucinationMetrics:\n    def test_to_dict_roundtrip(self):\n        m = HallucinationMetrics(scr=0.8, cr=0.1, tve=0.05, cdee=0.02, chs=0.12)\n        d = m.to_dict()\n        assert d[\"scr\"] == 0.8\n        assert d[\"cr\"] == 0.1\n        assert \"chs\" in d\n    def test_summary_string(self):\n        m = HallucinationMetrics(scr=0.9, cr=0.1, tve=0.0, cdee=0.0, chs=0.05,\n                                  total_claims=10, supported_claims=9)",
+        "peekOfCode": "class TestHallucinationMetrics:\n    def test_to_dict_roundtrip(self):\n        m = HallucinationMetrics(\n            scr=0.8,\n            cr=0.1,\n            tve=0.05,\n            cdee=0.02,\n            chs=0.12,\n            retrieval_conflict=0.2,\n            overgeneralization=0.1,",
         "detail": "tests.test_pipeline_units",
         "documentation": {}
     }

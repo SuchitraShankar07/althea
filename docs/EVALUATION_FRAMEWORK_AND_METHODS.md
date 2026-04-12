@@ -7,6 +7,13 @@ The project evaluates two orthogonal properties:
 1. Answer utility (task accuracy): F1 and EM.
 2. Factual reliability under retrieval constraints: SCR/CR/TVE/CDEE/CHS.
 
+Extended factual reliability also includes a taxonomy-level hallucination layer:
+- Retrieval Conflict
+- Overgeneralization
+- Outdated Information
+- Synthesis Error
+- Overall Hallucination Score (OHS)
+
 This means model selection is multi-objective rather than pure QA score optimization.
 
 Primary anchors:
@@ -53,6 +60,13 @@ Computed from claim verification outcomes:
 - CDEE (lower is better)
 - CHS (lower is better)
 
+Extended taxonomy metrics (all normalized to [0, 1], higher means higher risk):
+- retrieval_conflict
+- overgeneralization
+- outdated_information
+- synthesis_error
+- overall_hallucination_score (OHS)
+
 Anchors:
 - Metric dataclass: `src/diagnosis/metric_engine.py:23`
 - Compute implementation: `src/diagnosis/metric_engine.py:72`
@@ -61,6 +75,18 @@ Composite score:
 \[
 CHS = \lambda\Big(w_{scr}(1-SCR)+w_{cr}CR+w_{tve}TVE+w_{cdee}CDEE\Big)
 \]
+
+Taxonomy aggregate score:
+
+\[
+OHS = 0.3\cdot RC + 0.25\cdot SE + 0.25\cdot OG + 0.2\cdot OI
+\]
+
+Where:
+- $RC$ = retrieval_conflict
+- $SE$ = synthesis_error
+- $OG$ = overgeneralization
+- $OI$ = outdated_information
 
 Weight source:
 - `config/config.yaml:44`
@@ -75,6 +101,7 @@ To compute hallucination metrics, each generated answer is transformed through:
 2. Per-claim evidence retrieval.
 3. NLI classification.
 4. Temporal and synthesis-aware metric aggregation.
+5. Taxonomy-level hallucination detection and labeling.
 
 Anchors:
 - Diagnoser orchestration class: `src/diagnosis/diagnose.py:48`
@@ -83,6 +110,12 @@ Anchors:
 - Metric engine: `src/diagnosis/metric_engine.py:51`
 
 This architecture makes evaluation interpretable: score regressions can be traced to claim extraction, evidence retrieval, label calibration, or aggregation policy.
+
+Additional taxonomy detector anchors:
+- Retrieval conflict detector: `src/diagnosis/metric_engine.py:123`
+- Overgeneralization detector: `src/diagnosis/metric_engine.py:165`
+- Outdated information detector: `src/diagnosis/metric_engine.py:195`
+- Synthesis error detector: `src/diagnosis/metric_engine.py:230`
 
 ---
 
@@ -159,9 +192,29 @@ Anchor:
 Output path convention:
 - `${results_dir}/{tag}_samples.jsonl`
 
+Extended appended artifacts (non-overwriting):
+- `${results_dir}/hallucination_samples.jsonl`
+- `${results_dir}/hallucination_samples.csv`
+
+These contain:
+- per-sample taxonomy scores
+- per-sample taxonomy labels
+- confidence
+- overall_hallucination_score
+- timestamp and model_tag
+
 ## 6.2 Aggregate outputs
 
 Aggregated result includes means for all utility and hallucination metrics and sample count.
+
+Extended aggregate includes:
+- avg_retrieval_conflict
+- avg_overgeneralization
+- avg_outdated_information
+- avg_synthesis_error
+- avg_overall_hallucination_score
+- avg_confidence
+- pct_hallucinated_outputs
 
 Anchors:
 - Aggregate dataclass: `src/evaluation/evaluator.py:63`
@@ -180,6 +233,36 @@ Anchor:
 Interpretation rule:
 - Positive delta is good for F1/EM/SCR.
 - Negative delta is good for CR/TVE/CDEE/CHS.
+- Negative delta is good for OHS.
+
+## 6.4 Hallucination schema (per sample)
+
+The extended diagnosis object includes this backward-compatible record:
+
+```python
+{
+	"query": str,
+	"response": str,
+	"contexts": List[str],
+	"hallucination_scores": {
+		"retrieval_conflict": float,
+		"overgeneralization": float,
+		"outdated_information": float,
+		"synthesis_error": float
+	},
+	"hallucination_labels": {
+		"retrieval_conflict": bool,
+		"overgeneralization": bool,
+		"outdated_information": bool,
+		"synthesis_error": bool
+	},
+	"confidence": float,
+	"overall_hallucination_score": float
+}
+```
+
+Integration anchor:
+- `src/pipeline.py:76`
 
 ---
 
@@ -209,6 +292,13 @@ Anchor:
 
 Behavior:
 - If ground truths are provided and diagnosis is enabled, batch run pushes results to evaluator with a supplied model tag.
+
+Non-breaking optional hooks:
+- `enable_hallucination_eval=True` in pipeline inference and batch methods.
+- CLI switches:
+	- `scripts/run_inference.py --disable-hallucination-eval`
+	- `scripts/evaluate.py --disable-hallucination-eval`
+	- `scripts/train.py --disable-hallucination-eval`
 
 This supports embedding evaluation inside custom experiments without invoking CLI script wrappers.
 

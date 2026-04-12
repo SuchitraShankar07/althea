@@ -15,9 +15,9 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import List, Optional
 
-import yaml
 from loguru import logger
 
+from .configuration import load_config_file
 from .diagnosis.diagnose import DiagnosisOutput, HallucinationDiagnoser
 from .evaluation.evaluator import RAGEvaluator
 from .generation.generator import RAGGenerator
@@ -28,8 +28,7 @@ from .training.signal_generator import TrainingSignalGenerator
 
 # ── Config loader ─────────────────────────────────────────────────────────────
 def load_config(path: str = "config/config.yaml") -> dict:
-    with open(path) as f:
-        return yaml.safe_load(f)
+    return load_config_file(path)
 
 
 # ── Main pipeline class ───────────────────────────────────────────────────────
@@ -57,7 +56,12 @@ class FailureAwareRAGPipeline:
         self.cfg = cfg or {}
 
     # ── Single-query inference ────────────────────────────────
-    def run_inference(self, query: str, diagnose: bool = True) -> dict:
+    def run_inference(
+        self,
+        query: str,
+        diagnose: bool = True,
+        enable_hallucination_eval: bool = True,
+    ) -> dict:
         """
         Returns:
             {query, answer, documents, diagnosis (optional)}
@@ -74,11 +78,21 @@ class FailureAwareRAGPipeline:
 
         # 3. Diagnose (optional)
         if diagnose:
-            diag = self.diagnoser.diagnose(answer, original_docs=documents)
+            diag = self.diagnoser.diagnose(
+                answer,
+                original_docs=documents,
+                query=query,
+                enable_hallucination_eval=enable_hallucination_eval,
+            )
             result["diagnosis"] = {
                 "claims": diag.claims,
                 "metrics": diag.metrics.to_dict(),
                 "summary": diag.metrics.summary(),
+                "hallucination_evaluation": diag.metrics.to_hallucination_record(
+                    query=query,
+                    response=answer,
+                    contexts=[d.get("text", "") for d in documents if d.get("text")],
+                ),
             }
             logger.info(f"Diagnosis: {diag.metrics.summary()}")
 
@@ -91,12 +105,17 @@ class FailureAwareRAGPipeline:
         ground_truths: Optional[List[str]] = None,
         diagnose: bool = True,
         model_tag: str = "baseline",
+        enable_hallucination_eval: bool = True,
     ) -> List[dict]:
         results, diagnoses, predictions, hal_metrics = [], [], [], []
 
         for i, query in enumerate(queries):
             logger.info(f"[{i+1}/{len(queries)}] {query[:60]}")
-            r = self.run_inference(query, diagnose=diagnose)
+            r = self.run_inference(
+                query,
+                diagnose=diagnose,
+                enable_hallucination_eval=enable_hallucination_eval,
+            )
             results.append(r)
             predictions.append(r["answer"])
             if diagnose:
@@ -117,24 +136,35 @@ class FailureAwareRAGPipeline:
         self,
         queries: List[str],
         save_path: str = "outputs/training_samples.jsonl",
+        enable_hallucination_eval: bool = True,
     ) -> List:
         """
         Run inference + diagnosis on all queries, save training samples.
         """
         sig_gen = TrainingSignalGenerator(output_path=save_path)
-        docs_list, answers, diag_outputs = [], [], []
+        docs_list, diag_outputs, expanded_queries = [], [], []
+        n_candidates = int(self.cfg.get("training", {}).get("dpo_candidates_per_query", 2))
+        n_candidates = max(1, n_candidates)
 
         for i, query in enumerate(queries):
             logger.info(f"Collecting [{i+1}/{len(queries)}]")
             docs = self.retriever.retrieve(query)
-            answer = self.generator.generate(query, docs)
-            diag = self.diagnoser.diagnose(answer, original_docs=docs)
-            diag.answer = answer
-            docs_list.append(docs)
-            answers.append(answer)
-            diag_outputs.append(diag)
+            for cand_idx in range(n_candidates):
+                # Use a reduced-context variant for contrastive DPO candidates.
+                docs_variant = docs if cand_idx == 0 else docs[: max(1, len(docs) // 2)]
+                answer = self.generator.generate(query, docs_variant)
+                diag = self.diagnoser.diagnose(
+                    answer,
+                    original_docs=docs_variant,
+                    query=query,
+                    enable_hallucination_eval=enable_hallucination_eval,
+                )
+                diag.answer = answer
+                expanded_queries.append(query)
+                docs_list.append(docs_variant)
+                diag_outputs.append(diag)
 
-        return sig_gen.generate_and_save(queries, docs_list, diag_outputs)
+        return sig_gen.generate_and_save(expanded_queries, docs_list, diag_outputs)
 
     def run_training(
         self,

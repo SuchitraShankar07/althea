@@ -14,8 +14,8 @@ import sys
 from pathlib import Path
 
 import torch
-import yaml
 from loguru import logger
+from src.configuration import load_config_file
 
 # Make sure src/ is importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -114,8 +114,7 @@ def main():
     # ========================================================
 
     try:
-        with open(args.config) as f:
-            cfg = yaml.safe_load(f)
+        cfg = load_config_file(args.config)
     except FileNotFoundError:
         logger.warning("Config not found → using fallback config")
 

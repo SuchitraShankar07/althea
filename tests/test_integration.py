@@ -175,6 +175,12 @@ class TestEvaluator:
         return HallucinationMetrics(
             scr=scr, cr=cr, tve=0.0, cdee=0.0,
             chs=(1 - scr + cr) * 0.5,
+            retrieval_conflict=0.2,
+            overgeneralization=0.1,
+            outdated_information=0.1,
+            synthesis_error=0.1,
+            overall_hallucination_score=0.14,
+            confidence=0.8,
             total_claims=10, supported_claims=int(scr * 10),
         )
 
@@ -243,11 +249,25 @@ class TestTrainingSignalGenerator:
         path = str(tmp_path / "samples.jsonl")
         sig_gen = TrainingSignalGenerator(output_path=path)
         samples = [
-            TrainingSample(query="Q1", answer="A1", chs=0.2, prompt="P1"),
-            TrainingSample(query="Q2", answer="A2", chs=0.5, prompt="P2"),
+            TrainingSample(query="What is Q1?", response="This is a sufficiently long answer A1.", contexts=["ctx1"], chs=0.2),
+            TrainingSample(query="What is Q2?", response="This is a sufficiently long answer A2.", contexts=["ctx2"], chs=0.5),
         ]
         sig_gen.save(samples)
         loaded = TrainingSignalGenerator.load(path)
         assert len(loaded) == 2
-        assert loaded[0].query == "Q1"
+        assert loaded[0].query == "What is Q1?"
         assert loaded[1].chs == 0.5
+
+    def test_hallucination_taxonomy_schema_present(self):
+        diagnoser = TestDiagnosisPipeline()._make_diagnoser()
+        output = diagnoser.diagnose(DUMMY_ANSWER, original_docs=DUMMY_DOCS)
+
+        record = output.metrics.to_hallucination_record(
+            query="Where is the Eiffel Tower?",
+            response=output.answer,
+            contexts=[d["text"] for d in DUMMY_DOCS],
+        )
+        assert "hallucination_scores" in record
+        assert "hallucination_labels" in record
+        assert "overall_hallucination_score" in record
+        assert 0.0 <= record["overall_hallucination_score"] <= 1.0

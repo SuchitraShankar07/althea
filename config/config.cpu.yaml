@@ -4,6 +4,8 @@ retrieval:
   index_path: "data/faiss.index"
   corpus_path: "data/corpus.jsonl"
   embedding_dim: 384
+  allow_rebuild_if_missing: true
+  allow_rebuild_if_stale: true
 
 generation:
   model_name: "Qwen/Qwen2.5-0.5B-Instruct"
@@ -45,6 +47,7 @@ training:
   hallucination_penalty_lambda: 0.3
   dpo_beta: 0.1
   min_score_gap: 0.2
+  dpo_candidates_per_query: 2
   max_chs_for_positive: 0.4
   min_scr_for_positive: 0.75
   max_tve_for_positive: 0.20

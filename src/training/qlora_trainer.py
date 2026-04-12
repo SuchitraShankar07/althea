@@ -1,5 +1,8 @@
 import gc
 import inspect
+from dataclasses import dataclass, field
+from typing import Any, Dict, List
+
 import torch
 from transformers import (
     AutoModelForCausalLM, 
@@ -14,44 +17,86 @@ import json
 from pathlib import Path
 from loguru import logger
 
-# Add the missing TrainingSample class
+@dataclass
 class TrainingSample:
-    """Simple data structure to hold training samples with quality metrics"""
-    def __init__(self, query: str, response: str = "", contexts: list = None, 
-                 chs: float = 0.0, retrieval_score: float = 0.0, **kwargs):
-        self.query = query
-        self.response = response
-        self.contexts = contexts or []
-        self.chs = chs  # Context-Response Harmony Score
-        self.retrieval_score = retrieval_score
-        
-        # Store any additional metrics
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-    
-    def to_dict(self):
-        """Convert to dictionary for JSON serialization"""
-        result = {
-            'query': self.query,
-            'response': self.response,
-            'contexts': self.contexts,
-            'chs': self.chs,
-            'retrieval_score': self.retrieval_score
+    """Strict training schema used across collection, loading, and fine-tuning."""
+
+    query: str
+    response: str
+    contexts: List[str] = field(default_factory=list)
+    chs: float = 0.0
+    scr: float = 0.0
+    tve: float = 0.0
+    cr: float = 0.0
+    cdee: float = 0.0
+    retrieval_score: float = 0.0
+    retrieval_conflict: float = 0.0
+    overgeneralization: float = 0.0
+    outdated_information: float = 0.0
+    synthesis_error: float = 0.0
+    overall_hallucination_score: float = 0.0
+    hallucination_confidence: float = 0.0
+
+    def __post_init__(self) -> None:
+        self.query = str(self.query or "").strip()
+        self.response = str(self.response or "").strip()
+        self.contexts = [str(c).strip() for c in (self.contexts or []) if str(c).strip()]
+        self.chs = float(self.chs)
+        self.scr = float(self.scr)
+        self.tve = float(self.tve)
+        self.cr = float(self.cr)
+        self.cdee = float(self.cdee)
+        self.retrieval_score = float(self.retrieval_score)
+        self.retrieval_conflict = float(self.retrieval_conflict)
+        self.overgeneralization = float(self.overgeneralization)
+        self.outdated_information = float(self.outdated_information)
+        self.synthesis_error = float(self.synthesis_error)
+        self.overall_hallucination_score = float(self.overall_hallucination_score)
+        self.hallucination_confidence = float(self.hallucination_confidence)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "query": self.query,
+            "response": self.response,
+            "contexts": self.contexts,
+            "chs": self.chs,
+            "scr": self.scr,
+            "tve": self.tve,
+            "cr": self.cr,
+            "cdee": self.cdee,
+            "retrieval_score": self.retrieval_score,
+            "retrieval_conflict": self.retrieval_conflict,
+            "overgeneralization": self.overgeneralization,
+            "outdated_information": self.outdated_information,
+            "synthesis_error": self.synthesis_error,
+            "overall_hallucination_score": self.overall_hallucination_score,
+            "hallucination_confidence": self.hallucination_confidence,
         }
-        
-        # Add any additional attributes
-        for attr in dir(self):
-            if not attr.startswith('_') and attr not in result:
-                value = getattr(self, attr)
-                if not callable(value):
-                    result[attr] = value
-                    
-        return result
-    
+
     @classmethod
     def from_dict(cls, data: dict):
-        """Create from dictionary"""
+        expected = {
+            "query", "response", "contexts", "chs", "scr", "tve", "cr", "cdee", "retrieval_score",
+            "retrieval_conflict", "overgeneralization", "outdated_information", "synthesis_error",
+            "overall_hallucination_score", "hallucination_confidence"
+        }
+        unexpected = set(data.keys()) - expected
+        if unexpected:
+            raise ValueError(f"Unexpected keys in training sample: {sorted(unexpected)}")
         return cls(**data)
+
+
+def _required_vram_gb(model_name: str, load_in_4bit: bool = True) -> float:
+    name = model_name.lower()
+    if any(k in name for k in ["70b", "34b"]):
+        return 48.0 if load_in_4bit else 80.0
+    if any(k in name for k in ["13b"]):
+        return 16.0 if load_in_4bit else 28.0
+    if any(k in name for k in ["8b", "7b", "mistral", "llama-2", "llama-3"]):
+        return 10.0 if load_in_4bit else 16.0
+    if any(k in name for k in ["3b", "2.7b", "2b", "1.5b", "phi-3.5-mini"]):
+        return 6.0 if load_in_4bit else 10.0
+    return 4.0 if load_in_4bit else 8.0
 
 def _load_base_model_for_training(model_name: str, cache_dir: str):
     """Load model with aggressive memory optimization for training"""
@@ -79,6 +124,15 @@ def _load_base_model_for_training(model_name: str, cache_dir: str):
         allocated = torch.cuda.memory_allocated(0) / 1024**3
         free_memory = gpu_memory - allocated
         logger.info(f"GPU: {free_memory:.1f}GB free of {gpu_memory:.1f}GB total")
+        required_gb = _required_vram_gb(model_name=model_name, load_in_4bit=True)
+        if free_memory < required_gb:
+            raise RuntimeError(
+                f"Insufficient GPU memory for training {model_name}. "
+                f"Required ~{required_gb:.1f}GB free, found {free_memory:.1f}GB free. "
+                "Use a smaller model or reduce memory pressure."
+            )
+    else:
+        raise RuntimeError("CUDA GPU is required for QLoRA training.")
     
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
@@ -88,8 +142,6 @@ def _load_base_model_for_training(model_name: str, cache_dir: str):
         trust_remote_code=True,
         torch_dtype=torch.float16,
         low_cpu_mem_usage=True,
-        # More aggressive memory constraints for T4
-        max_memory={0: "10GB"}  # Conservative limit for T4
     )
     
     return model
@@ -100,11 +152,6 @@ class QLoRATrainer:
                  output_dir: str = "./outputs/qlora_model",
                  checkpoint_dir: str = "./outputs/qlora_checkpoints",
                  dpo_beta: float = 0.1):
-        # Use a much smaller model for T4 GPU
-        if "mistral" in model_name.lower() or "7b" in model_name.lower():
-            logger.warning(f"Model {model_name} may be too large for T4 GPU, switching to Phi-3.5-mini")
-            model_name = "microsoft/Phi-3.5-mini-instruct"
-        
         self.model_name = model_name
         self.cache_dir = cache_dir
         self.output_dir = output_dir
@@ -365,27 +412,21 @@ class QLoRATrainer:
             self._clear_gpu_memory()
 
     def _prepare_dpo_dataset(self, samples):
-        """Convert training samples to DPO format"""
+        """Convert preference pairs to DPO format using strict keys."""
         dpo_data = []
         
         for sample in samples:
-            # Handle both dict and object formats
-            if isinstance(sample, dict):
-                prompt = sample.get('prompt', sample.get('query', ''))
-                chosen = sample.get('chosen', sample.get('response', ''))
-                rejected = sample.get('rejected', '')
-            else:
-                prompt = getattr(sample, 'prompt', getattr(sample, 'query', ''))
-                chosen = getattr(sample, 'chosen', getattr(sample, 'response', ''))
-                rejected = getattr(sample, 'rejected', '')
-            
-            # Skip empty samples
-            if not prompt or not chosen:
+            if not isinstance(sample, dict):
+                raise ValueError("DPO samples must be dictionaries with prompt/chosen/rejected keys")
+
+            prompt = str(sample.get("prompt", "")).strip()
+            chosen = str(sample.get("chosen", "")).strip()
+            rejected = str(sample.get("rejected", "")).strip()
+
+            if not prompt or not chosen or not rejected:
                 continue
-                
-            # Generate rejected response if not provided
-            if not rejected:
-                rejected = "I don't have enough information to answer this question properly."
+            if chosen == rejected:
+                continue
             
             # Truncate long prompts to save memory
             if len(prompt) > 200:
@@ -418,11 +459,7 @@ class MetricGuidedQLoRATrainer:
         self.max_cr = float(training_cfg.get('max_cr_for_positive', 0.20))
         self.max_chs = float(training_cfg.get('max_chs_for_positive', 0.40))
         self.min_score_gap = float(training_cfg.get('min_score_gap', 0.20))
-        # Override with smaller model for T4
         model_name = config.get('generation', {}).get('model_name', 'microsoft/Phi-3.5-mini-instruct')
-        if "mistral" in model_name.lower() or "7b" in model_name.lower():
-            logger.warning(f"Overriding large model {model_name} with Phi-3.5-mini for T4 GPU")
-            model_name = "microsoft/Phi-3.5-mini-instruct"
             
         cache_dir = config.get('paths', {}).get('cache_dir', 'cache')
         output_dir = training_cfg.get('output_dir', './outputs/qlora_model')
@@ -465,11 +502,13 @@ class MetricGuidedQLoRATrainer:
             raise ValueError(f"Unknown training method: {method}")
     
     def _normalize_sample(self, sample):
-        """Convert sample to consistent format - handles both dict and object formats"""
+        """Convert sample to strict query/response/contexts format."""
         if isinstance(sample, dict):
+            if "prompt" in sample or "answer" in sample:
+                raise ValueError("Invalid sample schema: use query/response/contexts only.")
             return {
                 'query': sample.get('query', ''),
-                'response': sample.get('response', sample.get('answer', '')),
+                'response': sample.get('response', ''),
                 'chs': float(sample.get('chs', 0.5)),
                 'scr': float(sample.get('scr', 0.0)),
                 'tve': float(sample.get('tve', 0.0)),
@@ -478,156 +517,93 @@ class MetricGuidedQLoRATrainer:
                 'contexts': sample.get('contexts', [])
             }
         else:
-            # For TrainingSample objects, inspect all attributes to find the data
-            sample_dict = {}
-            for attr in dir(sample):
-                if not attr.startswith('_') and not callable(getattr(sample, attr)):
-                    sample_dict[attr] = getattr(sample, attr)
-            
-            logger.debug(f"Sample attributes: {sample_dict}")
-            
-            # Extract query and response from available attributes
-            query = (sample_dict.get('query') or 
-                    sample_dict.get('prompt') or 
-                    sample_dict.get('question') or '')
-            
-            response = (sample_dict.get('response') or 
-                       sample_dict.get('answer') or 
-                       sample_dict.get('text') or '')
-            
-            chs = float(sample_dict.get('chs', 0.5))
-            scr = float(sample_dict.get('scr', 0.0))
-            tve = float(sample_dict.get('tve', 0.0))
-            cr = float(sample_dict.get('cr', 0.0))
-            cdee = float(sample_dict.get('cdee', 0.0))
-            contexts = sample_dict.get('contexts', [])
-            
+            if hasattr(sample, "prompt") or hasattr(sample, "answer"):
+                raise ValueError("Invalid sample schema object: use query/response/contexts only.")
+
             result = {
-                'query': str(query) if query else '',
-                'response': str(response) if response else '',
-                'chs': chs,
-                'scr': scr,
-                'tve': tve,
-                'cr': cr,
-                'cdee': cdee,
-                'contexts': contexts if isinstance(contexts, list) else []
+                'query': str(getattr(sample, 'query', '') or ''),
+                'response': str(getattr(sample, 'response', '') or ''),
+                'chs': float(getattr(sample, 'chs', 0.5)),
+                'scr': float(getattr(sample, 'scr', 0.0)),
+                'tve': float(getattr(sample, 'tve', 0.0)),
+                'cr': float(getattr(sample, 'cr', 0.0)),
+                'cdee': float(getattr(sample, 'cdee', 0.0)),
+                'contexts': list(getattr(sample, 'contexts', []) or []),
             }
-            
-            logger.debug(
-                "Normalized sample: "
-                f"query='{result['query'][:50]}...', "
-                f"response='{result['response'][:50]}...', "
-                f"chs={result['chs']}, scr={result['scr']}, tve={result['tve']}, cr={result['cr']}"
-            )
             return result
     
     def _train_dpo(self, samples):
-        """DPO training with preference pairs"""
+        """DPO training with real model-output preference pairs."""
         logger.info("Training with DPO method")
-        logger.info(f"Input samples type: {type(samples[0]) if samples else 'empty'}")
-        
-        # Debug: log first sample's attributes
-        if samples:
-            first_sample = samples[0]
-            sample_attrs = {}
-            for attr in dir(first_sample):
-                if not attr.startswith('_') and not callable(getattr(first_sample, attr)):
-                    sample_attrs[attr] = getattr(first_sample, attr)
-            logger.info(f"First sample attributes: {sample_attrs}")
-        
-        # Convert samples to DPO format
-        dpo_samples = []
-        for i, sample in enumerate(samples):
+        dpo_samples = self._build_real_preference_pairs(samples)
+        logger.info(f"Created {len(dpo_samples)} DPO pairs from {len(samples)} candidate samples")
+        self.trainer.train_dpo(dpo_samples)
+
+    def _quality_score(self, normalized: dict) -> float:
+        # Lower CHS/TVE/CR and higher SCR indicate better responses.
+        return (
+            normalized['scr']
+            - normalized['chs']
+            - normalized['tve']
+            - normalized['cr']
+            - 0.25 * normalized.get('cdee', 0.0)
+        )
+
+    def _build_real_preference_pairs(self, samples):
+        by_query = {}
+        for sample in samples:
             normalized = self._normalize_sample(sample)
-            
-            query = normalized['query']
-            response = normalized['response']
-            chs = normalized['chs']
-            scr = normalized['scr']
-            tve = normalized['tve']
-            cr = normalized['cr']
-            
-            logger.debug(
-                f"Sample {i}: query='{query[:50]}...' response='{response[:50]}...' "
-                f"chs={chs} scr={scr} tve={tve} cr={cr}"
-            )
-            
-            # Skip empty queries/responses
+            query = normalized['query'].strip()
+            response = normalized['response'].strip()
             if not query or not response:
-                logger.warning(f"Skipping sample {i}: empty query='{query}' or response='{response}'")
+                continue
+            by_query.setdefault(query, []).append(normalized)
+
+        dpo_samples = []
+        for query, candidates in by_query.items():
+            unique = []
+            seen_responses = set()
+            for c in candidates:
+                r = c['response']
+                if r in seen_responses:
+                    continue
+                seen_responses.add(r)
+                unique.append(c)
+
+            if len(unique) < 2:
                 continue
 
-            # Metric-aware preference shaping for stricter grounding and temporal validity.
-            is_grounded = scr >= self.min_scr
-            is_temporally_safe = tve <= self.max_tve
-            is_low_conflict = cr <= self.max_cr
-            is_low_chs = chs <= self.max_chs
+            ranked = sorted(unique, key=self._quality_score, reverse=True)
+            chosen = ranked[0]
+            rejected = ranked[-1]
 
-            # Treat high-hallucination synthetic negatives as CHS≈1.0 and keep a score margin.
-            margin_ok = (1.0 - chs) >= self.min_score_gap
+            quality_gap = self._quality_score(chosen) - self._quality_score(rejected)
+            if quality_gap < self.min_score_gap:
+                continue
 
-            if is_grounded and is_temporally_safe and is_low_conflict and is_low_chs and margin_ok:
-                dpo_samples.append({
-                    'prompt': query,
-                    'chosen': response,
-                    'rejected': self._unsupported_temporal_negative(query),
-                })
-            else:
-                dpo_samples.append({
-                    'prompt': query,
-                    'chosen': self._abstention_response(query),
-                    'rejected': response,
-                })
-        
-        logger.info(f"Created {len(dpo_samples)} DPO training pairs from {len(samples)} input samples")
-        
-        if len(dpo_samples) == 0:
-            logger.error("No valid DPO samples created! Check your input data format.")
-            # Log first few samples for debugging
-            for i, sample in enumerate(samples[:3]):
-                logger.error(f"Sample {i}: {sample}")
-                if hasattr(sample, '__dict__'):
-                    logger.error(f"  Dict: {sample.__dict__}")
-            return
-            
-        self.trainer.train_dpo(dpo_samples)
+            assert self._quality_score(chosen) > self._quality_score(rejected), (
+                "DPO preference inversion detected: chosen quality must exceed rejected quality"
+            )
+
+            dpo_samples.append(
+                {
+                    "prompt": query,
+                    "chosen": chosen['response'],
+                    "rejected": rejected['response'],
+                }
+            )
+
+        if not dpo_samples:
+            raise ValueError(
+                "No valid DPO pairs were created from real outputs. "
+                "Collect at least two response candidates per query with measurable quality differences."
+            )
+        return dpo_samples
     
     def _train_rejection(self, samples):
         """Rejection sampling based training"""
         logger.info("Training with rejection sampling method")
-
-        # Lower CHS is better. Build per-query pairs to avoid cross-query mismatches.
-        dpo_samples = []
-        preferred_count = 0
-        rejected_count = 0
-
-        for s in samples:
-            normalized = self._normalize_sample(s)
-            query = normalized['query']
-            response = normalized['response']
-            chs = normalized['chs']
-
-            if not query or not response:
-                continue
-
-            if chs <= self.max_chs:
-                preferred_count += 1
-                dpo_samples.append({
-                    'prompt': query,
-                    'chosen': response,
-                    'rejected': self._unsupported_temporal_negative(query),
-                })
-            elif chs >= (self.max_chs + self.min_score_gap):
-                rejected_count += 1
-                dpo_samples.append({
-                    'prompt': query,
-                    'chosen': self._abstention_response(query),
-                    'rejected': response,
-                })
-
-        logger.info(f"Low-CHS preferred samples: {preferred_count}")
-        logger.info(f"High-CHS demoted samples: {rejected_count}")
-        
+        dpo_samples = self._build_real_preference_pairs(samples)
         logger.info(f"Created {len(dpo_samples)} rejection sampling pairs")
         self.trainer.train_dpo(dpo_samples)
     
@@ -635,31 +611,6 @@ class MetricGuidedQLoRATrainer:
         """Metric-guided loss training"""
         logger.info("Training with metric loss method")
 
-        # Lower CHS is better. Approximate metric-weighted optimization via DPO pairs.
-        weighted_samples = []
-        for sample in samples:
-            normalized = self._normalize_sample(sample)
-            
-            query = normalized['query']
-            response = normalized['response']
-            chs = normalized['chs']
-            
-            if not query or not response:
-                continue
-
-            # Promote low-CHS responses, demote high-CHS ones.
-            if chs <= self.max_chs:
-                weighted_samples.append({
-                    'prompt': query,
-                    'chosen': response,
-                    'rejected': self._unsupported_temporal_negative(query),
-                })
-            elif chs >= (self.max_chs + self.min_score_gap):
-                weighted_samples.append({
-                    'prompt': query,
-                    'chosen': self._abstention_response(query),
-                    'rejected': response,
-                })
-        
+        weighted_samples = self._build_real_preference_pairs(samples)
         logger.info(f"Created {len(weighted_samples)} metric-guided samples")
         self.trainer.train_dpo(weighted_samples)

@@ -25,40 +25,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import yaml
 from loguru import logger
 from src.pipeline import FailureAwareRAGPipeline
+from src.configuration import load_config_file
 from src.training.qlora_trainer import MetricGuidedQLoRATrainer
-
-# Simple data structure for training samples
-class TrainingSignalGenerator:
-    @staticmethod
-    def load(path: str):
-        """Load training samples from JSON file"""
-        samples = []
-        try:
-            with open(path, 'r') as f:
-                data = json.load(f)
-                
-            # Convert dict samples to objects with attributes
-            for item in data:
-                sample = type('Sample', (), {})()
-                for key, value in item.items():
-                    setattr(sample, key, value)
-                samples.append(sample)
-                
-        except json.JSONDecodeError:
-            # Try JSONL format
-            with open(path, 'r') as f:
-                for line in f:
-                    if line.strip():
-                        item = json.loads(line.strip())
-                        sample = type('Sample', (), {})()
-                        for key, value in item.items():
-                            setattr(sample, key, value)
-                        samples.append(sample)
-        
-        return samples
+from src.training.signal_generator import TrainingSignalGenerator
 
 def load_queries(path: str):
     queries = []
@@ -84,11 +55,15 @@ def main():
         default="outputs/training_samples.jsonl",
         help="Where to save collected samples",
     )
+    parser.add_argument(
+        "--disable-hallucination-eval",
+        action="store_true",
+        help="Disable extended hallucination taxonomy evaluation while collecting training data.",
+    )
     args = parser.parse_args()
 
     # Load config
-    with open(args.config) as f:
-        cfg = yaml.safe_load(f)
+    cfg = load_config_file(args.config)
 
     # Override method if specified
     if args.method:
@@ -114,6 +89,7 @@ def main():
             samples = pipeline.collect_training_data(
                 queries=queries,
                 save_path=args.samples_out,
+                enable_hallucination_eval=not args.disable_hallucination_eval,
             )
             logger.info(f"Collected {len(samples)} training samples")
 
@@ -127,31 +103,8 @@ def main():
             )
         except Exception as e:
             logger.error(f"Failed to collect training data: {e}")
-            logger.info("Creating dummy samples for testing...")
-            
-            # Create dummy samples for testing
-            queries = load_queries(args.queries)
-            samples = []
-            for i, query in enumerate(queries[:10]):  # Limit for testing
-                sample = type('Sample', (), {})()
-                sample.query = query
-                sample.response = f"Sample response for: {query}"
-                sample.chs = 0.3 + (i % 3) * 0.2  # Vary quality scores
-                samples.append(sample)
-                
-            # Save dummy samples
-            sample_dicts = []
-            for sample in samples:
-                sample_dict = {}
-                for attr in dir(sample):
-                    if not attr.startswith('_'):
-                        sample_dict[attr] = getattr(sample, attr)
-                sample_dicts.append(sample_dict)
-                
-            with open(args.samples_out, 'w') as f:
-                json.dump(sample_dicts, f, indent=2)
-            
-            logger.info(f"Created {len(samples)} dummy samples for testing")
+            logger.error("Training data collection failed; refusing to create dummy samples.")
+            sys.exit(1)
     else:
         logger.info(f"=== Loading saved samples from {args.samples} ===")
         samples = TrainingSignalGenerator.load(args.samples)

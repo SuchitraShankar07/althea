@@ -25,7 +25,8 @@ Implementation anchors:
 4. Answer decomposition into factual claims.
 5. Per-claim evidence retrieval and NLI verification.
 6. Hallucination metric aggregation.
-7. Optional training signal emission.
+7. Hallucination taxonomy scoring and labeling.
+8. Optional training signal emission.
 
 Pipeline entry points:
 - Single inference: `src/pipeline.py:60`
@@ -184,6 +185,13 @@ The project computes four decomposition metrics and one composite score:
 - CDEE: Cross-Document Entailment Error
 - CHS: Composite Hallucination Score
 
+Extended taxonomy-level hallucination metrics:
+- retrieval_conflict
+- overgeneralization
+- outdated_information
+- synthesis_error
+- overall_hallucination_score (OHS)
+
 Definitions in implementation:
 - Metric container: `src/diagnosis/metric_engine.py:23`
 - Metric computation engine: `src/diagnosis/metric_engine.py:51`
@@ -194,8 +202,20 @@ Composite objective in code form:
 \text{CHS} = \lambda \cdot\left[w_{scr}(1-SCR)+w_{cr}CR+w_{tve}TVE+w_{cdee}CDEE\right]
 \]
 
+Taxonomy weighted aggregate used for analysis and logging:
+
+\[
+	ext{OHS} = 0.3\cdot RC + 0.25\cdot SE + 0.25\cdot OG + 0.2\cdot OI
+\]
+
 Weight source:
 - `config/config.yaml:44`
+
+Taxonomy detector anchors:
+- `src/diagnosis/metric_engine.py:123`
+- `src/diagnosis/metric_engine.py:165`
+- `src/diagnosis/metric_engine.py:195`
+- `src/diagnosis/metric_engine.py:230`
 
 README metric narrative:
 - `README.md:10`
@@ -210,6 +230,10 @@ README metric narrative:
 - Zero-setup demonstration pipeline: `scripts/demo.py:279`
 - Train with collection + fine-tune phases: `scripts/train.py:71`
 - Evaluation baseline vs tuned: `scripts/evaluate.py:100`
+
+Optional non-breaking taxonomy toggle:
+- `enable_hallucination_eval=True` in pipeline paths.
+- CLI disable flag: `--disable-hallucination-eval` for inference/evaluation/training scripts.
 
 ## 7.2 Makefile orchestration
 
@@ -233,6 +257,16 @@ Anchor:
 
 Recommendation (architectural):
 - Keep a single authoritative evidence retrieval path for diagnosis to avoid divergence in retrieval semantics and scoring.
+
+Persistence behavior for extended hallucination framework:
+- Existing evaluator outputs remain unchanged:
+	- `${results_dir}/{tag}_samples.jsonl`
+	- `${results_dir}/{tag}_aggregate.json`
+- New appended analysis outputs:
+	- `${results_dir}/hallucination_samples.jsonl`
+	- `${results_dir}/hallucination_samples.csv`
+
+This preserves backward compatibility while enabling per-sample taxonomy inspection.
 
 ---
 
